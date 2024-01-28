@@ -15,11 +15,18 @@ namespace CountDownTimerV0
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
 
+		private ChosenTimer _chosenTimer;
+
 		public Form1()
 		{
 			InitializeComponent();
 
 			SetTabIndices();
+
+			_chosenTimer = new ChosenTimer();
+
+			StartPosition = FormStartPosition.CenterScreen;
+
 
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
@@ -49,6 +56,12 @@ namespace CountDownTimerV0
 			clearTimersListBtn.TabIndex = 14;
 			saveProfileBtn.TabIndex = 15;
 			loadProfileBtn.TabIndex = 16;
+		}
+
+		private struct ChosenTimer
+		{
+			public string Name { get; set; }
+			public string Duration { get; set; }
 		}
 
 		private void startButton_Click(object sender, EventArgs e)
@@ -177,7 +190,7 @@ namespace CountDownTimerV0
 
 			bool emptyDuration = string.IsNullOrEmpty(timerDurationEntry.Text);
 			bool defaultDurationPrompt = timerDurationEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
-			bool timerHhMmSsFormat = default;
+			bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
 			bool invalidDuration = emptyDuration || defaultDurationPrompt || !timerHhMmSsFormat;
 			//if text of 'timerDurationEntry' is empty OR EQUALS the 'DURATION_ENTRY_PROMPT_STRING'
 			if ( invalidDuration )
@@ -191,22 +204,68 @@ namespace CountDownTimerV0
 			}
 
 			/* Add 'timerNameEntry' text to 'timerNamesList' listbox */
+			//pause painting timerNamesList list box while adding text
+			timerNamesList.BeginUpdate();
 			//get the text value from the Text property of the 'timerNameEntry' control
 			//add name text value to 'timerNamesList' listbox
 			string timerName = timerNameEntry.Text;
 			timerNamesList.Items.Add(timerName);
 			//reset the Text property of 'timerNameEntry' to the 'NAME_ENTRY_PROMPT_STRING'
 			timerNameEntry.Text = NAME_ENTRY_PROMPT_STRING;
+			//un-pause painting timerNamesList list box
+			timerNamesList.EndUpdate();
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
+			//pause painting timerDurationsList list box while adding text
+			timerDurationsList.BeginUpdate();
 			//get the text value from the Text property of the 'timerDurationEntry' control
 			//add duration text value to 'timerDurationEntry' listbox
 			string timerDuration = timerDurationEntry.Text;
 			timerDurationsList.Items.Add(timerDuration);
 			//reset the Text property of 'timerDurationEntry' to the 'DURATION_ENTRY_PROMPT_STRING'
 			timerDurationEntry.Text = DURATION_ENTRY_PROMPT_STRING;
+			//un-pause painting timerDurationsList list box
+			timerDurationsList.EndUpdate();
+
+			//focus on 'timerNameEntry' control to ready for next timer entry
+			timerNameEntry.Focus();
 		}
 
-		
+		// so user can select timer by either clicking on its name or duration, then press 'Start'
+		private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
+		{
+			/* only the name at the selected row will be highlighted, but we also
+			   want to highlight the corresponding duration in timerDurationsList, so*/
+			//get the selected index in timerNamesList
+			int selectedNameI = timerNamesList.SelectedIndex;
+			//set selected of timerDurationsList to selected index above
+			timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
+
+			//add the name and duration of selected to the 'ChosenTimer' struct
+			string selectedName = timerNamesList.Items[selectedNameI].ToString();
+			string selectedDuration = timerDurationsList.Items[selectedNameI].ToString();
+			_chosenTimer.Name = selectedName;
+			_chosenTimer.Duration = selectedDuration;
+
+			//System.Diagnostics.Debug.WriteLine($"timer name: {selectedName}");
+			//System.Diagnostics.Debug.WriteLine($"timer duraton: {selectedDuration}");
+		}
+
+		// so user can select timer by either clicking on its name or duration, then press 'Start'
+		private void timerDurationsList_SelectedValueChanged(object sender, EventArgs e)
+		{
+			/* only the duration at the selected row will be highlighted, but we also
+			   want to highlight the corresponding name in timerNamesList, so*/
+			//get the selected index in timerDurationsList
+			int selectedDurationI = timerDurationsList.SelectedIndex;
+			//set selected of timerNamesList to selected index above
+			timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
+
+			//add the duration and of selected to the 'ChosenTimer' struct
+			string selectedDuration = timerDurationsList.Items[selectedDurationI].ToString();
+			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
+			_chosenTimer.Duration = selectedDuration;
+			_chosenTimer.Name = selectedName;
+		}
 	}
 }

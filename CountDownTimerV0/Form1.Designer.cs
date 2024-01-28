@@ -401,6 +401,7 @@ namespace CountDownTimerV0
 			this.timerNamesList.Name = "timerNamesList";
 			this.timerNamesList.Size = new System.Drawing.Size(178, 224);
 			this.timerNamesList.TabIndex = 31;
+			this.timerNamesList.SelectedValueChanged += new System.EventHandler(this.timerNamesList_SelectedValueChanged);
 			// 
 			// timerDurationsList
 			// 
@@ -414,6 +415,7 @@ namespace CountDownTimerV0
 			this.timerDurationsList.Name = "timerDurationsList";
 			this.timerDurationsList.Size = new System.Drawing.Size(107, 224);
 			this.timerDurationsList.TabIndex = 32;
+			this.timerDurationsList.SelectedValueChanged += new System.EventHandler(this.timerDurationsList_SelectedValueChanged);
 			// 
 			// timerNameEntry
 			// 
@@ -552,6 +554,7 @@ namespace CountDownTimerV0
 			this.Controls.Add(this.stopButton);
 			this.Controls.Add(this.startButton);
 			this.Controls.Add(this.TimerDisplay);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form1";
 			this.Text = "Digital Count Up/Down Timer";
 			this.counterSelectorPanel.ResumeLayout(false);
