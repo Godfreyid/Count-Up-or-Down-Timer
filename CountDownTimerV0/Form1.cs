@@ -10,17 +10,21 @@ using System.Windows.Forms;
 
 namespace CountDownTimerV0
 {
-	public partial class Form1 : Form
+	public partial class DigitalCountTimer : Form
 	{
+		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
 
 		private ChosenTimer _chosenTimer;
 
-		public Form1()
+		public DigitalCountTimer()
 		{
 			InitializeComponent();
+		}
 
+		private void DigitalCountTimer_Load(object sender, EventArgs e)
+		{
 			SetTabIndices();
 
 			_chosenTimer = new ChosenTimer();
@@ -64,11 +68,6 @@ namespace CountDownTimerV0
 			public string Duration { get; set; }
 		}
 
-		private void startButton_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		// user clicked in text field to begin entering timer name
 		private void timerNameEntry_Enter(object sender, EventArgs e)
 		{
@@ -76,7 +75,7 @@ namespace CountDownTimerV0
 			//OR PERHAPS BETTER,
 			bool defaultPrompt = timerNameEntry.Text.Equals(NAME_ENTRY_PROMPT_STRING);
 			//if the current text EQUALS NAME_ENTRY_PROMPT_STRING
-			if (defaultPrompt)
+			if ( defaultPrompt )
 			{
 				//set text to empty (or null)
 				timerNameEntry.Text = string.Empty;
@@ -88,7 +87,7 @@ namespace CountDownTimerV0
 			//if user entered name, clicked on another control, then back to this one,
 			//the text would NOT be empty AND
 			//the text would NOT be EQUAL to NAME_ENTRY_PROMPT_STRING, so
-			if (resumedEnteringName)
+			if ( resumedEnteringName )
 				//do nothing (return)
 				return;
 		}
@@ -100,7 +99,7 @@ namespace CountDownTimerV0
 			//OR PERHAPS BETTER,
 			bool defaultPrompt = timerDurationEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
 			//if the current text EQUALS DURATION_ENTRY_PROMPT_STRING
-			if (defaultPrompt)
+			if ( defaultPrompt )
 			{
 				//set text to empty (or null)
 				timerDurationEntry.Text = string.Empty;
@@ -112,7 +111,7 @@ namespace CountDownTimerV0
 			//if user entered duration, clicked on another control, then back to this one,
 			//the text would NOT be empty AND
 			//the text would NOT be EQUAL to DURATION_ENTRY_PROMPT_STRING, so
-			if (resumedEnteringDuration)
+			if ( resumedEnteringDuration )
 				//do nothing (return)//highlight (select all) the default text prompting user's entry
 				return;
 		}
@@ -133,6 +132,13 @@ namespace CountDownTimerV0
 			//if empty duration text field, show prompt text of required duration string format
 			if ( !emptyDuration ) return;
 
+
+			//if incorrect timer duration format
+			bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
+				//show popup prompting user to re-input with correct hh:mm:ss format
+				//bring focus back to the 'timerDurationEntry' control for retry
+				//return
+
 			timerDurationEntry.Text = DURATION_ENTRY_PROMPT_STRING;
 		}
 
@@ -146,7 +152,7 @@ namespace CountDownTimerV0
 			bool containsDefaultPrompt = timerNameEntry.Text.Contains(NAME_ENTRY_PROMPT_STRING);
 			bool didNotEnterName = isDefaultPrompt || containsDefaultPrompt;
 			//return
-			if (!pressedEnterKey || didNotEnterName) return;
+			if ( !pressedEnterKey || didNotEnterName ) return;
 
 			//user provided a name, so can now move focus to the 'timerDurationEntry' control
 			//set the 'timerDurationEntry' control as the active form control
@@ -163,7 +169,7 @@ namespace CountDownTimerV0
 			bool containsDefaultPrompt = timerNameEntry.Text.Contains(DURATION_ENTRY_PROMPT_STRING);
 			bool didNotEnterDuration = isDefaultPrompt || containsDefaultPrompt;
 			//return
-			if (!pressedEnterKey || didNotEnterDuration) return;
+			if ( !pressedEnterKey || didNotEnterDuration ) return;
 
 			//user provided a duration, so can now move focus to the 'timerAddBtn' control
 			//set the 'timerAddBtn' control as the active form control
@@ -190,8 +196,7 @@ namespace CountDownTimerV0
 
 			bool emptyDuration = string.IsNullOrEmpty(timerDurationEntry.Text);
 			bool defaultDurationPrompt = timerDurationEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
-			bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
-			bool invalidDuration = emptyDuration || defaultDurationPrompt || !timerHhMmSsFormat;
+			bool invalidDuration = emptyDuration || defaultDurationPrompt;
 			//if text of 'timerDurationEntry' is empty OR EQUALS the 'DURATION_ENTRY_PROMPT_STRING'
 			if ( invalidDuration )
 			{
@@ -214,6 +219,18 @@ namespace CountDownTimerV0
 			timerNameEntry.Text = NAME_ENTRY_PROMPT_STRING;
 			//un-pause painting timerNamesList list box
 			timerNamesList.EndUpdate();
+
+			/* Enforce correct timer duration format */
+			//force correct format of user entered duration
+			//if seconds columns exceed 60,
+				//get modulo 60
+				//add whole number quotient to minutes columns
+			//if minutes exceeds 60
+				//get modulo 60
+				//add whole number quotient to hours columns
+			//clamp hours columns between 0 and 99
+			//
+			//bool wrongFormat = 
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
 			//pause painting timerDurationsList list box while adding text
@@ -247,8 +264,8 @@ namespace CountDownTimerV0
 			_chosenTimer.Name = selectedName;
 			_chosenTimer.Duration = selectedDuration;
 
-			//System.Diagnostics.Debug.WriteLine($"timer name: {selectedName}");
-			//System.Diagnostics.Debug.WriteLine($"timer duraton: {selectedDuration}");
+			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
+			timerDisplay.Text = _chosenTimer.Duration;
 		}
 
 		// so user can select timer by either clicking on its name or duration, then press 'Start'
@@ -266,6 +283,92 @@ namespace CountDownTimerV0
 			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
 			_chosenTimer.Duration = selectedDuration;
 			_chosenTimer.Name = selectedName;
+
+			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
+			timerDisplay.Text = _chosenTimer.Duration;
 		}
+
+		// user intends to begin count down/up
+		private void startButton_Click(object sender, EventArgs e)
+		{
+			bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
+			//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
+			if ( defaultTimerDisplay )
+			{
+				//put focus back on the 'navigateUpBtn' control
+				navigateUpBtn.Focus();
+
+				//display a popup notification about the selected timer having no duration
+
+				//return
+				return;
+			}
+
+			//maybe convert the 'ChosenTimer' 'Duration' property to the hh:mm:ss format?
+
+			/* To increment upto or decrement down from the 'ChosenTimer.Duration',
+			   we have to determine what the entire duration is in seconds for simple 
+			   decrement, increment (++,--) operations. */
+			//convert the formatted 'ChosenTimer.Duration' to 'durationAsSeconds' as,
+			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'minutesInHours', PLUS
+			//minutes column to seconds, i.e. (mins * 60secs) as 'secondsInMinutes',
+			//PLUS seconds column
+
+			//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
+		}
+
+		// handles event raised whenever the ticker control's set interval elapses
+		private void countDownTimer_Tick(object sender, EventArgs e)
+		{
+			//DateTime.ParseExact();
+
+			/* Per user toggle, a count down/up method will handle the '1 second elapsed' event,
+			   by either counting down from the 'durationAsSeconds' by decrementing 1, or counting 
+			   up from zero (0) to 'durationAsSeconds'. Then after ticking by 1 second, we need to
+			   reflect the increment/decrement in the 'timerDisplay' text. */
+
+			//if user toggled countUp is false,
+				//decrement the 'durationAsSeconds' by 1
+				//compute hh:mm:ss equivalent of current 'durationAsSeconds' as,
+				//dividing 'durationAsSeconds' by 60secs to get the (raw) minutes
+				//the quotient is your raw minutes since it is potentially above 60mins, and 
+				//remainder * 60secs is your seconds column
+
+				//divide the raw minutes by 60secs to get the hours
+				//the quotient is your hours column, and
+				//remainder * 60mins is your minutes column
+
+
+			//else, user toggled countUp is true,
+				//increment the running '_upCount' by 1
+				//compute hh:mm:ss equivalent of current '_upCount' as,
+				//dividing '_upCount' by 60secs to get (raw) minutes
+				//the quotient is your raw minutes since itt is potentially above 60mins, and
+				//remainder * 60secs is your seconds column
+
+				//divide the raw minutes by 60secs to get the hours
+				//the quotient is your hours column, and 
+				//remainder * 60mins is your minutes column
+
+			//build updated 'ChosenTimer.Duration' with corresponding quotients and multiplied remainders
+			//set the 'timerDisplay' Text property to 'ChosenTimer.Duration'
+
+			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
+			//if toggled count up,
+				//if '_upCount' does NOT EQUALS 'ChosenTimer.Duration' on this tick, return
+
+				//else, EQUALS means duration expired, so
+				//pause ticker control to stop ticking during alarm period
+				//raise alarm 
+			//else count down, so
+				//if 'durationAsSeconds' > 0, return
+
+				//else, LESS THAN means duration expired, so
+				//pause ticker control to stop ticking during alarm period
+				//raise alarm
+				
+		}
+
+
 	}
 }

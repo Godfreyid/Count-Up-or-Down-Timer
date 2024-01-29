@@ -1,7 +1,7 @@
 ﻿
 namespace CountDownTimerV0
 {
-	partial class Form1
+	partial class DigitalCountTimer
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -30,8 +30,8 @@ namespace CountDownTimerV0
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-			this.TimerDisplay = new System.Windows.Forms.Label();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DigitalCountTimer));
+			this.timerDisplay = new System.Windows.Forms.Label();
 			this.startButton = new System.Windows.Forms.Button();
 			this.stopButton = new System.Windows.Forms.Button();
 			this.resetButton = new System.Windows.Forms.Button();
@@ -73,17 +73,17 @@ namespace CountDownTimerV0
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// TimerDisplay
+			// timerDisplay
 			// 
-			this.TimerDisplay.BackColor = System.Drawing.Color.Black;
-			this.TimerDisplay.Font = new System.Drawing.Font("Unispace", 71.99999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TimerDisplay.ForeColor = System.Drawing.Color.Lime;
-			this.TimerDisplay.Location = new System.Drawing.Point(5, 31);
-			this.TimerDisplay.Name = "TimerDisplay";
-			this.TimerDisplay.Size = new System.Drawing.Size(527, 133);
-			this.TimerDisplay.TabIndex = 0;
-			this.TimerDisplay.Text = "00:00:00";
-			this.TimerDisplay.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.timerDisplay.BackColor = System.Drawing.Color.Black;
+			this.timerDisplay.Font = new System.Drawing.Font("Unispace", 71.99999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
+			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
+			this.timerDisplay.Name = "timerDisplay";
+			this.timerDisplay.Size = new System.Drawing.Size(527, 133);
+			this.timerDisplay.TabIndex = 0;
+			this.timerDisplay.Text = "00:00:00";
+			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			// 
 			// startButton
 			// 
@@ -497,6 +497,7 @@ namespace CountDownTimerV0
 			// countDownTimer
 			// 
 			this.countDownTimer.Interval = 1000;
+			this.countDownTimer.Tick += new System.EventHandler(this.countDownTimer_Tick);
 			// 
 			// timerNamesListLabel
 			// 
@@ -520,7 +521,7 @@ namespace CountDownTimerV0
 			this.timerDurationsListLabel.Text = "Duration";
 			this.timerDurationsListLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// Form1
+			// DigitalCountTimer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -553,10 +554,11 @@ namespace CountDownTimerV0
 			this.Controls.Add(this.resetButton);
 			this.Controls.Add(this.stopButton);
 			this.Controls.Add(this.startButton);
-			this.Controls.Add(this.TimerDisplay);
+			this.Controls.Add(this.timerDisplay);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Form1";
+			this.Name = "DigitalCountTimer";
 			this.Text = "Digital Count Up/Down Timer";
+			this.Load += new System.EventHandler(this.DigitalCountTimer_Load);
 			this.counterSelectorPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -569,7 +571,7 @@ namespace CountDownTimerV0
 
 		#endregion
 
-		private System.Windows.Forms.Label TimerDisplay;
+		private System.Windows.Forms.Label timerDisplay;
 		private System.Windows.Forms.Button startButton;
 		private System.Windows.Forms.Button stopButton;
 		private System.Windows.Forms.Button resetButton;
