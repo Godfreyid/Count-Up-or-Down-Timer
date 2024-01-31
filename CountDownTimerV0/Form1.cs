@@ -96,6 +96,17 @@ namespace CountDownTimerV0
 			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 		}
 
+		/// <summary>
+		/// Clears the default (user guiding) prompt string of 
+		/// the <paramref name="textBoxEntered"/> so that the user
+		/// can simply begin entering their desired text without
+		/// first having to delete the default text string.
+		/// </summary>
+		/// <param name="textBoxEntered">The TextBox into whom's
+		/// text box field text will be input.</param>
+		/// <param name="defaultTextBoxString">The default prompt 
+		/// string that guides the user as to what the text 
+		/// (including format) ought to be.</param>
 		private void ReadyTextBoxInput(TextBox textBoxEntered, string defaultTextBoxString)
 		{
 			//highlight (select all) the default text prompting user's entry
@@ -131,9 +142,26 @@ namespace CountDownTimerV0
 			LeavingTextBox(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 		}
 
-		private void LeavingTextBox(TextBox textBoxEntered, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
+		/// <summary>
+		/// Will refill the text field of the <paramref name="textBoxLeft"/>
+		/// if the user leaves the TextBox without inputing a string that
+		/// is different from the <paramref name="defaultTextBoxString"/>.
+		/// </summary>
+		/// <param name="textBoxLeft">The TextBox being left, and into whom's
+		/// text box field the <paramref name="defaultTextBoxString"/> will 
+		/// be input.</param>
+		/// <param name="defaultTextBoxString">The default prompt 
+		/// string that guides the user as to what the text 
+		/// (including format) ought to be.</param>
+		/// <param name="requireProperFormat">Toggles whether the expected
+		/// entered text string should be matched against a regular expression to
+		/// ensure the string was entered with proper format.</param>
+		/// <param name="requiredFormatRegex">The regular expression string used 
+		/// to match (check) proper format of the text string entered 
+		/// into <paramref name="textBoxLeft"/>.</param>
+		private void LeavingTextBox(TextBox textBoxLeft, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
 		{
-			bool emptyName = string.IsNullOrEmpty(textBoxEntered.Text);
+			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
 			//if empty name text field, show prompt text of required name string format
 			if ( !emptyName ) return;
 
@@ -149,7 +177,7 @@ namespace CountDownTimerV0
 
 			}
 
-			textBoxEntered.Text = defaultTextBoxString;
+			textBoxLeft.Text = defaultTextBoxString;
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
@@ -160,35 +188,55 @@ namespace CountDownTimerV0
 		// user finished entering name and presses 'Enter' to start entering duration 
 		private void timerNameEntry_KeyDown(object sender, KeyEventArgs e)
 		{
-			//if the key pressed != 'ENTER', return
-			bool pressedEnterKey = e.KeyCode == Keys.Enter;
-			//if 'timerNameEntry' control text EQUALS 'NAME_ENTRY_PROMPT_STRING',
-			bool isDefaultPrompt = timerNameEntry.Text.Equals(NAME_ENTRY_PROMPT_STRING);
-			bool containsDefaultPrompt = timerNameEntry.Text.Contains(NAME_ENTRY_PROMPT_STRING);
-			bool didNotEnterName = isDefaultPrompt || containsDefaultPrompt;
-			//return
-			if ( !pressedEnterKey || didNotEnterName ) return;
+			bool pressedEnter = e.KeyCode == Keys.Enter;
+			if ( pressedEnter )
+			{
+				ShiftFocusOnTextSubmit(
+					e, Keys.Enter, timerNameEntry, NAME_ENTRY_PROMPT_STRING, timerDurationEntry);
+			}
+		}
 
-			//user provided a name, so can now move focus to the 'timerDurationEntry' control
-			//set the 'timerDurationEntry' control as the active form control
-			timerDurationEntry.Focus();
+		/// <summary>
+		/// Will shift focus to the controller <paramref name="focusShiftedTo"/>
+		/// only if the submitted text (entered into the text field 
+		/// of <paramref name="textToSubmit"/>) is not equal to 
+		/// the <paramref name="defaultTextBoxString"/>.
+		/// </summary>
+		/// <param name="e">Used to confirm if the pressed key is 
+		/// the <paramref name="submitKey"/>.</param>
+		/// <param name="submitKey">Key treated as the key to press when wishing to
+		/// submit the text entered into <paramref name="textToSubmit"/>.</param>
+		/// <param name="textToSubmit">The TextBox into whome the text to submit was
+		/// entered.</param>
+		/// <param name="defaultTextBoxString">The text string which the text entered
+		/// for submission should not be equal if it is to be accepted as a submission.</param>
+		/// <param name="focusShiftedTo">The Control to shift focus to upon a successfull 
+		/// text string submission.</param>
+		private void ShiftFocusOnTextSubmit(KeyEventArgs e, Keys submitKey, TextBox textToSubmit, string defaultTextBoxString, Control focusShiftedTo)
+		{
+			//if the key pressed != 'ENTER', return
+			bool pressedEnterKey = e.KeyCode == submitKey;
+			//if 'timerNameEntry' control text EQUALS 'NAME_ENTRY_PROMPT_STRING',
+			bool defaultPrompt = textToSubmit.Text.Equals(defaultTextBoxString);
+			bool containsDefaultPrompt = textToSubmit.Text.Contains(defaultTextBoxString);
+			bool enteredText = !defaultPrompt && !containsDefaultPrompt;
+			bool shiftFocus = pressedEnterKey && enteredText;
+			//return
+			if ( !shiftFocus ) return;
+
+			//user provided a adequate text, so can move focus to 'next' control
+			focusShiftedTo.Focus();
 		}
 
 		// user finished entering duration and presses 'Enter' to move tab focus to timer submit btn
 		private void timerDurationEntry_KeyDown(object sender, KeyEventArgs e)
 		{
-			//if the key pressed != 'ENTER', return
-			bool pressedEnterKey = e.KeyCode == Keys.Enter;
-			//if 'timerDurationEntry' control text EQUALS 'DURATION_ENTRY_PROMPT_STRING',
-			bool isDefaultPrompt = timerNameEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
-			bool containsDefaultPrompt = timerNameEntry.Text.Contains(DURATION_ENTRY_PROMPT_STRING);
-			bool didNotEnterDuration = isDefaultPrompt || containsDefaultPrompt;
-			//return
-			if ( !pressedEnterKey || didNotEnterDuration ) return;
-
-			//user provided a duration, so can now move focus to the 'timerAddBtn' control
-			//set the 'timerAddBtn' control as the active form control
-			timerAddBtn.Focus();
+			bool pressedEnter = e.KeyCode == Keys.Enter;
+			if ( pressedEnter )
+			{
+				ShiftFocusOnTextSubmit(
+					e, Keys.Enter, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, timerAddBtn);
+			}
 		}
 
 		// user clicks to submit timer (name+duration) to 'Timers' list
