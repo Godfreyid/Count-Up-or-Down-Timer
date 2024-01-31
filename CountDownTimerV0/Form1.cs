@@ -128,27 +128,33 @@ namespace CountDownTimerV0
 		// user clicked away from text field taking focus to another control
 		private void timerNameEntry_Leave(object sender, EventArgs e)
 		{
-			bool emptyName = string.IsNullOrEmpty(timerNameEntry.Text);
+			LeavingTextBox(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
+		}
+
+		private void LeavingTextBox(TextBox textBoxEntered, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
+		{
+			bool emptyName = string.IsNullOrEmpty(textBoxEntered.Text);
 			//if empty name text field, show prompt text of required name string format
 			if ( !emptyName ) return;
 
-			timerNameEntry.Text = NAME_ENTRY_PROMPT_STRING;
+			/* Enforce string format via regex */
+			//only leave if correct string format
+			if ( requireProperFormat )
+			{
+				//if incorrect timer duration format
+				bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
+					//show popup prompting user to re-input with correct hh:mm:ss format
+					//bring focus back to the 'timerDurationEntry' control for retry
+					//return
+
+			}
+
+			textBoxEntered.Text = defaultTextBoxString;
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
 		{
-			bool emptyDuration = string.IsNullOrEmpty(timerDurationEntry.Text);
-			//if empty duration text field, show prompt text of required duration string format
-			if ( !emptyDuration ) return;
-
-
-			//if incorrect timer duration format
-			bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
-				//show popup prompting user to re-input with correct hh:mm:ss format
-				//bring focus back to the 'timerDurationEntry' control for retry
-				//return
-
-			timerDurationEntry.Text = DURATION_ENTRY_PROMPT_STRING;
+			LeavingTextBox(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, true, "");
 		}
 
 		// user finished entering name and presses 'Enter' to start entering duration 
