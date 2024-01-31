@@ -93,23 +93,28 @@ namespace CountDownTimerV0
 		// user clicked in text field to begin entering timer name
 		private void timerNameEntry_Enter(object sender, EventArgs e)
 		{
+			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
+		}
+
+		private void ReadyTextBoxInput(TextBox textBoxEntered, string defaultTextBoxString)
+		{
 			//highlight (select all) the default text prompting user's entry
 			//OR PERHAPS BETTER,
-			bool defaultPrompt = timerNameEntry.Text.Equals(NAME_ENTRY_PROMPT_STRING);
-			//if the current text EQUALS NAME_ENTRY_PROMPT_STRING
+			bool defaultPrompt = textBoxEntered.Text.Equals(defaultTextBoxString);
+			//if the current text EQUALS 'defaultTextBoxString'
 			if ( defaultPrompt )
 			{
 				//set text to empty (or null)
-				timerNameEntry.Text = string.Empty;
+				textBoxEntered.Text = string.Empty;
 				return;
 			}
 
-			bool emptyName = string.IsNullOrEmpty(timerNameEntry.Text);
-			bool resumedEnteringName = !emptyName && !defaultPrompt;
-			//if user entered name, clicked on another control, then back to this one,
+			bool emptyTextField = string.IsNullOrEmpty(textBoxEntered.Text);
+			bool resumedEnteringStr = !emptyTextField && !defaultPrompt;
+			//if user entered string, clicked on another control, then back to this one,
 			//the text would NOT be empty AND
-			//the text would NOT be EQUAL to NAME_ENTRY_PROMPT_STRING, so
-			if ( resumedEnteringName )
+			//the text would NOT be EQUAL to 'defaultTextBoxString, so
+			if ( resumedEnteringStr )
 				//do nothing (return)
 				return;
 		}
@@ -117,25 +122,7 @@ namespace CountDownTimerV0
 		// user clicked in text field to begin entering timer duration
 		private void timerDurationEntry_Enter(object sender, EventArgs e)
 		{
-			//highlight (select all) the default text prompting user's entry
-			//OR PERHAPS BETTER,
-			bool defaultPrompt = timerDurationEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
-			//if the current text EQUALS DURATION_ENTRY_PROMPT_STRING
-			if ( defaultPrompt )
-			{
-				//set text to empty (or null)
-				timerDurationEntry.Text = string.Empty;
-				return;
-			}
-
-			bool emptyDuration = string.IsNullOrEmpty(timerDurationEntry.Text);
-			bool resumedEnteringDuration = !emptyDuration && !defaultPrompt;
-			//if user entered duration, clicked on another control, then back to this one,
-			//the text would NOT be empty AND
-			//the text would NOT be EQUAL to DURATION_ENTRY_PROMPT_STRING, so
-			if ( resumedEnteringDuration )
-				//do nothing (return)//highlight (select all) the default text prompting user's entry
-				return;
+			ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 		}
 
 		// user clicked away from text field taking focus to another control
