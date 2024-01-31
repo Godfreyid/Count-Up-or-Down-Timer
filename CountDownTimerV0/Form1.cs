@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace CountDownTimerV0
 {
@@ -15,22 +16,37 @@ namespace CountDownTimerV0
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
+		private const int MINUTES_PER_HOUR = 60;
+		private const int SECONDS_PER_MINUTE = 60;
 
 		private ChosenTimer _chosenTimer;
+
+		private string[] _durationTimeColumns;
+		private int _durationAsSeconds;
+
+		private bool _countUp = false;
+		private int _upCount;
+		private SoundPlayer _soundPlayer;
 
 		public DigitalCountTimer()
 		{
 			InitializeComponent();
+
+			SetupForm();
 		}
 
-		private void DigitalCountTimer_Load(object sender, EventArgs e)
+		private void SetupForm()
 		{
 			SetTabIndices();
 
-			_chosenTimer = new ChosenTimer();
+			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 
 			StartPosition = FormStartPosition.CenterScreen;
 
+			_durationTimeColumns = new string[3]; /* holds 3 time hh, mm, and ss (hh:mm:ss) columns */
+
+			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
+			_soundPlayer = new SoundPlayer();
 
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
@@ -64,6 +80,12 @@ namespace CountDownTimerV0
 
 		private struct ChosenTimer
 		{
+			public ChosenTimer(string name, string duration)
+			{
+				Name = name;
+				Duration = duration;
+			}
+
 			public string Name { get; set; }
 			public string Duration { get; set; }
 		}
@@ -272,7 +294,7 @@ namespace CountDownTimerV0
 		private void timerDurationsList_SelectedValueChanged(object sender, EventArgs e)
 		{
 			/* only the duration at the selected row will be highlighted, but we also
-			   want to highlight the corresponding name in timerNamesList, so*/
+			   want to highlight the corresponding name in timerNamesList, so */
 			//get the selected index in timerDurationsList
 			int selectedDurationI = timerDurationsList.SelectedIndex;
 			//set selected of timerNamesList to selected index above
@@ -288,6 +310,11 @@ namespace CountDownTimerV0
 			timerDisplay.Text = _chosenTimer.Duration;
 		}
 
+		private void countInverseBtn_Click(object sender, EventArgs e)
+		{
+			_countUp = !_countUp;
+		}
+
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
@@ -300,6 +327,7 @@ namespace CountDownTimerV0
 
 				//display a popup notification about the selected timer having no duration
 
+
 				//return
 				return;
 			}
@@ -310,15 +338,27 @@ namespace CountDownTimerV0
 			   we have to determine what the entire duration is in seconds for simple 
 			   decrement, increment (++,--) operations. */
 			//convert the formatted 'ChosenTimer.Duration' to 'durationAsSeconds' as,
-			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'minutesInHours', PLUS
-			//minutes column to seconds, i.e. (mins * 60secs) as 'secondsInMinutes',
+			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'hoursAsSeconds', 
+			_durationTimeColumns = _chosenTimer.Duration.Split(':');
+			string hoursColumn = _durationTimeColumns[0];
+			int hours = int.Parse(hoursColumn);
+			int hoursInSeconds = (hours * MINUTES_PER_HOUR) * SECONDS_PER_MINUTE;
+			//PLUS minutes column to seconds, i.e. (mins * 60secs) as 'minutesAsSeconds',
+			string minutesColumn = _durationTimeColumns[1];
+			int minutes = int.Parse(minutesColumn);
+			int minutesInSeconds = minutes * SECONDS_PER_MINUTE;
 			//PLUS seconds column
+			string secondsColumn = _durationTimeColumns[2];
+			int seconds = int.Parse(secondsColumn);
+			_durationAsSeconds = hoursInSeconds + minutesInSeconds + seconds;
 
 			//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
+			countTimer.Enabled = true;
+			countTimer.Start();
 		}
 
 		// handles event raised whenever the ticker control's set interval elapses
-		private void countDownTimer_Tick(object sender, EventArgs e)
+		private void countTimer_Tick(object sender, EventArgs e)
 		{
 			//DateTime.ParseExact();
 
@@ -327,48 +367,95 @@ namespace CountDownTimerV0
 			   up from zero (0) to 'durationAsSeconds'. Then after ticking by 1 second, we need to
 			   reflect the increment/decrement in the 'timerDisplay' text. */
 
+			int m_secondsColumn;
+			int m_minutesColumn;
+			int m_hoursColumn;
+
 			//if user toggled countUp is false,
+			if ( !_countUp )
+			{
 				//decrement the 'durationAsSeconds' by 1
+				_durationAsSeconds--;
+				bool negative = _durationAsSeconds < 1;
+				_durationAsSeconds = negative ? 0 : _durationAsSeconds; /* Since Math.Clamp() is missing */
 				//compute hh:mm:ss equivalent of current 'durationAsSeconds' as,
-				//dividing 'durationAsSeconds' by 60secs to get the (raw) minutes
-				//the quotient is your raw minutes since it is potentially above 60mins, and 
-				//remainder * 60secs is your seconds column
+				//dividing 'durationAsSeconds' by 60secs to get the decimal minutes
+				double decimalUnBasedMinutes = _durationAsSeconds / 60;
+				//the quotient is your decimal minutes column since it is potentially above 60mins, and 
+				int wholeNumUnBasedMinutes = (int)Math.Floor(decimalUnBasedMinutes);
+				//remainder * 60secs is your whole number seconds column
+				double remainderAsSeconds = decimalUnBasedMinutes - wholeNumUnBasedMinutes;
+				m_secondsColumn = (int)(remainderAsSeconds * 60);
 
-				//divide the raw minutes by 60secs to get the hours
-				//the quotient is your hours column, and
-				//remainder * 60mins is your minutes column
-
-
+				//divide the decimal minutes by 60secs to get the decimal hours
+				double decimalUnBasedHours = decimalUnBasedMinutes / 60;
+				//the decimal portion of the decimal hours * 60mins is your minutes column
+				int wholeNumUnBasedHours = (int)Math.Floor(decimalUnBasedHours);
+				double remainderAsMinutes = decimalUnBasedHours - wholeNumUnBasedHours;
+				m_minutesColumn = (int)(remainderAsMinutes * 60);
+				//the whole number quotient is your hours column
+				m_hoursColumn = wholeNumUnBasedHours;
+			}
 			//else, user toggled countUp is true,
+			else
+			{
 				//increment the running '_upCount' by 1
+				_upCount++;
+				bool exceedsDuration = _upCount > _durationAsSeconds;
+				_upCount = exceedsDuration ? _durationAsSeconds : _upCount;
 				//compute hh:mm:ss equivalent of current '_upCount' as,
-				//dividing '_upCount' by 60secs to get (raw) minutes
-				//the quotient is your raw minutes since itt is potentially above 60mins, and
-				//remainder * 60secs is your seconds column
+				//dividing 'upCount' by 60secs to get the decimal minutes
+				double decimalUnBasedMinutes = _upCount / 60;
+				//the quotient is your decimal minutes column since it is potentially above 60mins, and 
+				int wholeNumUnBasedMinutes = (int)Math.Floor(decimalUnBasedMinutes);
+				//remainder * 60secs is your whole number seconds column
+				double remainderAsSeconds = decimalUnBasedMinutes - wholeNumUnBasedMinutes;
+				m_secondsColumn = (int)(remainderAsSeconds * 60);
 
-				//divide the raw minutes by 60secs to get the hours
-				//the quotient is your hours column, and 
-				//remainder * 60mins is your minutes column
+				//divide the decimal minutes by 60secs to get the decimal hours
+				double decimalUnBasedHours = decimalUnBasedMinutes / 60;
+				//the decimal portion of the decimal hours * 60mins is your minutes column
+				int wholeNumUnBasedHours = (int)Math.Floor(decimalUnBasedHours);
+				double remainderAsMinutes = decimalUnBasedHours - wholeNumUnBasedHours;
+				m_minutesColumn = (int)(remainderAsMinutes * 60);
+				//the whole number quotient is your hours column
+				m_hoursColumn = wholeNumUnBasedHours;
+
+			}
 
 			//build updated 'ChosenTimer.Duration' with corresponding quotients and multiplied remainders
 			//set the 'timerDisplay' Text property to 'ChosenTimer.Duration'
+			_chosenTimer.Duration = $"{m_hoursColumn}:{m_minutesColumn}:{m_secondsColumn}";
 
 			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
 			//if toggled count up,
+			if ( _countUp )
+			{
+				bool countedFullDuration = _upCount >= _durationAsSeconds;
 				//if '_upCount' does NOT EQUALS 'ChosenTimer.Duration' on this tick, return
+				if ( !countedFullDuration ) return;
 
 				//else, EQUALS means duration expired, so
 				//pause ticker control to stop ticking during alarm period
+				countTimer.Stop();
 				//raise alarm 
-			//else count down, so
-				//if 'durationAsSeconds' > 0, return
+				_soundPlayer.PlayLooping();
 
-				//else, LESS THAN means duration expired, so
-				//pause ticker control to stop ticking during alarm period
-				//raise alarm
-				
+				return;
+			}
+			//else toggled count down, so
+
+			bool countedToZero = _durationAsSeconds <= 0;
+			//if 'durationAsSeconds' > 0, return
+			if ( !countedToZero ) return;
+
+			//else, LESS THAN OR EQUALS 0 means duration expired, so
+			//pause ticker control to stop ticking during alarm period
+			countTimer.Stop();
+			//raise alarm
+			_soundPlayer.PlayLooping();
 		}
 
-
+		
 	}
 }

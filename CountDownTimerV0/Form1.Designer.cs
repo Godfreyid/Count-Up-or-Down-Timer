@@ -63,7 +63,7 @@ namespace CountDownTimerV0
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.chosenAudioLabel = new System.Windows.Forms.Label();
 			this.selectedAudioName = new System.Windows.Forms.Label();
-			this.countDownTimer = new System.Windows.Forms.Timer(this.components);
+			this.countTimer = new System.Windows.Forms.Timer(this.components);
 			this.timerNamesListLabel = new System.Windows.Forms.Label();
 			this.timerDurationsListLabel = new System.Windows.Forms.Label();
 			this.counterSelectorPanel.SuspendLayout();
@@ -156,6 +156,7 @@ namespace CountDownTimerV0
 			this.countInverseBtn.TabIndex = 5;
 			this.countInverseBtn.Text = "COUNT UP";
 			this.countInverseBtn.UseVisualStyleBackColor = false;
+			this.countInverseBtn.Click += new System.EventHandler(this.countInverseBtn_Click);
 			// 
 			// timerAddBtn
 			// 
@@ -494,10 +495,10 @@ namespace CountDownTimerV0
 			this.selectedAudioName.Size = new System.Drawing.Size(261, 18);
 			this.selectedAudioName.TabIndex = 41;
 			// 
-			// countDownTimer
+			// countTimer
 			// 
-			this.countDownTimer.Interval = 1000;
-			this.countDownTimer.Tick += new System.EventHandler(this.countDownTimer_Tick);
+			this.countTimer.Interval = 1000;
+			this.countTimer.Tick += new System.EventHandler(this.countTimer_Tick);
 			// 
 			// timerNamesListLabel
 			// 
@@ -558,7 +559,6 @@ namespace CountDownTimerV0
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DigitalCountTimer";
 			this.Text = "Digital Count Up/Down Timer";
-			this.Load += new System.EventHandler(this.DigitalCountTimer_Load);
 			this.counterSelectorPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -603,7 +603,7 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.PictureBox pictureBox4;
 		private System.Windows.Forms.Label chosenAudioLabel;
 		private System.Windows.Forms.Label selectedAudioName;
-		private System.Windows.Forms.Timer countDownTimer;
+		private System.Windows.Forms.Timer countTimer;
 		private System.Windows.Forms.Label timerNamesListLabel;
 		private System.Windows.Forms.Label timerDurationsListLabel;
 	}
