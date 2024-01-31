@@ -243,33 +243,12 @@ namespace CountDownTimerV0
 		private void listAddBtn_Click(object sender, EventArgs e)
 		{
 			/* Ensure valid data submission */
-			bool emptyName = string.IsNullOrEmpty(timerNameEntry.Text);
-			bool defaultNamePrompt = timerNameEntry.Text.Equals(NAME_ENTRY_PROMPT_STRING);
-			bool invalidName = emptyName || defaultNamePrompt;
-			//if text of 'timerNameEntry' is empty OR EQUALS the 'NAME_ENTRY_PROMPT_STRING'
-			if ( invalidName )
-			{
-				//display popup informing user to enter a valid timer name
+			bool invalidName = 
+				RefocusInvalidTextEntry(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
+			bool invalidDuration = 
+				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 
-				//return focus to the 'timerNameEntry' control
-				timerNameEntry.Focus();
-				//return
-				return;
-			}
-
-			bool emptyDuration = string.IsNullOrEmpty(timerDurationEntry.Text);
-			bool defaultDurationPrompt = timerDurationEntry.Text.Equals(DURATION_ENTRY_PROMPT_STRING);
-			bool invalidDuration = emptyDuration || defaultDurationPrompt;
-			//if text of 'timerDurationEntry' is empty OR EQUALS the 'DURATION_ENTRY_PROMPT_STRING'
-			if ( invalidDuration )
-			{
-				//display popup informing user to enter a valid timer duration
-
-				//return focus to the 'timerDurationEntry' control
-				timerDurationEntry.Focus();
-				//return
-				return;
-			}
+			if ( invalidName || invalidDuration ) return;
 
 			/* Add 'timerNameEntry' text to 'timerNamesList' listbox */
 			//pause painting timerNamesList list box while adding text
@@ -291,9 +270,9 @@ namespace CountDownTimerV0
 			//if minutes exceeds 60
 				//get modulo 60
 				//add whole number quotient to hours columns
-			//clamp hours columns between 0 and 99
-			//
-			//bool wrongFormat = 
+				//clamp hours columns between 0 and 99
+				//
+				//bool wrongFormat = 
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
 			//pause painting timerDurationsList list box while adding text
@@ -309,6 +288,24 @@ namespace CountDownTimerV0
 
 			//focus on 'timerNameEntry' control to ready for next timer entry
 			timerNameEntry.Focus();
+		}
+
+		private bool RefocusInvalidTextEntry(TextBox refocusedOn, string defaultBoxText)
+		{
+			bool emptyTextField = string.IsNullOrEmpty(refocusedOn.Text);
+			bool defaultText = refocusedOn.Text.Equals(defaultBoxText);
+			bool invalidEntry = emptyTextField || defaultText;
+
+			//if valid entry, return false for refocused
+			if ( !invalidEntry ) return false;
+
+			//TextBox text is empty OR EQUALS the defaultBoxText, so
+			//display popup informing user to enter a valid text string
+
+			//return focus to 'refocusedOn' TextBox
+			refocusedOn.Focus();
+			//return true for refocused
+			return true;
 		}
 
 		// so user can select timer by either clicking on its name or duration, then press 'Start'
