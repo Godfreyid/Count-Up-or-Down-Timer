@@ -265,14 +265,12 @@ namespace CountDownTimerV0
 			/* Enforce correct timer duration format */
 			//force correct format of user entered duration
 			//if seconds columns exceed 60,
-				//get modulo 60
-				//add whole number quotient to minutes columns
+				//set seconds column to remainder of modulo 60
+				//take floor of seconds column divided by 60, and add it to minutes column
 			//if minutes exceeds 60
-				//get modulo 60
-				//add whole number quotient to hours columns
+				//set minutes column to remainder of modulo 60
+				//take floor of minutes column divided by 60, and add it to hours column 
 				//clamp hours columns between 0 and 99
-				//
-				//bool wrongFormat = 
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
 			//pause painting timerDurationsList list box while adding text
