@@ -251,16 +251,7 @@ namespace CountDownTimerV0
 			if ( invalidName || invalidDuration ) return;
 
 			/* Add 'timerNameEntry' text to 'timerNamesList' listbox */
-			//pause painting timerNamesList list box while adding text
-			timerNamesList.BeginUpdate();
-			//get the text value from the Text property of the 'timerNameEntry' control
-			//add name text value to 'timerNamesList' listbox
-			string timerName = timerNameEntry.Text;
-			timerNamesList.Items.Add(timerName);
-			//reset the Text property of 'timerNameEntry' to the 'NAME_ENTRY_PROMPT_STRING'
-			timerNameEntry.Text = NAME_ENTRY_PROMPT_STRING;
-			//un-pause painting timerNamesList list box
-			timerNamesList.EndUpdate();
+			AddTextBoxTextToListBox(timerNamesList, timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 
 			/* Enforce correct timer duration format */
 			//force correct format of user entered duration
@@ -273,21 +264,26 @@ namespace CountDownTimerV0
 				//clamp hours columns between 0 and 99
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
-			//pause painting timerDurationsList list box while adding text
-			timerDurationsList.BeginUpdate();
-			//get the text value from the Text property of the 'timerDurationEntry' control
-			//add duration text value to 'timerDurationEntry' listbox
-			string timerDuration = timerDurationEntry.Text;
-			timerDurationsList.Items.Add(timerDuration);
-			//reset the Text property of 'timerDurationEntry' to the 'DURATION_ENTRY_PROMPT_STRING'
-			timerDurationEntry.Text = DURATION_ENTRY_PROMPT_STRING;
-			//un-pause painting timerDurationsList list box
-			timerDurationsList.EndUpdate();
+			AddTextBoxTextToListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 
 			//focus on 'timerNameEntry' control to ready for next timer entry
 			timerNameEntry.Focus();
 		}
 
+		/// <summary>
+		/// Determines if the text entered into <paramref name="refocusedOn"/>
+		/// is valid, then refocuses on <paramref name="refocusedOn"/> if said
+		/// text is invalid. Which gives the user a chance to quickly re-enter
+		/// the text correctly. Though, if the text is valid, the default string
+		/// for the text field is entered to remind the user what proper formatting
+		/// is upon later entries.
+		/// </summary>
+		/// <param name="refocusedOn">The TextBox whose entered text is validated
+		/// and refocused if said text is invalid.</param>
+		/// <param name="defaultBoxText">The default string that the text field 
+		/// of <paramref name="refocusedOn"/> set to when the current to-be-assessed 
+		/// text is valid.</param>
+		/// <returns></returns>
 		private bool RefocusInvalidTextEntry(TextBox refocusedOn, string defaultBoxText)
 		{
 			bool emptyTextField = string.IsNullOrEmpty(refocusedOn.Text);
@@ -304,6 +300,20 @@ namespace CountDownTimerV0
 			refocusedOn.Focus();
 			//return true for refocused
 			return true;
+		}
+
+		private void AddTextBoxTextToListBox(ListBox listBox, TextBox textBox, string defaultTextBoxString)
+		{
+			//pause painting list box while adding text
+			listBox.BeginUpdate();
+			//get the text value from the Text property of the textBox control
+			//add text value to list box
+			string textBoxText = textBox.Text;
+			listBox.Items.Add(textBoxText);
+			//reset the Text property of textBox control to the defaultBoxText
+			textBox.Text = defaultTextBoxString;
+			//un-pause painting list box
+			listBox.EndUpdate();
 		}
 
 		// so user can select timer by either clicking on its name or duration, then press 'Start'
