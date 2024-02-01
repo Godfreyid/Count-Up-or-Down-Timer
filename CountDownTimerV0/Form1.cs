@@ -355,16 +355,35 @@ namespace CountDownTimerV0
 		{
 			/* only the name at the selected row will be highlighted, but we also
 			   want to highlight the corresponding duration in timerDurationsList, so*/
+			SelectParallelTextBox(timerNamesList, timerDurationsList, _chosenTimer);
+		}
+
+		/// <summary>
+		/// Selects a TextBox in <paramref name="containerOfSelected"/> and selects the
+		/// TextBox at that same index in the parallel ListBox 
+		/// <paramref name="parallelToSelected"/>, then caches their text values within
+		/// <paramref name="pairing"/>, respectively. 
+		/// </summary>
+		/// <param name="containerOfSelected">ListBox containing the clicked on TextBox.</param>
+		/// <param name="parallelToSelected">ListBox parallel to that of the selected
+		/// TextBox, and whose TextBox is treated as selected.</param>
+		/// <param name="pairing">Caches the text of the selected (clicked on) TextBox within
+		/// its properties.</param>
+		private void SelectParallelTextBox(ListBox containerOfSelected, ListBox parallelToSelected, ChosenTimer pairing)
+		{
 			//get the selected index in timerNamesList
-			int selectedNameI = timerNamesList.SelectedIndex;
+			int selectedObjI = containerOfSelected.SelectedIndex;
+			bool noneSelected = selectedObjI < 0;
+			if ( noneSelected ) return;
+
 			//set selected of timerDurationsList to selected index above
-			timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
+			parallelToSelected.SelectedItem = parallelToSelected.Items[selectedObjI];
 
 			//add the name and duration of selected to the 'ChosenTimer' struct
-			string selectedName = timerNamesList.Items[selectedNameI].ToString();
-			string selectedDuration = timerDurationsList.Items[selectedNameI].ToString();
-			_chosenTimer.Name = selectedName;
-			_chosenTimer.Duration = selectedDuration;
+			string selected = containerOfSelected.Items[selectedObjI].ToString();
+			string parallelOfSelected = parallelToSelected.Items[selectedObjI].ToString();
+			pairing.Name = selected;
+			pairing.Duration = parallelOfSelected;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			timerDisplay.Text = _chosenTimer.Duration;
@@ -375,19 +394,7 @@ namespace CountDownTimerV0
 		{
 			/* only the duration at the selected row will be highlighted, but we also
 			   want to highlight the corresponding name in timerNamesList, so */
-			//get the selected index in timerDurationsList
-			int selectedDurationI = timerDurationsList.SelectedIndex;
-			//set selected of timerNamesList to selected index above
-			timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
-
-			//add the duration and of selected to the 'ChosenTimer' struct
-			string selectedDuration = timerDurationsList.Items[selectedDurationI].ToString();
-			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
-			_chosenTimer.Duration = selectedDuration;
-			_chosenTimer.Name = selectedName;
-
-			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
-			timerDisplay.Text = _chosenTimer.Duration;
+			SelectParallelTextBox(timerDurationsList, timerNamesList, _chosenTimer);
 		}
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
