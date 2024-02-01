@@ -237,6 +237,62 @@ namespace CountDownTimerV0
 				ShiftFocusOnTextSubmit(
 					e, Keys.Enter, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, timerAddBtn);
 			}
+
+			/* Enforce correct timer duration format */
+			if ( !pressedEnter ) return;
+			//force correct format of user entered duration
+			_durationTimeColumns = timerDurationEntry.Text.Split(':');
+			string secondsStr = _durationTimeColumns[2];
+			int unBasedSeconds = int.Parse(secondsStr);
+			int secondsColumn = 0;
+			int minutesCarriedOver = 0;
+			bool secondsExceed60 = unBasedSeconds >= 60;
+			//if seconds columns exceed 60,
+			if ( secondsExceed60 )
+			{
+				//set seconds column to remainder of modulo 60
+				secondsColumn = unBasedSeconds % 60;
+				//take floor of seconds column divided by 60, and add it to minutes column
+				float secondsToMinutes = unBasedSeconds / 60;
+				minutesCarriedOver = (int)Math.Floor(secondsToMinutes); 
+			}
+
+			string minutesStr = _durationTimeColumns[1];
+			int unBasedMinutes = int.Parse(minutesStr);
+			int minutesColumn = 0;
+			int hoursCarriedOver = 0;
+			bool minutesExceed60 = unBasedMinutes >= 60;
+			//if minutes exceeds 60
+			if ( minutesExceed60 )
+			{
+				//set minutes column to remainder of modulo 60
+				int minutes = minutesCarriedOver + unBasedMinutes;
+				minutesColumn = minutes % 60;
+				//take floor of minutes column divided by 60, and add it to hours column 
+				float minutesToHours = minutes / 60;
+				hoursCarriedOver = (int)Math.Floor(minutesToHours);
+			}
+
+			//add carried over hours to parsed hours and determine if needs clamping
+			string hoursStr = _durationTimeColumns[0];
+			int unBasedHours = int.Parse(hoursStr);
+			int hoursColumn = hoursCarriedOver + unBasedHours;
+			//if hours exceed 99, clamp hours columns between 0 and 99
+			bool hoursExceeds99 = hoursColumn > 99;
+			hoursColumn = hoursExceeds99 ? 99 : hoursColumn;
+
+			//reasign 60 based duration to 'timerDurationEntry' 
+			bool oneHoursChar = hoursColumn.ToString().Length < 2;
+			string formattedHours = oneHoursChar ? $"0{hoursColumn}" : hoursColumn.ToString();
+
+			bool oneMinutesChar = minutesColumn.ToString().Length < 2;
+			string formattedMinutes = oneMinutesChar ? $"0{minutesColumn}" : minutesColumn.ToString();
+
+			bool oneSecondsChar = secondsColumn.ToString().Length < 2;
+			string formattedSeconds = oneSecondsChar ? $"0{secondsColumn}" : secondsColumn.ToString();
+
+			string rebuiltDurationString = $"{formattedHours}:{formattedMinutes}:{formattedSeconds}";
+			timerDurationEntry.Text = rebuiltDurationString;
 		}
 
 		// user clicks to submit timer (name+duration) to 'Timers' list
@@ -252,16 +308,6 @@ namespace CountDownTimerV0
 
 			/* Add 'timerNameEntry' text to 'timerNamesList' listbox */
 			AddTextBoxTextToListBox(timerNamesList, timerNameEntry, NAME_ENTRY_PROMPT_STRING);
-
-			/* Enforce correct timer duration format */
-			//force correct format of user entered duration
-			//if seconds columns exceed 60,
-				//set seconds column to remainder of modulo 60
-				//take floor of seconds column divided by 60, and add it to minutes column
-			//if minutes exceeds 60
-				//set minutes column to remainder of modulo 60
-				//take floor of minutes column divided by 60, and add it to hours column 
-				//clamp hours columns between 0 and 99
 
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
 			AddTextBoxTextToListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
