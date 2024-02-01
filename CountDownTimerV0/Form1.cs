@@ -240,39 +240,27 @@ namespace CountDownTimerV0
 
 			/* Enforce correct timer duration format */
 			if ( !pressedEnter ) return;
-			//force correct format of user entered duration
+			//format seconds column
 			_durationTimeColumns = timerDurationEntry.Text.Split(':');
 			string secondsStr = _durationTimeColumns[2];
 			int unBasedSeconds = int.Parse(secondsStr);
-			int secondsColumn = 0;
-			int minutesCarriedOver = 0;
-			bool secondsExceed60 = unBasedSeconds >= 60;
-			//if seconds columns exceed 60,
-			if ( secondsExceed60 )
-			{
-				//set seconds column to remainder of modulo 60
-				secondsColumn = unBasedSeconds % 60;
-				//take floor of seconds column divided by 60, and add it to minutes column
-				float secondsToMinutes = unBasedSeconds / 60;
-				minutesCarriedOver = (int)Math.Floor(secondsToMinutes); 
-			}
+			//set seconds column to remainder of modulo 60
+			int secondsColumn = unBasedSeconds % 60;
+			//take floor of seconds column divided by 60, and add it to minutes column
+			float secondsToMinutes = unBasedSeconds / 60;
+			int minutesCarriedOver = (int)Math.Floor(secondsToMinutes); 
 
+			//format minutes column
 			string minutesStr = _durationTimeColumns[1];
 			int unBasedMinutes = int.Parse(minutesStr);
-			int minutesColumn = 0;
-			int hoursCarriedOver = 0;
-			bool minutesExceed60 = unBasedMinutes >= 60;
-			//if minutes exceeds 60
-			if ( minutesExceed60 )
-			{
-				//set minutes column to remainder of modulo 60
-				int minutes = minutesCarriedOver + unBasedMinutes;
-				minutesColumn = minutes % 60;
-				//take floor of minutes column divided by 60, and add it to hours column 
-				float minutesToHours = minutes / 60;
-				hoursCarriedOver = (int)Math.Floor(minutesToHours);
-			}
+			//set minutes column to remainder of modulo 60
+			int minutes = minutesCarriedOver + unBasedMinutes;
+			int minutesColumn = minutes % 60;
+			//take floor of minutes column divided by 60, and add it to hours column 
+			float minutesToHours = minutes / 60;
+			int hoursCarriedOver = (int)Math.Floor(minutesToHours);
 
+			//format hours column
 			//add carried over hours to parsed hours and determine if needs clamping
 			string hoursStr = _durationTimeColumns[0];
 			int unBasedHours = int.Parse(hoursStr);
