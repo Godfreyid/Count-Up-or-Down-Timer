@@ -432,8 +432,6 @@ namespace CountDownTimerV0
 				return;
 			}
 
-			//maybe convert the 'ChosenTimer' 'Duration' property to the hh:mm:ss format?
-
 			/* To increment upto or decrement down from the 'ChosenTimer.Duration',
 			   we have to determine what the entire duration is in seconds for simple 
 			   decrement, increment (++,--) operations. */
@@ -527,6 +525,21 @@ namespace CountDownTimerV0
 
 		private void PlayExpirationAlarm()
 		{
+			bool countedDownDuration = _durationAsSeconds <= 0;
+			bool countedUpDuration = _upCount >= _countUpDurationTarget;
+
+			bool raiseAlarm = _countDown ? countedDownDuration : countedUpDuration;
+			if ( !raiseAlarm ) return;
+
+			//pause ticker control to stop ticking during alarm period
+			countTimer.Stop();
+			
+			//raise alarm 
+			_soundPlayer.PlayLooping();
+
+			//show alarm window
+			AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
+
 			//if counting down (count up is NOT toggled),
 			if ( _countDown )
 			{
