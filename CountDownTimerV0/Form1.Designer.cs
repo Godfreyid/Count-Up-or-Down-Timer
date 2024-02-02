@@ -148,13 +148,13 @@ namespace CountDownTimerV0
 			this.countInverseBtn.BackColor = System.Drawing.Color.Gray;
 			this.countInverseBtn.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
 			this.countInverseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.countInverseBtn.Font = new System.Drawing.Font("Lucida Sans", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.countInverseBtn.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.countInverseBtn.ForeColor = System.Drawing.Color.White;
 			this.countInverseBtn.Location = new System.Drawing.Point(358, 245);
 			this.countInverseBtn.Name = "countInverseBtn";
 			this.countInverseBtn.Size = new System.Drawing.Size(174, 55);
 			this.countInverseBtn.TabIndex = 5;
-			this.countInverseBtn.Text = "COUNT UP";
+			this.countInverseBtn.Text = "COUNTING DOWN";
 			this.countInverseBtn.UseVisualStyleBackColor = false;
 			this.countInverseBtn.Click += new System.EventHandler(this.countInverseBtn_Click);
 			// 

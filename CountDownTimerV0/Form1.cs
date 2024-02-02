@@ -19,13 +19,18 @@ namespace CountDownTimerV0
 		private const int MINUTES_PER_HOUR = 60;
 		private const int SECONDS_PER_MINUTE = 60;
 
+		private FormattedTimeColumns _formattedColumns;
 		private ChosenTimer _chosenTimer;
 
 		private string[] _durationTimeColumns;
 		private int _durationAsSeconds;
+
 		private int _countUpDurationTarget;
 		private bool _countDown = true;
+		private const string COUNT_UP_BUTTON_TEXT = "COUNTING UP";
+		private const string COUNT_DOWN_BUTTON_TEXT = "COUNTIING DOWN";
 		private int _upCount;
+
 		private SoundPlayer _soundPlayer;
 
 		public DigitalCountTimer()
@@ -35,10 +40,30 @@ namespace CountDownTimerV0
 			SetupForm();
 		}
 
+		private struct FormattedTimeColumns
+		{
+			public int Hours { get; set; }
+			public int Minutes { get; set; }
+			public int Seconds { get; set; }
+		}
+
+		private struct ChosenTimer
+		{
+			public ChosenTimer(string name, string duration)
+			{
+				Name = name;
+				Duration = duration;
+			}
+
+			public string Name { get; set; }
+			public string Duration { get; set; }
+		}
+
 		private void SetupForm()
 		{
 			SetTabIndices();
 
+			_formattedColumns = new FormattedTimeColumns();
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 
 			StartPosition = FormStartPosition.CenterScreen;
@@ -76,18 +101,6 @@ namespace CountDownTimerV0
 			clearTimersListBtn.TabIndex = 14;
 			saveProfileBtn.TabIndex = 15;
 			loadProfileBtn.TabIndex = 16;
-		}
-
-		private struct ChosenTimer
-		{
-			public ChosenTimer(string name, string duration)
-			{
-				Name = name;
-				Duration = duration;
-			}
-
-			public string Name { get; set; }
-			public string Duration { get; set; }
 		}
 
 		// user clicked in text field to begin entering timer name
@@ -240,40 +253,68 @@ namespace CountDownTimerV0
 
 			/* Enforce correct timer duration format */
 			if ( !pressedEnter ) return;
+
 			//format seconds column
-			_durationTimeColumns = timerDurationEntry.Text.Split(':');
-			string secondsStr = _durationTimeColumns[2];
-			int unBasedSeconds = int.Parse(secondsStr);
-			//set seconds column to remainder of modulo 60
-			int secondsColumn = unBasedSeconds % 60;
-			//take floor of seconds column divided by 60, and add it to minutes column
-			float secondsToMinutes = unBasedSeconds / 60;
-			int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
-
-			//format minutes column
-			string minutesStr = _durationTimeColumns[1];
-			int unBasedMinutes = int.Parse(minutesStr);
-			//set minutes column to remainder of modulo 60
-			int minutes = minutesCarriedOver + unBasedMinutes;
-			int minutesColumn = minutes % 60;
-			//take floor of minutes column divided by 60, and add it to hours column 
-			float minutesToHours = minutes / 60;
-			int hoursCarriedOver = (int)Math.Floor(minutesToHours);
-
-			//format hours column
-			//add carried over hours to parsed hours and determine if needs clamping
-			string hoursStr = _durationTimeColumns[0];
-			int unBasedHours = int.Parse(hoursStr);
-			int hoursColumn = hoursCarriedOver + unBasedHours;
-			//if hours exceed 99, clamp hours columns between 0 and 99
-			bool hoursExceeds99 = hoursColumn > 99;
-			hoursColumn = hoursExceeds99 ? 99 : hoursColumn;
+			int bulkSeconds = DurationAsBulkSeconds(timerDurationEntry.Text);
+			FormatTimeFromBulkSeconds(bulkSeconds, ref _formattedColumns);
 
 			//reasign 60 based duration to 'timerDurationEntry' 
 			//format 2 character hour, minute and seconds columns (hh:mm:ss)
-			string rebuiltDurationString = FormatHhMmSsTime(hoursColumn, minutesColumn, secondsColumn);
-			FormatHhMmSsTime(secondsColumn, minutesColumn, hoursColumn);
+			string rebuiltDurationString = FormatHhMmSsTime(
+				_formattedColumns.Hours, _formattedColumns.Minutes, _formattedColumns.Seconds);
+
 			timerDurationEntry.Text = rebuiltDurationString;
+		}
+
+		/// <summary>
+		/// Takes the string input timer duration and computes the equivalent in seconds
+		/// of said entire duration.
+		/// </summary>
+		/// <param name="durationString">The user input timer duration</param>
+		/// <returns></returns>
+		private int DurationAsBulkSeconds(string durationString)
+		{
+			//convert the formatted 'ChosenTimer.Duration' to 'durationAsSeconds' as,
+			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'hoursAsSeconds', 
+			_durationTimeColumns = durationString.Split(':');
+			string hoursColumn = _durationTimeColumns[0];
+			int hours = int.Parse(hoursColumn);
+			int hoursInSeconds = (hours * MINUTES_PER_HOUR) * SECONDS_PER_MINUTE;
+			//PLUS minutes column to seconds, i.e. (mins * 60secs) as 'minutesAsSeconds',
+			string minutesColumn = _durationTimeColumns[1];
+			int minutes = int.Parse(minutesColumn);
+			int minutesInSeconds = minutes * SECONDS_PER_MINUTE;
+			//PLUS seconds column
+			string secondsColumn = _durationTimeColumns[2];
+			int seconds = int.Parse(secondsColumn);
+			int durationAsSeconds = hoursInSeconds + minutesInSeconds + seconds;
+
+			return durationAsSeconds;
+		}
+
+		/// <summary>
+		/// Derives the hours, minutes, and seconds column from
+		/// the <paramref name="bulkSeconds"/>, essentially formatting
+		/// it to HH:MM:SS.
+		/// </summary>
+		/// <param name="bulkSeconds"></param>
+		/// <param name="formattedTimeColumns">Caches the formatted time columns</param>
+		private void FormatTimeFromBulkSeconds(
+			int bulkSeconds, ref FormattedTimeColumns formattedTimeColumns)
+		{
+			//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
+			formattedTimeColumns.Seconds = bulkSeconds % 60;
+			float secondsToMinutes = bulkSeconds / 60;
+			int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
+
+			//format minutes column in hh:mm:ss from 'minutesCarriedOver' as,
+			formattedTimeColumns.Minutes = minutesCarriedOver % 60;
+			float minutesToHours = minutesCarriedOver / 60;
+			int hoursCarriedOver = (int)Math.Floor(minutesToHours);
+
+			//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
+			bool hoursExceed99 = hoursCarriedOver > 99;
+			formattedTimeColumns.Hours = hoursExceed99 ? 99 : hoursCarriedOver;
 		}
 
 		/// <summary>
@@ -412,7 +453,10 @@ namespace CountDownTimerV0
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
 		{
+			//invert count flag
 			_countDown = !_countDown;
+			//change button text to match flag
+			countInverseBtn.Text = _countDown ? COUNT_DOWN_BUTTON_TEXT : COUNT_UP_BUTTON_TEXT;
 		}
 
 		// user intends to begin count down/up
@@ -435,20 +479,8 @@ namespace CountDownTimerV0
 			/* To increment upto or decrement down from the 'ChosenTimer.Duration',
 			   we have to determine what the entire duration is in seconds for simple 
 			   decrement, increment (++,--) operations. */
-			//convert the formatted 'ChosenTimer.Duration' to 'durationAsSeconds' as,
-			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'hoursAsSeconds', 
-			_durationTimeColumns = _chosenTimer.Duration.Split(':');
-			string hoursColumn = _durationTimeColumns[0];
-			int hours = int.Parse(hoursColumn);
-			int hoursInSeconds = (hours * MINUTES_PER_HOUR) * SECONDS_PER_MINUTE;
-			//PLUS minutes column to seconds, i.e. (mins * 60secs) as 'minutesAsSeconds',
-			string minutesColumn = _durationTimeColumns[1];
-			int minutes = int.Parse(minutesColumn);
-			int minutesInSeconds = minutes * SECONDS_PER_MINUTE;
-			//PLUS seconds column
-			string secondsColumn = _durationTimeColumns[2];
-			int seconds = int.Parse(secondsColumn);
-			_durationAsSeconds = hoursInSeconds + minutesInSeconds + seconds;
+			_durationAsSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
+
 			_countUpDurationTarget = _durationAsSeconds;
 
 			//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
@@ -456,22 +488,20 @@ namespace CountDownTimerV0
 			countTimer.Start();
 		}
 
+		
+
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
 			//DateTime.ParseExact();
 
 			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
-			PlayExpirationAlarm();
+			//PlayExpirationAlarm();
 
 			/* Per user toggle, a count down/up method will handle the '1 second elapsed' event,
 			   by either counting down from the 'durationAsSeconds' by decrementing 1, or counting 
 			   up from zero (0) to 'durationAsSeconds'. Then after ticking by 1 second, we need to
 			   reflect the increment/decrement in the 'timerDisplay' text. */
-
-			int m_secondsColumn;
-			int m_minutesColumn;
-			int m_hoursColumn;
 
 			//if user did not toggle countUp
 			if ( _countDown )
@@ -481,19 +511,7 @@ namespace CountDownTimerV0
 				bool negative = _durationAsSeconds < 1;
 				_durationAsSeconds = negative ? 0 : _durationAsSeconds; /* Since Math.Clamp() 
 				                                                           is missing */
-				//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
-				m_secondsColumn = _durationAsSeconds % 60;
-				float secondsToMinutes = _durationAsSeconds / 60;
-				int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
-
-				//format minutes column in hh:mm:ss from 'minutesCarriedOver' as,
-				m_minutesColumn = minutesCarriedOver % 60;
-				float minutesToHours = minutesCarriedOver / 60;
-				int hoursCarriedOver = (int)Math.Floor(minutesToHours);
-
-				//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
-				bool hoursExceed99 = hoursCarriedOver > 99;
-				m_hoursColumn = hoursExceed99 ? 99 : hoursCarriedOver;
+				FormatTimeFromBulkSeconds(_durationAsSeconds, ref _formattedColumns);
 			}
 			//else, user toggled countUp is true,
 			else
@@ -503,25 +521,16 @@ namespace CountDownTimerV0
 				bool exceedsDuration = _upCount > _durationAsSeconds;
 				_upCount = exceedsDuration ? _durationAsSeconds : _upCount; /* Since Math.Clamp()
 				                                                               is missing */
-				//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
-				m_secondsColumn = _upCount % 60;
-				float secondsToMinutes = _upCount / 60;
-				int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
-
-				//format minutes column in hh:mm:ss from 'minutesCarriedOver' as,
-				m_minutesColumn = minutesCarriedOver % 60;
-				float minutesToHours = minutesCarriedOver / 60;
-				int hoursCarriedOver = (int)Math.Floor(minutesToHours);
-
-				//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
-				bool hoursExceed99 = hoursCarriedOver > 99;
-				m_hoursColumn = hoursExceed99 ? 99 : hoursCarriedOver;
+				FormatTimeFromBulkSeconds(_upCount, ref _formattedColumns);
 			}
 
 			//rebuild 60 based updated 'ChosenTimer.Duration' with corresponding columns
 			//format 2 character hour, minute and seconds columns (hh:mm:ss)
-			timerDisplay.Text = FormatHhMmSsTime(m_hoursColumn, m_minutesColumn, m_secondsColumn);
+			timerDisplay.Text = FormatHhMmSsTime(
+				_formattedColumns.Hours, _formattedColumns.Minutes, _formattedColumns.Seconds);
 		}
+
+		
 
 		private void PlayExpirationAlarm()
 		{
