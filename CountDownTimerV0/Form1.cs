@@ -23,8 +23,8 @@ namespace CountDownTimerV0
 
 		private string[] _durationTimeColumns;
 		private int _durationAsSeconds;
-
-		private bool _countUp = false;
+		private int _countUpDurationTarget;
+		private bool _countDown = true;
 		private int _upCount;
 		private SoundPlayer _soundPlayer;
 
@@ -248,7 +248,7 @@ namespace CountDownTimerV0
 			int secondsColumn = unBasedSeconds % 60;
 			//take floor of seconds column divided by 60, and add it to minutes column
 			float secondsToMinutes = unBasedSeconds / 60;
-			int minutesCarriedOver = (int)Math.Floor(secondsToMinutes); 
+			int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
 
 			//format minutes column
 			string minutesStr = _durationTimeColumns[1];
@@ -270,6 +270,26 @@ namespace CountDownTimerV0
 			hoursColumn = hoursExceeds99 ? 99 : hoursColumn;
 
 			//reasign 60 based duration to 'timerDurationEntry' 
+			//format 2 character hour, minute and seconds columns (hh:mm:ss)
+			string rebuiltDurationString = FormatHhMmSsTime(hoursColumn, minutesColumn, secondsColumn);
+			FormatHhMmSsTime(secondsColumn, minutesColumn, hoursColumn);
+			timerDurationEntry.Text = rebuiltDurationString;
+		}
+
+		/// <summary>
+		/// Takes the provided <paramref name="hoursColumn"/>, <paramref name="minutesColumn"/>,
+		/// and <paramref name="secondsColumn"/> args, and creates a string formatted to have
+		/// two number characters for each column to create the HH:MM:SS format.
+		/// </summary>
+		/// <param name="hoursColumn">The number of hours placed in the hours (HH) 
+		/// column of HH:MM:SS</param>
+		/// <param name="minutesColumn">The number of minutes placed in the minutes (MM) 
+		/// column of HH:MM:SS</param>
+		/// <param name="secondsColumn">The number of seconds placed in the seconds (SS) 
+		/// column of HH:MM:SS</param>
+		/// <returns></returns>
+		private static string FormatHhMmSsTime(int hoursColumn, int minutesColumn, int secondsColumn)
+		{
 			bool oneHoursChar = hoursColumn.ToString().Length < 2;
 			string formattedHours = oneHoursChar ? $"0{hoursColumn}" : hoursColumn.ToString();
 
@@ -280,7 +300,7 @@ namespace CountDownTimerV0
 			string formattedSeconds = oneSecondsChar ? $"0{secondsColumn}" : secondsColumn.ToString();
 
 			string rebuiltDurationString = $"{formattedHours}:{formattedMinutes}:{formattedSeconds}";
-			timerDurationEntry.Text = rebuiltDurationString;
+			return rebuiltDurationString;
 		}
 
 		// user clicks to submit timer (name+duration) to 'Timers' list
@@ -392,7 +412,7 @@ namespace CountDownTimerV0
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
 		{
-			_countUp = !_countUp;
+			_countDown = !_countDown;
 		}
 
 		// user intends to begin count down/up
@@ -431,6 +451,7 @@ namespace CountDownTimerV0
 			string secondsColumn = _durationTimeColumns[2];
 			int seconds = int.Parse(secondsColumn);
 			_durationAsSeconds = hoursInSeconds + minutesInSeconds + seconds;
+			_countUpDurationTarget = _durationAsSeconds;
 
 			//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
 			countTimer.Enabled = true;
@@ -442,6 +463,9 @@ namespace CountDownTimerV0
 		{
 			//DateTime.ParseExact();
 
+			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
+			PlayExpirationAlarm();
+
 			/* Per user toggle, a count down/up method will handle the '1 second elapsed' event,
 			   by either counting down from the 'durationAsSeconds' by decrementing 1, or counting 
 			   up from zero (0) to 'durationAsSeconds'. Then after ticking by 1 second, we need to
@@ -451,30 +475,27 @@ namespace CountDownTimerV0
 			int m_minutesColumn;
 			int m_hoursColumn;
 
-			//if user toggled countUp is false,
-			if ( !_countUp )
+			//if user did not toggle countUp
+			if ( _countDown )
 			{
 				//decrement the 'durationAsSeconds' by 1
 				_durationAsSeconds--;
 				bool negative = _durationAsSeconds < 1;
-				_durationAsSeconds = negative ? 0 : _durationAsSeconds; /* Since Math.Clamp() is missing */
-				//compute hh:mm:ss equivalent of current 'durationAsSeconds' as,
-				//dividing 'durationAsSeconds' by 60secs to get the decimal minutes
-				double decimalUnBasedMinutes = _durationAsSeconds / 60;
-				//the quotient is your decimal minutes column since it is potentially above 60mins, and 
-				int wholeNumUnBasedMinutes = (int)Math.Floor(decimalUnBasedMinutes);
-				//remainder * 60secs is your whole number seconds column
-				double remainderAsSeconds = decimalUnBasedMinutes - wholeNumUnBasedMinutes;
-				m_secondsColumn = (int)(remainderAsSeconds * 60);
+				_durationAsSeconds = negative ? 0 : _durationAsSeconds; /* Since Math.Clamp() 
+				                                                           is missing */
+				//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
+				m_secondsColumn = _durationAsSeconds % 60;
+				float secondsToMinutes = _durationAsSeconds / 60;
+				int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
 
-				//divide the decimal minutes by 60secs to get the decimal hours
-				double decimalUnBasedHours = decimalUnBasedMinutes / 60;
-				//the decimal portion of the decimal hours * 60mins is your minutes column
-				int wholeNumUnBasedHours = (int)Math.Floor(decimalUnBasedHours);
-				double remainderAsMinutes = decimalUnBasedHours - wholeNumUnBasedHours;
-				m_minutesColumn = (int)(remainderAsMinutes * 60);
-				//the whole number quotient is your hours column
-				m_hoursColumn = wholeNumUnBasedHours;
+				//format minutes column in hh:mm:ss from 'minutesCarriedOver' as,
+				m_minutesColumn = minutesCarriedOver % 60;
+				float minutesToHours = minutesCarriedOver / 60;
+				int hoursCarriedOver = (int)Math.Floor(minutesToHours);
+
+				//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
+				bool hoursExceed99 = hoursCarriedOver > 99;
+				m_hoursColumn = hoursExceed99 ? 99 : hoursCarriedOver;
 			}
 			//else, user toggled countUp is true,
 			else
@@ -482,36 +503,34 @@ namespace CountDownTimerV0
 				//increment the running '_upCount' by 1
 				_upCount++;
 				bool exceedsDuration = _upCount > _durationAsSeconds;
-				_upCount = exceedsDuration ? _durationAsSeconds : _upCount;
-				//compute hh:mm:ss equivalent of current '_upCount' as,
-				//dividing 'upCount' by 60secs to get the decimal minutes
-				double decimalUnBasedMinutes = _upCount / 60;
-				//the quotient is your decimal minutes column since it is potentially above 60mins, and 
-				int wholeNumUnBasedMinutes = (int)Math.Floor(decimalUnBasedMinutes);
-				//remainder * 60secs is your whole number seconds column
-				double remainderAsSeconds = decimalUnBasedMinutes - wholeNumUnBasedMinutes;
-				m_secondsColumn = (int)(remainderAsSeconds * 60);
+				_upCount = exceedsDuration ? _durationAsSeconds : _upCount; /* Since Math.Clamp()
+				                                                               is missing */
+				//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
+				m_secondsColumn = _upCount % 60;
+				float secondsToMinutes = _upCount / 60;
+				int minutesCarriedOver = (int)Math.Floor(secondsToMinutes);
 
-				//divide the decimal minutes by 60secs to get the decimal hours
-				double decimalUnBasedHours = decimalUnBasedMinutes / 60;
-				//the decimal portion of the decimal hours * 60mins is your minutes column
-				int wholeNumUnBasedHours = (int)Math.Floor(decimalUnBasedHours);
-				double remainderAsMinutes = decimalUnBasedHours - wholeNumUnBasedHours;
-				m_minutesColumn = (int)(remainderAsMinutes * 60);
-				//the whole number quotient is your hours column
-				m_hoursColumn = wholeNumUnBasedHours;
+				//format minutes column in hh:mm:ss from 'minutesCarriedOver' as,
+				m_minutesColumn = minutesCarriedOver % 60;
+				float minutesToHours = minutesCarriedOver / 60;
+				int hoursCarriedOver = (int)Math.Floor(minutesToHours);
 
+				//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
+				bool hoursExceed99 = hoursCarriedOver > 99;
+				m_hoursColumn = hoursExceed99 ? 99 : hoursCarriedOver;
 			}
 
-			//build updated 'ChosenTimer.Duration' with corresponding quotients and multiplied remainders
-			//set the 'timerDisplay' Text property to 'ChosenTimer.Duration'
-			_chosenTimer.Duration = $"{m_hoursColumn}:{m_minutesColumn}:{m_secondsColumn}";
+			//rebuild 60 based updated 'ChosenTimer.Duration' with corresponding columns
+			//format 2 character hour, minute and seconds columns (hh:mm:ss)
+			timerDisplay.Text = FormatHhMmSsTime(m_hoursColumn, m_minutesColumn, m_secondsColumn);
+		}
 
-			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
-			//if toggled count up,
-			if ( _countUp )
+		private void PlayExpirationAlarm()
+		{
+			//if counting down (count up is NOT toggled),
+			if ( _countDown )
 			{
-				bool countedFullDuration = _upCount >= _durationAsSeconds;
+				bool countedFullDuration = _durationAsSeconds <= 0;
 				//if '_upCount' does NOT EQUALS 'ChosenTimer.Duration' on this tick, return
 				if ( !countedFullDuration ) return;
 
@@ -523,19 +542,18 @@ namespace CountDownTimerV0
 
 				return;
 			}
-			//else toggled count down, so
 
-			bool countedToZero = _durationAsSeconds <= 0;
+			//else toggled count up, so
+			bool countedUpToDuration = _upCount >= _countUpDurationTarget;
 			//if 'durationAsSeconds' > 0, return
-			if ( !countedToZero ) return;
+			if ( !countedUpToDuration ) return;
 
-			//else, LESS THAN OR EQUALS 0 means duration expired, so
+			//else, duration expired, so
 			//pause ticker control to stop ticking during alarm period
 			countTimer.Stop();
 			//raise alarm
 			_soundPlayer.PlayLooping();
 		}
 
-		
 	}
 }
