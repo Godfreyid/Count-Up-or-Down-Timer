@@ -16,10 +16,20 @@ namespace CountDownTimerV0
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
+
+		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name." +
+			" Retry.";
+		private const string MISSING_NAME_CAPTION = "Missing Name Input";
+		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration." +
+			" Retry.";
+		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
+
 		private const int MINUTES_PER_HOUR = 60;
 		private const int SECONDS_PER_MINUTE = 60;
 
 		private FormattedTimeColumns _formattedColumns;
+		private MessageBoxInfo _timerNameMsgBoxInfo;
+		private MessageBoxInfo _timerDurationMsgBoxInfo;
 		private ChosenTimer _chosenTimer;
 
 		private string[] _durationTimeColumns;
@@ -48,6 +58,20 @@ namespace CountDownTimerV0
 			public int Seconds { get; set; }
 		}
 
+		private struct MessageBoxInfo
+		{
+			public string Message { get; set; }
+			public string Caption { get; set; }
+			public MessageBoxButtons Buttons { get; set; }
+
+			public MessageBoxInfo(string message, string caption, MessageBoxButtons buttons)
+			{
+				Message = message;
+				Caption = caption;
+				Buttons = buttons;
+			}
+		}
+
 		private struct ChosenTimer
 		{
 			public ChosenTimer(string name, string duration)
@@ -71,6 +95,13 @@ namespace CountDownTimerV0
 			SetTabIndices();
 
 			_formattedColumns = new FormattedTimeColumns();
+
+			_timerNameMsgBoxInfo = new MessageBoxInfo(
+				MISSING_NAME_MESSAGE, MISSING_NAME_CAPTION, MessageBoxButtons.OK);
+
+			_timerDurationMsgBoxInfo = new MessageBoxInfo(
+				MISSING_DURATION_MESSAGE, MISSING_DURATION_CAPTION, MessageBoxButtons.OK);
+
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 			_selectedAudio = new SelectedAudio();
 
@@ -112,11 +143,6 @@ namespace CountDownTimerV0
 			clearTimersListBtn.TabIndex = 14;
 			saveProfileBtn.TabIndex = 15;
 			loadProfileBtn.TabIndex = 16;
-		}
-
-		private void OnSoundLocationChange()
-		{
-
 		}
 
 		// user clicked in text field to begin entering timer name
@@ -365,9 +391,9 @@ namespace CountDownTimerV0
 		{
 			/* Ensure valid data submission */
 			bool invalidName = 
-				RefocusInvalidTextEntry(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
+				RefocusInvalidTextEntry(timerNameEntry, NAME_ENTRY_PROMPT_STRING, _timerNameMsgBoxInfo);
 			bool invalidDuration = 
-				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
+				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, _timerDurationMsgBoxInfo);
 
 			if ( invalidName || invalidDuration ) return;
 
@@ -394,18 +420,28 @@ namespace CountDownTimerV0
 		/// <param name="defaultBoxText">The default string that the text field 
 		/// of <paramref name="refocusedOn"/> set to when the current to-be-assessed 
 		/// text is valid.</param>
+		/// <param name="invalidMsgInfo">A struct containing the minimal required
+		/// information for a MessageBox informing the user on what to correct in the
+		/// event of an invalid timer name or duration entry.</param>
 		/// <returns></returns>
-		private bool RefocusInvalidTextEntry(TextBox refocusedOn, string defaultBoxText)
+		private bool RefocusInvalidTextEntry(
+			TextBox refocusedOn, 
+			string defaultBoxText, 
+			MessageBoxInfo invalidMsgInfo)
 		{
 			bool emptyTextField = string.IsNullOrEmpty(refocusedOn.Text);
 			bool defaultText = refocusedOn.Text.Equals(defaultBoxText);
-			bool invalidEntry = emptyTextField || defaultText;
+			bool containsDefaultText = refocusedOn.Text.Contains(defaultBoxText);
 
-			//if valid entry, return false for refocused
-			if ( !invalidEntry ) return false;
+			bool enteredText = !emptyTextField && !defaultText && !containsDefaultText;
+
+			//if valid entry, no need to refocus, so return false
+			if ( enteredText ) return false;
 
 			//TextBox text is empty OR EQUALS the defaultBoxText, so
 			//display popup informing user to enter a valid text string
+			MessageBox.Show(
+				invalidMsgInfo.Message, invalidMsgInfo.Caption, invalidMsgInfo.Buttons);
 
 			//return focus to 'refocusedOn' TextBox
 			refocusedOn.Focus();
@@ -523,15 +559,15 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
+			//if no timer is selected from the list
+				//display message box informing user to first select a timer
+				//return focus
 			bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
 			//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
 			if ( defaultTimerDisplay )
 			{
 				//put focus back on the 'navigateUpBtn' control
 				navigateUpBtn.Focus();
-
-				//display a popup notification about the selected timer having no duration
-
 
 				//return
 				return;
