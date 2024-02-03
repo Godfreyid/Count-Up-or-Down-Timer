@@ -168,21 +168,11 @@ namespace CountDownTimerV0
 			//OR PERHAPS BETTER,
 			bool defaultPrompt = textBoxEntered.Text.Equals(defaultTextBoxString);
 			//if the current text EQUALS 'defaultTextBoxString'
-			if ( defaultPrompt )
-			{
-				//set text to empty (or null)
-				textBoxEntered.Text = string.Empty;
-				return;
-			}
+			if ( !defaultPrompt ) return;
 
-			bool emptyTextField = string.IsNullOrEmpty(textBoxEntered.Text);
-			bool resumedEnteringStr = !emptyTextField && !defaultPrompt;
-			//if user entered string, clicked on another control, then back to this one,
-			//the text would NOT be empty AND
-			//the text would NOT be EQUAL to 'defaultTextBoxString, so
-			if ( resumedEnteringStr )
-				//do nothing (return)
-				return;
+			//set text to empty (or null)
+			textBoxEntered.Text = string.Empty;
+			return;
 		}
 
 		// user clicked in text field to begin entering timer duration
@@ -244,11 +234,14 @@ namespace CountDownTimerV0
 		private void timerNameEntry_KeyDown(object sender, KeyEventArgs e)
 		{
 			bool pressedEnter = e.KeyCode == Keys.Enter;
-			if ( pressedEnter )
-			{
-				ShiftFocusOnTextSubmit(
-					e, Keys.Enter, timerNameEntry, NAME_ENTRY_PROMPT_STRING, timerDurationEntry);
-			}
+			if ( !pressedEnter ) return;
+
+			bool positiveRefocus = ShiftFocusOnTextSubmit(
+				e, Keys.Enter, timerNameEntry, NAME_ENTRY_PROMPT_STRING, timerDurationEntry);
+			if ( positiveRefocus ) return;
+
+			//mimic timerNameEntry control Enter event handler
+			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 		}
 
 		/// <summary>
@@ -267,7 +260,7 @@ namespace CountDownTimerV0
 		/// for submission should not be equal if it is to be accepted as a submission.</param>
 		/// <param name="focusShiftedTo">The Control to shift focus to upon a successfull 
 		/// text string submission.</param>
-		private void ShiftFocusOnTextSubmit(KeyEventArgs e, Keys submitKey, TextBox textToSubmit, string defaultTextBoxString, Control focusShiftedTo)
+		private bool ShiftFocusOnTextSubmit(KeyEventArgs e, Keys submitKey, TextBox textToSubmit, string defaultTextBoxString, Control focusShiftedTo)
 		{
 			//if the key pressed != 'ENTER', return
 			bool pressedEnterKey = e.KeyCode == submitKey;
@@ -277,24 +270,28 @@ namespace CountDownTimerV0
 			bool enteredText = !defaultPrompt && !containsDefaultPrompt;
 			bool shiftFocus = pressedEnterKey && enteredText;
 			//return
-			if ( !shiftFocus ) return;
+			if ( !shiftFocus ) return false;
 
 			//user provided a adequate text, so can move focus to 'next' control
 			focusShiftedTo.Focus();
+			return true;
 		}
 
 		// user finished entering duration and presses 'Enter' to move tab focus to timer submit btn
 		private void timerDurationEntry_KeyDown(object sender, KeyEventArgs e)
 		{
 			bool pressedEnter = e.KeyCode == Keys.Enter;
-			if ( pressedEnter )
+			if ( !pressedEnter ) return;
+
+			bool positiveRefocus = ShiftFocusOnTextSubmit(
+				e, Keys.Enter, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, timerAddBtn);
+			if ( !positiveRefocus )
 			{
-				ShiftFocusOnTextSubmit(
-					e, Keys.Enter, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, timerAddBtn);
+				ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
+				return;
 			}
 
 			/* Enforce correct timer duration format */
-			if ( !pressedEnter ) return;
 
 			//format seconds column
 			int bulkSeconds = DurationAsBulkSeconds(timerDurationEntry.Text);
