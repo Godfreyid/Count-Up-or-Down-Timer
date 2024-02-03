@@ -32,6 +32,7 @@ namespace CountDownTimerV0
 		private int _upCount;
 
 		private SoundPlayer _soundPlayer;
+		private string _cachedAudioBrowserSelectedPath;
 
 		public DigitalCountTimer()
 		{
@@ -73,6 +74,8 @@ namespace CountDownTimerV0
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
 			//_soundPlayer.SoundLocationChanged += OnSoundLocationChange();
+
+			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
 
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
@@ -465,6 +468,26 @@ namespace CountDownTimerV0
 			countInverseBtn.Text = _countDown ? COUNT_DOWN_BUTTON_TEXT : COUNT_UP_BUTTON_TEXT;
 		}
 
+		private void chooseAudioBtn_Click(object sender, EventArgs e)
+		{
+			//cache the default 'SelectedPath' of 'audioFolderBrowser'
+			_cachedAudioBrowserSelectedPath = audioFolderBrowser.SelectedPath;
+			//open the audioFolderBrowserDialog control
+			audioFolderBrowser.ShowDialog();
+
+			/* After the user chose an audio file by clicking 'OK' on
+			   the dialog window, the 'SelectedPath' property of the
+			   'audioFolderBrowser' control will be set to the path of
+			   said chosen audio file. But also having an eventhandler
+			   for when the Text of 'selectedAudioName' text box changes,
+			   means said handler can */
+		}
+
+		private void selectedAudioName_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
@@ -580,5 +603,6 @@ namespace CountDownTimerV0
 			_soundPlayer.PlayLooping();
 		}
 
+		
 	}
 }

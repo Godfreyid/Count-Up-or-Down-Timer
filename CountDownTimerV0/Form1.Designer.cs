@@ -45,15 +45,14 @@ namespace CountDownTimerV0
 			this.navigateUpBtn = new System.Windows.Forms.Button();
 			this.loadProfileBtn = new System.Windows.Forms.Button();
 			this.saveProfileBtn = new System.Windows.Forms.Button();
-			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+			this.saveProfile = new System.Windows.Forms.SaveFileDialog();
+			this.loadProfile = new System.Windows.Forms.OpenFileDialog();
 			this.counterSelectorPanel = new System.Windows.Forms.Panel();
 			this.navigateDwnBtn = new System.Windows.Forms.Button();
 			this.timersLabel = new System.Windows.Forms.Label();
 			this.timerNameLabel = new System.Windows.Forms.Label();
 			this.timerDurationLabel = new System.Windows.Forms.Label();
 			this.timerDurationEntry = new System.Windows.Forms.TextBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.timerNamesList = new System.Windows.Forms.ListBox();
 			this.timerDurationsList = new System.Windows.Forms.ListBox();
@@ -66,11 +65,13 @@ namespace CountDownTimerV0
 			this.countTimer = new System.Windows.Forms.Timer(this.components);
 			this.timerNamesListLabel = new System.Windows.Forms.Label();
 			this.timerDurationsListLabel = new System.Windows.Forms.Label();
+			this.audioFolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.counterSelectorPanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// timerDisplay
@@ -292,9 +293,9 @@ namespace CountDownTimerV0
 			this.saveProfileBtn.Text = "Save Profile";
 			this.saveProfileBtn.UseVisualStyleBackColor = false;
 			// 
-			// openFileDialog1
+			// loadProfile
 			// 
-			this.openFileDialog1.FileName = "openFileDialog1";
+			this.loadProfile.FileName = "openFileDialog1";
 			// 
 			// counterSelectorPanel
 			// 
@@ -370,21 +371,10 @@ namespace CountDownTimerV0
 			this.timerDurationEntry.KeyDown += new System.Windows.Forms.KeyEventHandler(this.timerDurationEntry_KeyDown);
 			this.timerDurationEntry.Leave += new System.EventHandler(this.timerDurationEntry_Leave);
 			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(292, 475);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(43, 45);
-			this.pictureBox1.TabIndex = 29;
-			this.pictureBox1.TabStop = false;
-			// 
 			// pictureBox2
 			// 
 			this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-			this.pictureBox2.Location = new System.Drawing.Point(459, 413);
+			this.pictureBox2.Location = new System.Drawing.Point(434, 413);
 			this.pictureBox2.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(46, 44);
@@ -452,11 +442,12 @@ namespace CountDownTimerV0
 			this.chooseAudioBtn.Text = "Choose Audio";
 			this.chooseAudioBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.chooseAudioBtn.UseVisualStyleBackColor = false;
+			this.chooseAudioBtn.Click += new System.EventHandler(this.chooseAudioBtn_Click);
 			// 
 			// pictureBox3
 			// 
 			this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-			this.pictureBox3.Location = new System.Drawing.Point(356, 413);
+			this.pictureBox3.Location = new System.Drawing.Point(383, 413);
 			this.pictureBox3.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox3.Name = "pictureBox3";
 			this.pictureBox3.Size = new System.Drawing.Size(46, 44);
@@ -467,7 +458,7 @@ namespace CountDownTimerV0
 			// 
 			this.pictureBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-			this.pictureBox4.Location = new System.Drawing.Point(292, 544);
+			this.pictureBox4.Location = new System.Drawing.Point(292, 534);
 			this.pictureBox4.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox4.Name = "pictureBox4";
 			this.pictureBox4.Size = new System.Drawing.Size(43, 45);
@@ -495,6 +486,8 @@ namespace CountDownTimerV0
 			this.selectedAudioName.Name = "selectedAudioName";
 			this.selectedAudioName.Size = new System.Drawing.Size(261, 18);
 			this.selectedAudioName.TabIndex = 41;
+			this.selectedAudioName.Text = "[NONE]";
+			this.selectedAudioName.TextChanged += new System.EventHandler(this.selectedAudioName_TextChanged);
 			// 
 			// countTimer
 			// 
@@ -522,6 +515,24 @@ namespace CountDownTimerV0
 			this.timerDurationsListLabel.TabIndex = 43;
 			this.timerDurationsListLabel.Text = "Duration";
 			this.timerDurationsListLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// audioFolderBrowser
+			// 
+			this.audioFolderBrowser.Description = "Choose an audio file to play when sounding the alarm";
+			this.audioFolderBrowser.RootFolder = System.Environment.SpecialFolder.MyComputer;
+			this.audioFolderBrowser.SelectedPath = "H:\\TEMPORARY INSTALLATIONS\\Countdown Timer First Attempt\\CountDownTimerV0\\CountDo" +
+    "wnTimerV0\\Standard Alarm Tunes";
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(292, 489);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(43, 45);
+			this.pictureBox1.TabIndex = 29;
+			this.pictureBox1.TabStop = false;
 			// 
 			// DigitalCountTimer
 			// 
@@ -561,10 +572,10 @@ namespace CountDownTimerV0
 			this.Name = "DigitalCountTimer";
 			this.Text = "Digital Count Up/Down Timer";
 			this.counterSelectorPanel.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -586,14 +597,13 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Button navigateUpBtn;
 		private System.Windows.Forms.Button loadProfileBtn;
 		private System.Windows.Forms.Button saveProfileBtn;
-		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-		private System.Windows.Forms.OpenFileDialog openFileDialog1;
+		private System.Windows.Forms.SaveFileDialog saveProfile;
+		private System.Windows.Forms.OpenFileDialog loadProfile;
 		private System.Windows.Forms.Panel counterSelectorPanel;
 		private System.Windows.Forms.Label timersLabel;
 		private System.Windows.Forms.Label timerNameLabel;
 		private System.Windows.Forms.Label timerDurationLabel;
 		private System.Windows.Forms.TextBox timerDurationEntry;
-		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.PictureBox pictureBox2;
 		private System.Windows.Forms.ListBox timerNamesList;
 		private System.Windows.Forms.ListBox timerDurationsList;
@@ -607,6 +617,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Timer countTimer;
 		private System.Windows.Forms.Label timerNamesListLabel;
 		private System.Windows.Forms.Label timerDurationsListLabel;
+		private System.Windows.Forms.FolderBrowserDialog audioFolderBrowser;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }
 
