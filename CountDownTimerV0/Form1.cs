@@ -32,7 +32,7 @@ namespace CountDownTimerV0
 		private int _upCount;
 
 		private SoundPlayer _soundPlayer;
-		private string _cachedAudioBrowserSelectedPath;
+		private SelectedAudio _selectedAudio;
 
 		public DigitalCountTimer()
 		{
@@ -60,12 +60,19 @@ namespace CountDownTimerV0
 			public string Duration { get; set; }
 		}
 
+		private struct SelectedAudio
+		{
+			public string FullPath { get; set; }
+			public string OnlyFileName { get; set; }
+		}
+
 		private void SetupForm()
 		{
 			SetTabIndices();
 
 			_formattedColumns = new FormattedTimeColumns();
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
+			_selectedAudio = new SelectedAudio();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -470,22 +477,45 @@ namespace CountDownTimerV0
 
 		private void chooseAudioBtn_Click(object sender, EventArgs e)
 		{
-			//cache the default 'SelectedPath' of 'audioFolderBrowser'
-			_cachedAudioBrowserSelectedPath = audioFolderBrowser.SelectedPath;
-			//open the audioFolderBrowserDialog control
-			audioFolderBrowser.ShowDialog();
+			//cache the current 'FileName' of 'audioFileSelector'
+			string cachedChosenAudioFilePath = audioFileSelector.FileName;
+			//open the 'audioFileSelector' control dialog
+			bool selectionFailed = audioFileSelector.ShowDialog() != DialogResult.OK;
+			if ( selectionFailed ) return;
 
 			/* After the user chose an audio file by clicking 'OK' on
-			   the dialog window, the 'SelectedPath' property of the
-			   'audioFolderBrowser' control will be set to the path of
-			   said chosen audio file. But also having an eventhandler
-			   for when the Text of 'selectedAudioName' text box changes,
-			   means said handler can */
+			   the dialog window, the 'FileName' property of the
+			   'audioFileSelector' control will be set to the path of
+			   said chosen audio file. But only if a file different
+			   from the current is chosen. */
+			int newAudioPathHash = audioFileSelector.FileName.GetHashCode();
+			int prevAudioPathHash = cachedChosenAudioFilePath.GetHashCode();
+			bool choseSameAudioAsPrev = prevAudioPathHash == newAudioPathHash;
+			//if prev 'selectedAudioName' text to chosen audio file path == newly chosen,
+			if ( choseSameAudioAsPrev ) return;
+				//return;
+			//set 'selectedAudioName' text box text to chosen audio file path
+			selectedAudioName.Text = audioFileSelector.FileName;
 		}
 
 		private void selectedAudioName_TextChanged(object sender, EventArgs e)
 		{
-
+			/* Once the user selected a new audio file via the 'chooseAudioBtn' 
+			   file select dialog control, that file path will have been set
+			   as the Text of the 'selectedAudioName' text box of the
+			   'chosenAudioName' label. But we have to present a more user 
+			   readeable chosen audio file name with 'selectedAudioName'. */
+			//cache 'selectedAudioName' text of the 'chosenAudioLabel'
+			string selectedAudioFilePath = selectedAudioName.Text;
+			//take just the .extension file name from selected audio name
+			string[] nestingDirs = selectedAudioFilePath.Split('\\');
+			int lastI = nestingDirs.Length - 1;
+			string justTheName = nestingDirs[lastI];
+			//cache justTheName of the selected audio file
+			_selectedAudio.OnlyFileName = justTheName;
+			_selectedAudio.FullPath = selectedAudioFilePath;
+			//set 'selectedAudioName' text to justTheName of selected file
+			selectedAudioName.Text = justTheName;
 		}
 
 		// user intends to begin count down/up
@@ -520,8 +550,6 @@ namespace CountDownTimerV0
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
-			//DateTime.ParseExact();
-
 			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
 			//PlayExpirationAlarm();
 
