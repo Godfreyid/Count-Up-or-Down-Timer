@@ -72,6 +72,7 @@ namespace CountDownTimerV0
 
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
+			//_soundPlayer.SoundLocationChanged += OnSoundLocationChange();
 
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
@@ -101,6 +102,11 @@ namespace CountDownTimerV0
 			clearTimersListBtn.TabIndex = 14;
 			saveProfileBtn.TabIndex = 15;
 			loadProfileBtn.TabIndex = 16;
+		}
+
+		private void OnSoundLocationChange()
+		{
+
 		}
 
 		// user clicked in text field to begin entering timer name
@@ -488,8 +494,6 @@ namespace CountDownTimerV0
 			countTimer.Start();
 		}
 
-		
-
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
@@ -531,7 +535,6 @@ namespace CountDownTimerV0
 		}
 
 		
-
 		private void PlayExpirationAlarm()
 		{
 			bool countedDownDuration = _durationAsSeconds <= 0;

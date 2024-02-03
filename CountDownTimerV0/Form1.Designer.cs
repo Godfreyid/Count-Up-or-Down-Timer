@@ -80,6 +80,7 @@ namespace CountDownTimerV0
 			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
 			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
 			this.timerDisplay.Name = "timerDisplay";
+			this.timerDisplay.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
 			this.timerDisplay.Size = new System.Drawing.Size(527, 133);
 			this.timerDisplay.TabIndex = 0;
 			this.timerDisplay.Text = "00:00:00";
