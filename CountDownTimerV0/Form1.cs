@@ -488,17 +488,20 @@ namespace CountDownTimerV0
 			   'audioFileSelector' control will be set to the path of
 			   said chosen audio file. But only if a file different
 			   from the current is chosen. */
-			int newAudioPathHash = audioFileSelector.FileName.GetHashCode();
+			string newAudioPath = audioFileSelector.FileName;
+			int newAudioPathHash = newAudioPath.GetHashCode();
 			int prevAudioPathHash = cachedChosenAudioFilePath.GetHashCode();
 			bool choseSameAudioAsPrev = prevAudioPathHash == newAudioPathHash;
 			//if prev 'selectedAudioName' text to chosen audio file path == newly chosen,
 			if ( choseSameAudioAsPrev ) return;
-				//return;
-			//set 'selectedAudioName' text box text to chosen audio file path
-			selectedAudioName.Text = audioFileSelector.FileName;
+			//return;
+
+			CacheAudioFileName(newAudioPath, out string audioFileName);
+			//set 'selectedAudioName' text to selected file simple name
+			selectedAudioName.Text = audioFileName;
 		}
 
-		private void selectedAudioName_TextChanged(object sender, EventArgs e)
+		private void CacheAudioFileName(string filePath, out string fileName)
 		{
 			/* Once the user selected a new audio file via the 'chooseAudioBtn' 
 			   file select dialog control, that file path will have been set
@@ -506,16 +509,15 @@ namespace CountDownTimerV0
 			   'chosenAudioName' label. But we have to present a more user 
 			   readeable chosen audio file name with 'selectedAudioName'. */
 			//cache 'selectedAudioName' text of the 'chosenAudioLabel'
-			string selectedAudioFilePath = selectedAudioName.Text;
 			//take just the .extension file name from selected audio name
-			string[] nestingDirs = selectedAudioFilePath.Split('\\');
+			string[] nestingDirs = filePath.Split('\\');
 			int lastI = nestingDirs.Length - 1;
 			string justTheName = nestingDirs[lastI];
 			//cache justTheName of the selected audio file
 			_selectedAudio.OnlyFileName = justTheName;
-			_selectedAudio.FullPath = selectedAudioFilePath;
-			//set 'selectedAudioName' text to justTheName of selected file
-			selectedAudioName.Text = justTheName;
+			_selectedAudio.FullPath = filePath;
+
+			fileName = justTheName;
 		}
 
 		// user intends to begin count down/up
@@ -551,7 +553,7 @@ namespace CountDownTimerV0
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
 			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
-			//PlayExpirationAlarm();
+			PlayExpirationAlarm();
 
 			/* Per user toggle, a count down/up method will handle the '1 second elapsed' event,
 			   by either counting down from the 'durationAsSeconds' by decrementing 1, or counting 
@@ -591,46 +593,35 @@ namespace CountDownTimerV0
 			bool countedDownDuration = _durationAsSeconds <= 0;
 			bool countedUpDuration = _upCount >= _countUpDurationTarget;
 
-			bool raiseAlarm = _countDown ? countedDownDuration : countedUpDuration;
-			if ( !raiseAlarm ) return;
+			bool durationElapsed = _countDown ? countedDownDuration : countedUpDuration;
+			if ( !durationElapsed ) return;
 
 			//pause ticker control to stop ticking during alarm period
 			countTimer.Stop();
-			
+
+			//try to assign audio file to play as alarm siren
+			_soundPlayer.SoundLocation = _selectedAudio.FullPath;
+			bool audioFileSelected = !_soundPlayer.SoundLocation.Equals("");
+			if ( !audioFileSelected ) return;
+
 			//raise alarm 
 			_soundPlayer.PlayLooping();
 
 			//show alarm window
-			AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
+			//AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
 
-			//if counting down (count up is NOT toggled),
-			if ( _countDown )
-			{
-				bool countedFullDuration = _durationAsSeconds <= 0;
-				//if '_upCount' does NOT EQUALS 'ChosenTimer.Duration' on this tick, return
-				if ( !countedFullDuration ) return;
-
-				//else, EQUALS means duration expired, so
-				//pause ticker control to stop ticking during alarm period
-				countTimer.Stop();
-				//raise alarm 
-				_soundPlayer.PlayLooping();
-
-				return;
-			}
-
-			//else toggled count up, so
-			bool countedUpToDuration = _upCount >= _countUpDurationTarget;
-			//if 'durationAsSeconds' > 0, return
-			if ( !countedUpToDuration ) return;
-
-			//else, duration expired, so
-			//pause ticker control to stop ticking during alarm period
-			countTimer.Stop();
-			//raise alarm
-			_soundPlayer.PlayLooping();
 		}
 
-		
+		private void stopButton_Click(object sender, EventArgs e)
+		{
+			 /* The continuously running routines upon pressing the 
+			    'startButton' are:
+			    - the 'countTimer'
+			    - the '_soundPlayer' as a consequence of the timer
+			    So disable those two */
+
+			countTimer.Enabled = false;
+			_soundPlayer.Stop();
+		}
 	}
 }

@@ -126,6 +126,7 @@ namespace CountDownTimerV0
 			this.stopButton.Text = "STOP";
 			this.stopButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.stopButton.UseVisualStyleBackColor = false;
+			this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
 			// 
 			// resetButton
 			// 
@@ -490,7 +491,6 @@ namespace CountDownTimerV0
 			this.selectedAudioName.Size = new System.Drawing.Size(151, 18);
 			this.selectedAudioName.TabIndex = 41;
 			this.selectedAudioName.Text = "[NONE]";
-			this.selectedAudioName.TextChanged += new System.EventHandler(this.selectedAudioName_TextChanged);
 			// 
 			// countTimer
 			// 
