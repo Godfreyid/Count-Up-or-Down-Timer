@@ -65,8 +65,8 @@ namespace CountDownTimerV0
 			this.countTimer = new System.Windows.Forms.Timer(this.components);
 			this.timerNamesListLabel = new System.Windows.Forms.Label();
 			this.timerDurationsListLabel = new System.Windows.Forms.Label();
-			this.audioFolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.audioFileSelector = new System.Windows.Forms.OpenFileDialog();
 			this.counterSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -165,17 +165,17 @@ namespace CountDownTimerV0
 			this.timerAddBtn.BackColor = System.Drawing.Color.Gray;
 			this.timerAddBtn.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
 			this.timerAddBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.timerAddBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerAddBtn.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerAddBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.timerAddBtn.Image = ((System.Drawing.Image)(resources.GetObject("timerAddBtn.Image")));
 			this.timerAddBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.timerAddBtn.Location = new System.Drawing.Point(338, 459);
 			this.timerAddBtn.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.timerAddBtn.Name = "timerAddBtn";
-			this.timerAddBtn.Padding = new System.Windows.Forms.Padding(17, 0, 6, 0);
-			this.timerAddBtn.Size = new System.Drawing.Size(194, 143);
+			this.timerAddBtn.Padding = new System.Windows.Forms.Padding(16, 0, 6, 0);
+			this.timerAddBtn.Size = new System.Drawing.Size(194, 152);
 			this.timerAddBtn.TabIndex = 6;
-			this.timerAddBtn.Text = "Add To Timers";
+			this.timerAddBtn.Text = "Add To \'Timers\'";
 			this.timerAddBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.timerAddBtn.UseVisualStyleBackColor = false;
 			this.timerAddBtn.Click += new System.EventHandler(this.listAddBtn_Click);
@@ -212,15 +212,15 @@ namespace CountDownTimerV0
 			this.clearTimersListBtn.BackColor = System.Drawing.Color.Gray;
 			this.clearTimersListBtn.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
 			this.clearTimersListBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.clearTimersListBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.clearTimersListBtn.Font = new System.Drawing.Font("Arial Narrow", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.clearTimersListBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.clearTimersListBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearTimersListBtn.Image")));
 			this.clearTimersListBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.clearTimersListBtn.Location = new System.Drawing.Point(292, 606);
+			this.clearTimersListBtn.Location = new System.Drawing.Point(6, 613);
 			this.clearTimersListBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.clearTimersListBtn.Name = "clearTimersListBtn";
-			this.clearTimersListBtn.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-			this.clearTimersListBtn.Size = new System.Drawing.Size(139, 58);
+			this.clearTimersListBtn.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.clearTimersListBtn.Size = new System.Drawing.Size(144, 58);
 			this.clearTimersListBtn.TabIndex = 9;
 			this.clearTimersListBtn.Text = "Clear Timers";
 			this.clearTimersListBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -231,10 +231,10 @@ namespace CountDownTimerV0
 			this.selectTimerLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.selectTimerLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.selectTimerLabel1.ForeColor = System.Drawing.Color.White;
-			this.selectTimerLabel1.Location = new System.Drawing.Point(10, 23);
+			this.selectTimerLabel1.Location = new System.Drawing.Point(4, 23);
 			this.selectTimerLabel1.Margin = new System.Windows.Forms.Padding(0);
 			this.selectTimerLabel1.Name = "selectTimerLabel1";
-			this.selectTimerLabel1.Size = new System.Drawing.Size(57, 29);
+			this.selectTimerLabel1.Size = new System.Drawing.Size(53, 29);
 			this.selectTimerLabel1.TabIndex = 10;
 			this.selectTimerLabel1.Text = "Select";
 			this.selectTimerLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -244,10 +244,10 @@ namespace CountDownTimerV0
 			this.selectTimerLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.selectTimerLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.selectTimerLabel2.ForeColor = System.Drawing.Color.White;
-			this.selectTimerLabel2.Location = new System.Drawing.Point(13, 52);
+			this.selectTimerLabel2.Location = new System.Drawing.Point(4, 52);
 			this.selectTimerLabel2.Margin = new System.Windows.Forms.Padding(0);
 			this.selectTimerLabel2.Name = "selectTimerLabel2";
-			this.selectTimerLabel2.Size = new System.Drawing.Size(54, 28);
+			this.selectTimerLabel2.Size = new System.Drawing.Size(50, 28);
 			this.selectTimerLabel2.TabIndex = 11;
 			this.selectTimerLabel2.Text = "Timer";
 			this.selectTimerLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -258,10 +258,10 @@ namespace CountDownTimerV0
 			this.navigateUpBtn.FlatAppearance.BorderColor = System.Drawing.Color.Olive;
 			this.navigateUpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.navigateUpBtn.Image = ((System.Drawing.Image)(resources.GetObject("navigateUpBtn.Image")));
-			this.navigateUpBtn.Location = new System.Drawing.Point(71, 1);
+			this.navigateUpBtn.Location = new System.Drawing.Point(58, 1);
 			this.navigateUpBtn.Margin = new System.Windows.Forms.Padding(1);
 			this.navigateUpBtn.Name = "navigateUpBtn";
-			this.navigateUpBtn.Size = new System.Drawing.Size(54, 52);
+			this.navigateUpBtn.Size = new System.Drawing.Size(86, 52);
 			this.navigateUpBtn.TabIndex = 14;
 			this.navigateUpBtn.UseVisualStyleBackColor = false;
 			// 
@@ -305,7 +305,7 @@ namespace CountDownTimerV0
 			this.counterSelectorPanel.Controls.Add(this.selectTimerLabel1);
 			this.counterSelectorPanel.Location = new System.Drawing.Point(5, 245);
 			this.counterSelectorPanel.Name = "counterSelectorPanel";
-			this.counterSelectorPanel.Size = new System.Drawing.Size(126, 104);
+			this.counterSelectorPanel.Size = new System.Drawing.Size(145, 104);
 			this.counterSelectorPanel.TabIndex = 22;
 			// 
 			// navigateDwnBtn
@@ -314,10 +314,10 @@ namespace CountDownTimerV0
 			this.navigateDwnBtn.FlatAppearance.BorderColor = System.Drawing.Color.Olive;
 			this.navigateDwnBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.navigateDwnBtn.Image = ((System.Drawing.Image)(resources.GetObject("navigateDwnBtn.Image")));
-			this.navigateDwnBtn.Location = new System.Drawing.Point(71, 52);
+			this.navigateDwnBtn.Location = new System.Drawing.Point(58, 52);
 			this.navigateDwnBtn.Margin = new System.Windows.Forms.Padding(1);
 			this.navigateDwnBtn.Name = "navigateDwnBtn";
-			this.navigateDwnBtn.Size = new System.Drawing.Size(54, 52);
+			this.navigateDwnBtn.Size = new System.Drawing.Size(86, 52);
 			this.navigateDwnBtn.TabIndex = 36;
 			this.navigateDwnBtn.UseVisualStyleBackColor = false;
 			// 
@@ -326,7 +326,7 @@ namespace CountDownTimerV0
 			this.timersLabel.AutoSize = true;
 			this.timersLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timersLabel.ForeColor = System.Drawing.Color.White;
-			this.timersLabel.Location = new System.Drawing.Point(0, 401);
+			this.timersLabel.Location = new System.Drawing.Point(1, 368);
 			this.timersLabel.Name = "timersLabel";
 			this.timersLabel.Size = new System.Drawing.Size(60, 20);
 			this.timersLabel.TabIndex = 23;
@@ -388,10 +388,10 @@ namespace CountDownTimerV0
 			this.timerNamesList.ForeColor = System.Drawing.Color.White;
 			this.timerNamesList.FormattingEnabled = true;
 			this.timerNamesList.ItemHeight = 20;
-			this.timerNamesList.Location = new System.Drawing.Point(5, 441);
+			this.timerNamesList.Location = new System.Drawing.Point(6, 408);
 			this.timerNamesList.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
 			this.timerNamesList.Name = "timerNamesList";
-			this.timerNamesList.Size = new System.Drawing.Size(178, 224);
+			this.timerNamesList.Size = new System.Drawing.Size(178, 204);
 			this.timerNamesList.TabIndex = 31;
 			this.timerNamesList.SelectedValueChanged += new System.EventHandler(this.timerNamesList_SelectedValueChanged);
 			// 
@@ -402,10 +402,10 @@ namespace CountDownTimerV0
 			this.timerDurationsList.ForeColor = System.Drawing.Color.White;
 			this.timerDurationsList.FormattingEnabled = true;
 			this.timerDurationsList.ItemHeight = 20;
-			this.timerDurationsList.Location = new System.Drawing.Point(182, 441);
+			this.timerDurationsList.Location = new System.Drawing.Point(183, 408);
 			this.timerDurationsList.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
 			this.timerDurationsList.Name = "timerDurationsList";
-			this.timerDurationsList.Size = new System.Drawing.Size(107, 224);
+			this.timerDurationsList.Size = new System.Drawing.Size(107, 204);
 			this.timerDurationsList.TabIndex = 32;
 			this.timerDurationsList.SelectedValueChanged += new System.EventHandler(this.timerDurationsList_SelectedValueChanged);
 			// 
@@ -430,14 +430,14 @@ namespace CountDownTimerV0
 			this.chooseAudioBtn.BackColor = System.Drawing.Color.Gray;
 			this.chooseAudioBtn.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
 			this.chooseAudioBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.chooseAudioBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.chooseAudioBtn.Font = new System.Drawing.Font("Arial Narrow", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.chooseAudioBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.chooseAudioBtn.Image = ((System.Drawing.Image)(resources.GetObject("chooseAudioBtn.Image")));
 			this.chooseAudioBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.chooseAudioBtn.Location = new System.Drawing.Point(434, 606);
+			this.chooseAudioBtn.Location = new System.Drawing.Point(393, 612);
 			this.chooseAudioBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.chooseAudioBtn.Name = "chooseAudioBtn";
-			this.chooseAudioBtn.Padding = new System.Windows.Forms.Padding(8, 0, 4, 0);
-			this.chooseAudioBtn.Size = new System.Drawing.Size(98, 58);
+			this.chooseAudioBtn.Size = new System.Drawing.Size(139, 59);
 			this.chooseAudioBtn.TabIndex = 34;
 			this.chooseAudioBtn.Text = "Choose Audio";
 			this.chooseAudioBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -468,13 +468,15 @@ namespace CountDownTimerV0
 			// chosenAudioLabel
 			// 
 			this.chosenAudioLabel.AutoSize = true;
-			this.chosenAudioLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.chosenAudioLabel.Font = new System.Drawing.Font("Arial Narrow", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.chosenAudioLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.chosenAudioLabel.Location = new System.Drawing.Point(155, 329);
+			this.chosenAudioLabel.Location = new System.Drawing.Point(151, 632);
+			this.chosenAudioLabel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.chosenAudioLabel.Name = "chosenAudioLabel";
-			this.chosenAudioLabel.Size = new System.Drawing.Size(105, 18);
+			this.chosenAudioLabel.Size = new System.Drawing.Size(89, 20);
 			this.chosenAudioLabel.TabIndex = 40;
 			this.chosenAudioLabel.Text = "Chosen Audio:";
+			this.chosenAudioLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// selectedAudioName
 			// 
@@ -482,9 +484,10 @@ namespace CountDownTimerV0
 			this.selectedAudioName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.selectedAudioName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.selectedAudioName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-			this.selectedAudioName.Location = new System.Drawing.Point(271, 329);
+			this.selectedAudioName.Location = new System.Drawing.Point(239, 634);
+			this.selectedAudioName.Margin = new System.Windows.Forms.Padding(0);
 			this.selectedAudioName.Name = "selectedAudioName";
-			this.selectedAudioName.Size = new System.Drawing.Size(261, 18);
+			this.selectedAudioName.Size = new System.Drawing.Size(151, 18);
 			this.selectedAudioName.TabIndex = 41;
 			this.selectedAudioName.Text = "[NONE]";
 			this.selectedAudioName.TextChanged += new System.EventHandler(this.selectedAudioName_TextChanged);
@@ -497,10 +500,10 @@ namespace CountDownTimerV0
 			// timerNamesListLabel
 			// 
 			this.timerNamesListLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-			this.timerNamesListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerNamesListLabel.Location = new System.Drawing.Point(5, 424);
+			this.timerNamesListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerNamesListLabel.Location = new System.Drawing.Point(6, 388);
 			this.timerNamesListLabel.Name = "timerNamesListLabel";
-			this.timerNamesListLabel.Size = new System.Drawing.Size(178, 17);
+			this.timerNamesListLabel.Size = new System.Drawing.Size(178, 20);
 			this.timerNamesListLabel.TabIndex = 42;
 			this.timerNamesListLabel.Text = "Timer Name";
 			this.timerNamesListLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -508,20 +511,13 @@ namespace CountDownTimerV0
 			// timerDurationsListLabel
 			// 
 			this.timerDurationsListLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-			this.timerDurationsListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerDurationsListLabel.Location = new System.Drawing.Point(182, 424);
+			this.timerDurationsListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDurationsListLabel.Location = new System.Drawing.Point(183, 388);
 			this.timerDurationsListLabel.Name = "timerDurationsListLabel";
-			this.timerDurationsListLabel.Size = new System.Drawing.Size(107, 17);
+			this.timerDurationsListLabel.Size = new System.Drawing.Size(107, 20);
 			this.timerDurationsListLabel.TabIndex = 43;
 			this.timerDurationsListLabel.Text = "Duration";
 			this.timerDurationsListLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// audioFolderBrowser
-			// 
-			this.audioFolderBrowser.Description = "Choose an audio file to play when sounding the alarm";
-			this.audioFolderBrowser.RootFolder = System.Environment.SpecialFolder.MyComputer;
-			this.audioFolderBrowser.SelectedPath = "H:\\TEMPORARY INSTALLATIONS\\Countdown Timer First Attempt\\CountDownTimerV0\\CountDo" +
-    "wnTimerV0\\Standard Alarm Tunes";
 			// 
 			// pictureBox1
 			// 
@@ -539,7 +535,7 @@ namespace CountDownTimerV0
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.ClientSize = new System.Drawing.Size(536, 671);
+			this.ClientSize = new System.Drawing.Size(536, 676);
 			this.Controls.Add(this.timerDurationsListLabel);
 			this.Controls.Add(this.timerNamesListLabel);
 			this.Controls.Add(this.selectedAudioName);
@@ -617,8 +613,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Timer countTimer;
 		private System.Windows.Forms.Label timerNamesListLabel;
 		private System.Windows.Forms.Label timerDurationsListLabel;
-		private System.Windows.Forms.FolderBrowserDialog audioFolderBrowser;
 		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.OpenFileDialog audioFileSelector;
 	}
 }
 
