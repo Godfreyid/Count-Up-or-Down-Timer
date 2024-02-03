@@ -434,7 +434,6 @@ namespace CountDownTimerV0
 			bool containsDefaultText = refocusedOn.Text.Contains(defaultBoxText);
 
 			bool enteredText = !emptyTextField && !defaultText && !containsDefaultText;
-
 			//if valid entry, no need to refocus, so return false
 			if ( enteredText ) return false;
 
