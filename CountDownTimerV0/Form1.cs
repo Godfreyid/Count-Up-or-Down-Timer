@@ -83,20 +83,19 @@ namespace CountDownTimerV0
 			public string OnlyFileName { get; set; }
 		}
 
+		private enum Start
+		{
+			FromBeginning,
+			FromPaused
+		}
+		private Start _startButtonState;
+
 		public DigitalCountTimer()
 		{
 			InitializeComponent();
 
 			SetupForm();
 		}
-
-		private enum Start
-		{
-			FromBeginning,
-			FromPaused
-		}
-
-		private Start _startButtonState;
 
 		private void SetupForm()
 		{
@@ -488,6 +487,9 @@ namespace CountDownTimerV0
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			timerDisplay.Text = _chosenTimer.Duration;
+
+			//reset 'startButton' state
+			_startButtonState = Start.FromBeginning;
 		}
 
 		// so user can select timer by either clicking on its name or duration, then press 'Start'
@@ -508,6 +510,9 @@ namespace CountDownTimerV0
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			timerDisplay.Text = _chosenTimer.Duration;
+
+			//reset 'startButton' state
+			_startButtonState = Start.FromBeginning;
 		}
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
