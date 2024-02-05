@@ -44,13 +44,6 @@ namespace CountDownTimerV0
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
 
-		public DigitalCountTimer()
-		{
-			InitializeComponent();
-
-			SetupForm();
-		}
-
 		private struct FormattedTimeColumns
 		{
 			public int Hours { get; set; }
@@ -90,6 +83,21 @@ namespace CountDownTimerV0
 			public string OnlyFileName { get; set; }
 		}
 
+		public DigitalCountTimer()
+		{
+			InitializeComponent();
+
+			SetupForm();
+		}
+
+		private enum Start
+		{
+			FromBeginning,
+			FromPaused
+		}
+
+		private Start _startButtonState;
+
 		private void SetupForm()
 		{
 			SetTabIndices();
@@ -111,7 +119,10 @@ namespace CountDownTimerV0
 
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
-			//_soundPlayer.SoundLocationChanged += OnSoundLocationChange();
+
+			_startButtonState = Start.FromBeginning;
+
+			timerNameEntry.Focus();
 
 			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
 
@@ -555,20 +566,6 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
-			//if no timer is selected from the list
-				//display message box informing user to first select a timer
-				//return focus
-			bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
-			//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
-			if ( defaultTimerDisplay )
-			{
-				//put focus back on the 'navigateUpBtn' control
-				navigateUpBtn.Focus();
-
-				//return
-				return;
-			}
-
 			/* -give the 'startButton' a switch state machine and two enum states.
 			   -the first enum state being 'FromBeginning' is the default, with 
 			   current implementation as seen below the 'defaultTimerDisplay' guard 
@@ -576,16 +573,45 @@ namespace CountDownTimerV0
 			   -the second enum state being 'FromPause', wherein _durationAsSeconds
 			   and _countUpDurationTarget are not recomputed before enabling and
 			   starting the countTimer. */
-			/* To increment upto or decrement down from the 'ChosenTimer.Duration',
-			   we have to determine what the entire duration is in seconds for simple 
-			   decrement, increment (++,--) operations. */
-			_durationAsSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
+			switch ( _startButtonState )
+			{
+				case Start.FromBeginning:
+					//if no timer is selected from the list
+					bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
+					//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
+					if ( defaultTimerDisplay )
+					{
+						//display message box informing user to first select a timer
 
-			_countUpDurationTarget = _durationAsSeconds;
+						//put focus back on the 'navigateUpBtn' control
+						navigateUpBtn.Focus();
 
-			//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
-			countTimer.Enabled = true;
-			countTimer.Start();
+						//return
+						return;
+					}
+
+					/* To increment upto or decrement down from the 'ChosenTimer.Duration',
+					   we have to determine what the entire duration is in seconds for simple 
+					   decrement, increment (++,--) operations. */
+					_durationAsSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
+
+					_upCount = 0;
+					_countUpDurationTarget = _durationAsSeconds;
+
+					//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
+					countTimer.Enabled = true;
+					countTimer.Start();
+
+					break;
+				case Start.FromPaused:
+					countTimer.Enabled = true;
+					countTimer.Start();
+					_startButtonState = Start.FromBeginning;
+
+					break;
+				default:
+					break;
+			}
 		}
 
 		// handles event raised whenever the ticker control's set interval elapses
@@ -658,12 +684,15 @@ namespace CountDownTimerV0
 			    'startButton' are:
 					- the 'countTimer', and
 					- the '_soundPlayer' as a consequence of the timer
-			    So disable those two */
+			    So disable those two, then set the 'startButton' state to
+			    'Start.FromPaused'. */
 			
 			//change the text and image of the 'startButton' to read 'pause'
 			//set the state of the 'startButton' to 'FromPause'
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
+
+			_startButtonState = Start.FromPaused;
 		}
 	}
 }
