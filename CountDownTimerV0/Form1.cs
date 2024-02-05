@@ -25,8 +25,11 @@ namespace CountDownTimerV0
 			" Retry.";
 		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
 
-		private const string ALARM_MESSAGE = "End Alarm";
-		private const string ALARM_CAPTION = "Timer Elapsed.";
+		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
+		private const string SELECT_A_TIMER_CAPTION = "Select a Timer";
+
+		private const string ALARM_MESSAGE = "End Alarm.";
+		private const string ALARM_CAPTION = "Timer Elapsed";
 
 		Form _alarmAlertWindow;
 		
@@ -36,6 +39,7 @@ namespace CountDownTimerV0
 		private FormattedTimeColumns _formattedColumns;
 		private MessageBoxInfo _timerNameMsgBoxInfo;
 		private MessageBoxInfo _timerDurationMsgBoxInfo;
+		private MessageBoxInfo _startButtonMsgBoxInfo;
 		private MessageBoxInfo _alarmMsgBoxInfo;
 		private ChosenTimer _chosenTimer;
 
@@ -115,6 +119,9 @@ namespace CountDownTimerV0
 
 			_timerDurationMsgBoxInfo = new MessageBoxInfo(
 				MISSING_DURATION_MESSAGE, MISSING_DURATION_CAPTION, MessageBoxButtons.OK);
+
+			_startButtonMsgBoxInfo = new MessageBoxInfo(
+				SELECT_A_TIMER_MESSAGE, SELECT_A_TIMER_CAPTION, MessageBoxButtons.OK);
 
 			_alarmMsgBoxInfo = new MessageBoxInfo(
 				ALARM_MESSAGE, ALARM_CAPTION, MessageBoxButtons.OK);
@@ -612,9 +619,9 @@ namespace CountDownTimerV0
 					if ( defaultTimerDisplay )
 					{
 						//display message box informing user to first select a timer
-
-						//put focus back on the 'navigateUpBtn' control
-						navigateUpBtn.Focus();
+						MessageBox.Show(_startButtonMsgBoxInfo.Message, _startButtonMsgBoxInfo.Caption, _startButtonMsgBoxInfo.Buttons);
+						//put focus back on the 'navigateDwnBtn' control
+						navigateDwnBtn.Focus();
 
 						//return
 						return;
