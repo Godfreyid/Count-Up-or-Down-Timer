@@ -569,6 +569,13 @@ namespace CountDownTimerV0
 				return;
 			}
 
+			/* -give the 'startButton' a switch state machine and two enum states.
+			   -the first enum state being 'FromBeginning' is the default, with 
+			   current implementation as seen below the 'defaultTimerDisplay' guard 
+			   clause.
+			   -the second enum state being 'FromPause', wherein _durationAsSeconds
+			   and _countUpDurationTarget are not recomputed before enabling and
+			   starting the countTimer. */
 			/* To increment upto or decrement down from the 'ChosenTimer.Duration',
 			   we have to determine what the entire duration is in seconds for simple 
 			   decrement, increment (++,--) operations. */
@@ -584,7 +591,6 @@ namespace CountDownTimerV0
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
-			/* Sound alarm if timer duration expired (counted down to zero or up to duration) */
 			PlayExpirationAlarm();
 
 			/* Per user toggle, a count down/up method will handle the '1 second elapsed' event,
@@ -619,7 +625,9 @@ namespace CountDownTimerV0
 				_formattedColumns.Hours, _formattedColumns.Minutes, _formattedColumns.Seconds);
 		}
 
-		
+		/// <summary>
+		/// Sound alarm if timer duration expired (counted down to zero or up to duration).
+		/// </summary>
 		private void PlayExpirationAlarm()
 		{
 			bool countedDownDuration = _durationAsSeconds <= 0;
@@ -646,12 +654,14 @@ namespace CountDownTimerV0
 
 		private void stopButton_Click(object sender, EventArgs e)
 		{
-			 /* The continuously running routines upon pressing the 
+			 /* The continuously running routines started when pressing the 
 			    'startButton' are:
-			    - the 'countTimer'
-			    - the '_soundPlayer' as a consequence of the timer
+					- the 'countTimer', and
+					- the '_soundPlayer' as a consequence of the timer
 			    So disable those two */
-
+			
+			//change the text and image of the 'startButton' to read 'pause'
+			//set the state of the 'startButton' to 'FromPause'
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
 		}
