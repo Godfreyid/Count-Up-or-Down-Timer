@@ -20,16 +20,23 @@ namespace CountDownTimerV0
 		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name." +
 			" Retry.";
 		private const string MISSING_NAME_CAPTION = "Missing Name Input";
+
 		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration." +
 			" Retry.";
 		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
 
+		private const string ALARM_MESSAGE = "End Alarm";
+		private const string ALARM_CAPTION = "Timer Elapsed.";
+
+		Form _alarmAlertWindow;
+		
 		private const int MINUTES_PER_HOUR = 60;
 		private const int SECONDS_PER_MINUTE = 60;
 
 		private FormattedTimeColumns _formattedColumns;
 		private MessageBoxInfo _timerNameMsgBoxInfo;
 		private MessageBoxInfo _timerDurationMsgBoxInfo;
+		private MessageBoxInfo _alarmMsgBoxInfo;
 		private ChosenTimer _chosenTimer;
 
 		private string[] _durationTimeColumns;
@@ -109,10 +116,22 @@ namespace CountDownTimerV0
 			_timerDurationMsgBoxInfo = new MessageBoxInfo(
 				MISSING_DURATION_MESSAGE, MISSING_DURATION_CAPTION, MessageBoxButtons.OK);
 
+			_alarmMsgBoxInfo = new MessageBoxInfo(
+				ALARM_MESSAGE, ALARM_CAPTION, MessageBoxButtons.OK);
+
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 			_selectedAudio = new SelectedAudio();
 
 			StartPosition = FormStartPosition.CenterScreen;
+
+			//setup alarm alert window shown when the alarm is raised
+			_alarmAlertWindow = new Form();
+			_alarmAlertWindow.Hide();
+			_alarmAlertWindow.FormBorderStyle = FormBorderStyle.None;
+			_alarmAlertWindow.WindowState = FormWindowState.Maximized;
+			_alarmAlertWindow.BackColor = Color.FromArgb(192, 192, 0);
+			_alarmAlertWindow.AllowTransparency = true;
+			_alarmAlertWindow.Opacity = 0.25;
 
 			_durationTimeColumns = new string[3]; /* holds 3 time hh, mm, and ss (hh:mm:ss) columns */
 
@@ -476,6 +495,9 @@ namespace CountDownTimerV0
 			   want to highlight the corresponding duration in timerDurationsList, so*/
 			//get the selected index in timerNamesList
 			int selectedNameI = timerNamesList.SelectedIndex;
+			bool unSelected = selectedNameI < 0;
+			if ( unSelected ) return;
+
 			//set selected of timerDurationsList to selected index above
 			timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
 
@@ -499,6 +521,9 @@ namespace CountDownTimerV0
 			   want to highlight the corresponding name in timerNamesList, so */
 			//get the selected index in timerDurationsList
 			int selectedDurationI = timerDurationsList.SelectedIndex;
+			bool unSelected = selectedDurationI < 0;
+			if ( unSelected ) return;
+
 			//set selected of timerNamesList to selected index above
 			timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
 
@@ -679,8 +704,18 @@ namespace CountDownTimerV0
 			_soundPlayer.PlayLooping();
 
 			//show alarm window
+			_alarmAlertWindow.Show(this);
 			//AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
+			DialogResult alarmMsgBoxResult = MessageBox.Show(
+				_alarmMsgBoxInfo.Message, _alarmMsgBoxInfo.Caption, _alarmMsgBoxInfo.Buttons);
+			//if clicked 'ok' in message box,
+			bool stopAlarm = DialogResult.OK == alarmMsgBoxResult;
+			if ( !stopAlarm ) return;
 
+			//hide alarmAlertWindow
+			_alarmAlertWindow.Hide();
+			//stop _soundPlayer
+			_soundPlayer.Stop();
 		}
 
 		private void stopButton_Click(object sender, EventArgs e)
