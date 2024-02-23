@@ -17,19 +17,17 @@ namespace CountDownTimerV0
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
 
-		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name." +
-			" Retry.";
 		private const string MISSING_NAME_CAPTION = "Missing Name Input";
+		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name Retry.";
 
-		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration." +
-			" Retry.";
 		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
+		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration Retry.";
 
-		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
 		private const string SELECT_A_TIMER_CAPTION = "Select a Timer";
+		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
 
-		private const string ALARM_MESSAGE = "End Alarm.";
 		private const string ALARM_CAPTION = "Timer Elapsed";
+		private const string ALARM_MESSAGE = "End Alarm.";
 
 		Form _alarmAlertWindow;
 		
@@ -242,10 +240,6 @@ namespace CountDownTimerV0
 		/// into <paramref name="textBoxLeft"/>.</param>
 		private void LeavingTextBox(TextBox textBoxLeft, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
 		{
-			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
-			//if empty name text field, show prompt text of required name string format
-			if ( !emptyName ) return;
-
 			/* Enforce string format via regex */
 			//only leave if correct string format
 			if ( requireProperFormat )
@@ -257,6 +251,10 @@ namespace CountDownTimerV0
 					//return
 
 			}
+
+			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
+			//if empty name text field, show prompt text of required name string format
+			if ( !emptyName ) return;
 
 			textBoxLeft.Text = defaultTextBoxString;
 		}
@@ -470,7 +468,7 @@ namespace CountDownTimerV0
 			//if valid entry, no need to refocus, so return false
 			if ( enteredText ) return false;
 
-			//TextBox text is empty OR EQUALS the defaultBoxText, so
+			//TextBox text is empty, EQUALS defaultBoxText, or wrong format, so
 			//display popup informing user to enter a valid text string
 			MessageBox.Show(
 				invalidMsgInfo.Message, invalidMsgInfo.Caption, invalidMsgInfo.Buttons);
