@@ -391,8 +391,9 @@ namespace CountDownTimerV0
 		}
 
 		/// <summary>
-		/// Takes the provided <paramref name="hoursColumn"/>, <paramref name="minutesColumn"/>,
-		/// and <paramref name="secondsColumn"/> args, and creates a string formatted to have
+		/// Takes the provided <paramref name="hoursColumn"/>, 
+		/// <paramref name="minutesColumn"/>, and 
+		/// <paramref name="secondsColumn"/> args, then creates a string formatted to have
 		/// two number characters for each column to create the HH:MM:SS format.
 		/// </summary>
 		/// <param name="hoursColumn">The number of hours placed in the hours (HH) 
