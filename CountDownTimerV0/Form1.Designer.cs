@@ -81,11 +81,11 @@ namespace CountDownTimerV0
 			// timerDisplay
 			// 
 			this.timerDisplay.BackColor = System.Drawing.Color.Black;
-			this.timerDisplay.Font = new System.Drawing.Font("Agency FB", 108.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDisplay.Font = new System.Drawing.Font("Bodoni MT Condensed", 108.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
 			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
 			this.timerDisplay.Name = "timerDisplay";
-			this.timerDisplay.Size = new System.Drawing.Size(545, 163);
+			this.timerDisplay.Size = new System.Drawing.Size(527, 163);
 			this.timerDisplay.TabIndex = 0;
 			this.timerDisplay.Text = "00:00:00";
 			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -550,9 +550,9 @@ namespace CountDownTimerV0
 			this.hoursLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.hoursLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.hoursLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.hoursLabel.Location = new System.Drawing.Point(41, 39);
+			this.hoursLabel.Location = new System.Drawing.Point(74, 42);
 			this.hoursLabel.Name = "hoursLabel";
-			this.hoursLabel.Size = new System.Drawing.Size(120, 16);
+			this.hoursLabel.Size = new System.Drawing.Size(90, 16);
 			this.hoursLabel.TabIndex = 46;
 			this.hoursLabel.Text = "Hours";
 			this.hoursLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -562,9 +562,9 @@ namespace CountDownTimerV0
 			this.minutesLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.minutesLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.minutesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.minutesLabel.Location = new System.Drawing.Point(202, 39);
+			this.minutesLabel.Location = new System.Drawing.Point(217, 42);
 			this.minutesLabel.Name = "minutesLabel";
-			this.minutesLabel.Size = new System.Drawing.Size(118, 16);
+			this.minutesLabel.Size = new System.Drawing.Size(90, 16);
 			this.minutesLabel.TabIndex = 47;
 			this.minutesLabel.Text = "Minutes";
 			this.minutesLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -574,9 +574,9 @@ namespace CountDownTimerV0
 			this.secondsLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.secondsLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.secondsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.secondsLabel.Location = new System.Drawing.Point(361, 39);
+			this.secondsLabel.Location = new System.Drawing.Point(356, 41);
 			this.secondsLabel.Name = "secondsLabel";
-			this.secondsLabel.Size = new System.Drawing.Size(119, 16);
+			this.secondsLabel.Size = new System.Drawing.Size(90, 16);
 			this.secondsLabel.TabIndex = 48;
 			this.secondsLabel.Text = "Seconds";
 			this.secondsLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -586,7 +586,7 @@ namespace CountDownTimerV0
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.ClientSize = new System.Drawing.Size(555, 676);
+			this.ClientSize = new System.Drawing.Size(537, 676);
 			this.Controls.Add(this.secondsLabel);
 			this.Controls.Add(this.minutesLabel);
 			this.Controls.Add(this.hoursLabel);
