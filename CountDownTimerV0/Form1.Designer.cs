@@ -38,7 +38,6 @@ namespace CountDownTimerV0
 			this.countInverseBtn = new System.Windows.Forms.Button();
 			this.timerAddBtn = new System.Windows.Forms.Button();
 			this.muteBtn = new System.Windows.Forms.CheckBox();
-			this.continuousModeBtn = new System.Windows.Forms.CheckBox();
 			this.clearTimersListBtn = new System.Windows.Forms.Button();
 			this.selectTimerLabel1 = new System.Windows.Forms.Label();
 			this.selectTimerLabel2 = new System.Windows.Forms.Label();
@@ -69,6 +68,9 @@ namespace CountDownTimerV0
 			this.audioFileSelector = new System.Windows.Forms.OpenFileDialog();
 			this.activeTimerLabel = new System.Windows.Forms.Label();
 			this.activeTimerTextBox = new System.Windows.Forms.TextBox();
+			this.hoursLabel = new System.Windows.Forms.Label();
+			this.minutesLabel = new System.Windows.Forms.Label();
+			this.secondsLabel = new System.Windows.Forms.Label();
 			this.counterSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -188,7 +190,7 @@ namespace CountDownTimerV0
 			this.muteBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
 			this.muteBtn.Image = ((System.Drawing.Image)(resources.GetObject("muteBtn.Image")));
 			this.muteBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.muteBtn.Location = new System.Drawing.Point(181, 297);
+			this.muteBtn.Location = new System.Drawing.Point(181, 286);
 			this.muteBtn.Name = "muteBtn";
 			this.muteBtn.Padding = new System.Windows.Forms.Padding(0, 0, 7, 0);
 			this.muteBtn.Size = new System.Drawing.Size(140, 43);
@@ -196,18 +198,6 @@ namespace CountDownTimerV0
 			this.muteBtn.Text = "     Mute Audio";
 			this.muteBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.muteBtn.UseVisualStyleBackColor = true;
-			// 
-			// continuousModeBtn
-			// 
-			this.continuousModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.continuousModeBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.continuousModeBtn.Location = new System.Drawing.Point(181, 274);
-			this.continuousModeBtn.Name = "continuousModeBtn";
-			this.continuousModeBtn.Size = new System.Drawing.Size(148, 29);
-			this.continuousModeBtn.TabIndex = 8;
-			this.continuousModeBtn.Text = "Continuous Mode";
-			this.continuousModeBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.continuousModeBtn.UseVisualStyleBackColor = true;
 			// 
 			// clearTimersListBtn
 			// 
@@ -536,11 +526,11 @@ namespace CountDownTimerV0
 			this.activeTimerLabel.AutoSize = true;
 			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerLabel.Location = new System.Drawing.Point(182, 344);
+			this.activeTimerLabel.Location = new System.Drawing.Point(177, 344);
 			this.activeTimerLabel.Name = "activeTimerLabel";
-			this.activeTimerLabel.Size = new System.Drawing.Size(103, 20);
+			this.activeTimerLabel.Size = new System.Drawing.Size(170, 20);
 			this.activeTimerLabel.TabIndex = 44;
-			this.activeTimerLabel.Text = "Active Timer :";
+			this.activeTimerLabel.Text = "Currently Active Timer :";
 			this.activeTimerLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// activeTimerTextBox
@@ -549,11 +539,47 @@ namespace CountDownTimerV0
 			this.activeTimerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.activeTimerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerTextBox.Location = new System.Drawing.Point(292, 343);
+			this.activeTimerTextBox.Location = new System.Drawing.Point(358, 344);
 			this.activeTimerTextBox.Name = "activeTimerTextBox";
-			this.activeTimerTextBox.Size = new System.Drawing.Size(240, 24);
+			this.activeTimerTextBox.Size = new System.Drawing.Size(174, 24);
 			this.activeTimerTextBox.TabIndex = 45;
 			this.activeTimerTextBox.Text = "[Active Timer]";
+			// 
+			// hoursLabel
+			// 
+			this.hoursLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+			this.hoursLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.hoursLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.hoursLabel.Location = new System.Drawing.Point(41, 39);
+			this.hoursLabel.Name = "hoursLabel";
+			this.hoursLabel.Size = new System.Drawing.Size(120, 16);
+			this.hoursLabel.TabIndex = 46;
+			this.hoursLabel.Text = "Hours";
+			this.hoursLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// minutesLabel
+			// 
+			this.minutesLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+			this.minutesLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.minutesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.minutesLabel.Location = new System.Drawing.Point(202, 39);
+			this.minutesLabel.Name = "minutesLabel";
+			this.minutesLabel.Size = new System.Drawing.Size(118, 16);
+			this.minutesLabel.TabIndex = 47;
+			this.minutesLabel.Text = "Minutes";
+			this.minutesLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// secondsLabel
+			// 
+			this.secondsLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+			this.secondsLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.secondsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.secondsLabel.Location = new System.Drawing.Point(361, 39);
+			this.secondsLabel.Name = "secondsLabel";
+			this.secondsLabel.Size = new System.Drawing.Size(119, 16);
+			this.secondsLabel.TabIndex = 48;
+			this.secondsLabel.Text = "Seconds";
+			this.secondsLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// DigitalCountTimer
 			// 
@@ -561,6 +587,9 @@ namespace CountDownTimerV0
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.ClientSize = new System.Drawing.Size(536, 676);
+			this.Controls.Add(this.secondsLabel);
+			this.Controls.Add(this.minutesLabel);
+			this.Controls.Add(this.hoursLabel);
 			this.Controls.Add(this.activeTimerTextBox);
 			this.Controls.Add(this.activeTimerLabel);
 			this.Controls.Add(this.timerDurationsListLabel);
@@ -583,7 +612,6 @@ namespace CountDownTimerV0
 			this.Controls.Add(this.saveProfileBtn);
 			this.Controls.Add(this.loadProfileBtn);
 			this.Controls.Add(this.clearTimersListBtn);
-			this.Controls.Add(this.continuousModeBtn);
 			this.Controls.Add(this.muteBtn);
 			this.Controls.Add(this.timerAddBtn);
 			this.Controls.Add(this.countInverseBtn);
@@ -613,7 +641,6 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Button countInverseBtn;
 		private System.Windows.Forms.Button timerAddBtn;
 		private System.Windows.Forms.CheckBox muteBtn;
-		private System.Windows.Forms.CheckBox continuousModeBtn;
 		private System.Windows.Forms.Button clearTimersListBtn;
 		private System.Windows.Forms.Label selectTimerLabel1;
 		private System.Windows.Forms.Label selectTimerLabel2;
@@ -644,6 +671,9 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.OpenFileDialog audioFileSelector;
 		private System.Windows.Forms.Label activeTimerLabel;
 		private System.Windows.Forms.TextBox activeTimerTextBox;
+		private System.Windows.Forms.Label hoursLabel;
+		private System.Windows.Forms.Label minutesLabel;
+		private System.Windows.Forms.Label secondsLabel;
 	}
 }
 
