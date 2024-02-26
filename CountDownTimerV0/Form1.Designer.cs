@@ -83,11 +83,10 @@ namespace CountDownTimerV0
 			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
 			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
 			this.timerDisplay.Name = "timerDisplay";
-			this.timerDisplay.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
-			this.timerDisplay.Size = new System.Drawing.Size(527, 133);
+			this.timerDisplay.Size = new System.Drawing.Size(527, 163);
 			this.timerDisplay.TabIndex = 0;
 			this.timerDisplay.Text = "00:00:00";
-			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// startButton
 			// 
@@ -99,7 +98,7 @@ namespace CountDownTimerV0
 			this.startButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
 			this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
 			this.startButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.startButton.Location = new System.Drawing.Point(5, 168);
+			this.startButton.Location = new System.Drawing.Point(5, 197);
 			this.startButton.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
 			this.startButton.Name = "startButton";
 			this.startButton.Padding = new System.Windows.Forms.Padding(32, 0, 26, 0);
@@ -119,7 +118,7 @@ namespace CountDownTimerV0
 			this.stopButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
 			this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
 			this.stopButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.stopButton.Location = new System.Drawing.Point(181, 168);
+			this.stopButton.Location = new System.Drawing.Point(181, 197);
 			this.stopButton.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
 			this.stopButton.Name = "stopButton";
 			this.stopButton.Padding = new System.Windows.Forms.Padding(36, 0, 28, 0);
@@ -139,7 +138,7 @@ namespace CountDownTimerV0
 			this.resetButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.resetButton.Image = ((System.Drawing.Image)(resources.GetObject("resetButton.Image")));
 			this.resetButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.resetButton.Location = new System.Drawing.Point(358, 168);
+			this.resetButton.Location = new System.Drawing.Point(358, 197);
 			this.resetButton.Name = "resetButton";
 			this.resetButton.Padding = new System.Windows.Forms.Padding(36, 0, 28, 0);
 			this.resetButton.Size = new System.Drawing.Size(174, 74);
@@ -155,7 +154,7 @@ namespace CountDownTimerV0
 			this.countInverseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.countInverseBtn.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.countInverseBtn.ForeColor = System.Drawing.Color.White;
-			this.countInverseBtn.Location = new System.Drawing.Point(358, 245);
+			this.countInverseBtn.Location = new System.Drawing.Point(358, 274);
 			this.countInverseBtn.Name = "countInverseBtn";
 			this.countInverseBtn.Size = new System.Drawing.Size(174, 55);
 			this.countInverseBtn.TabIndex = 5;
@@ -172,11 +171,11 @@ namespace CountDownTimerV0
 			this.timerAddBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.timerAddBtn.Image = ((System.Drawing.Image)(resources.GetObject("timerAddBtn.Image")));
 			this.timerAddBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.timerAddBtn.Location = new System.Drawing.Point(338, 459);
+			this.timerAddBtn.Location = new System.Drawing.Point(338, 478);
 			this.timerAddBtn.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.timerAddBtn.Name = "timerAddBtn";
 			this.timerAddBtn.Padding = new System.Windows.Forms.Padding(16, 0, 6, 0);
-			this.timerAddBtn.Size = new System.Drawing.Size(194, 152);
+			this.timerAddBtn.Size = new System.Drawing.Size(194, 133);
 			this.timerAddBtn.TabIndex = 6;
 			this.timerAddBtn.Text = "Add To \'Timers\'";
 			this.timerAddBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -189,7 +188,7 @@ namespace CountDownTimerV0
 			this.muteBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
 			this.muteBtn.Image = ((System.Drawing.Image)(resources.GetObject("muteBtn.Image")));
 			this.muteBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.muteBtn.Location = new System.Drawing.Point(181, 268);
+			this.muteBtn.Location = new System.Drawing.Point(181, 297);
 			this.muteBtn.Name = "muteBtn";
 			this.muteBtn.Padding = new System.Windows.Forms.Padding(0, 0, 7, 0);
 			this.muteBtn.Size = new System.Drawing.Size(140, 43);
@@ -202,7 +201,7 @@ namespace CountDownTimerV0
 			// 
 			this.continuousModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.continuousModeBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.continuousModeBtn.Location = new System.Drawing.Point(181, 245);
+			this.continuousModeBtn.Location = new System.Drawing.Point(181, 274);
 			this.continuousModeBtn.Name = "continuousModeBtn";
 			this.continuousModeBtn.Size = new System.Drawing.Size(148, 29);
 			this.continuousModeBtn.TabIndex = 8;
@@ -306,7 +305,7 @@ namespace CountDownTimerV0
 			this.counterSelectorPanel.Controls.Add(this.navigateUpBtn);
 			this.counterSelectorPanel.Controls.Add(this.selectTimerLabel2);
 			this.counterSelectorPanel.Controls.Add(this.selectTimerLabel1);
-			this.counterSelectorPanel.Location = new System.Drawing.Point(5, 245);
+			this.counterSelectorPanel.Location = new System.Drawing.Point(5, 274);
 			this.counterSelectorPanel.Name = "counterSelectorPanel";
 			this.counterSelectorPanel.Size = new System.Drawing.Size(145, 104);
 			this.counterSelectorPanel.TabIndex = 22;
@@ -329,7 +328,7 @@ namespace CountDownTimerV0
 			this.timersLabel.AutoSize = true;
 			this.timersLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timersLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.timersLabel.Location = new System.Drawing.Point(1, 368);
+			this.timersLabel.Location = new System.Drawing.Point(1, 389);
 			this.timersLabel.Name = "timersLabel";
 			this.timersLabel.Size = new System.Drawing.Size(60, 20);
 			this.timersLabel.TabIndex = 23;
@@ -340,7 +339,7 @@ namespace CountDownTimerV0
 			this.timerNameLabel.AutoSize = true;
 			this.timerNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.timerNameLabel.Location = new System.Drawing.Point(288, 368);
+			this.timerNameLabel.Location = new System.Drawing.Point(288, 389);
 			this.timerNameLabel.Name = "timerNameLabel";
 			this.timerNameLabel.Size = new System.Drawing.Size(94, 20);
 			this.timerNameLabel.TabIndex = 24;
@@ -351,7 +350,7 @@ namespace CountDownTimerV0
 			this.timerDurationLabel.AutoSize = true;
 			this.timerDurationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerDurationLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.timerDurationLabel.Location = new System.Drawing.Point(430, 368);
+			this.timerDurationLabel.Location = new System.Drawing.Point(430, 389);
 			this.timerDurationLabel.Name = "timerDurationLabel";
 			this.timerDurationLabel.Size = new System.Drawing.Size(70, 20);
 			this.timerDurationLabel.TabIndex = 25;
@@ -362,7 +361,7 @@ namespace CountDownTimerV0
 			this.timerDurationEntry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
 			this.timerDurationEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerDurationEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerDurationEntry.Location = new System.Drawing.Point(434, 388);
+			this.timerDurationEntry.Location = new System.Drawing.Point(434, 409);
 			this.timerDurationEntry.Margin = new System.Windows.Forms.Padding(0);
 			this.timerDurationEntry.MaxLength = 8;
 			this.timerDurationEntry.Name = "timerDurationEntry";
@@ -377,7 +376,7 @@ namespace CountDownTimerV0
 			// pictureBox2
 			// 
 			this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-			this.pictureBox2.Location = new System.Drawing.Point(434, 413);
+			this.pictureBox2.Location = new System.Drawing.Point(434, 431);
 			this.pictureBox2.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(46, 44);
@@ -391,10 +390,10 @@ namespace CountDownTimerV0
 			this.timerNamesList.ForeColor = System.Drawing.Color.White;
 			this.timerNamesList.FormattingEnabled = true;
 			this.timerNamesList.ItemHeight = 20;
-			this.timerNamesList.Location = new System.Drawing.Point(6, 408);
-			this.timerNamesList.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
+			this.timerNamesList.Location = new System.Drawing.Point(6, 428);
+			this.timerNamesList.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.timerNamesList.Name = "timerNamesList";
-			this.timerNamesList.Size = new System.Drawing.Size(178, 204);
+			this.timerNamesList.Size = new System.Drawing.Size(178, 184);
 			this.timerNamesList.TabIndex = 31;
 			this.timerNamesList.SelectedValueChanged += new System.EventHandler(this.timerNamesList_SelectedValueChanged);
 			// 
@@ -405,10 +404,10 @@ namespace CountDownTimerV0
 			this.timerDurationsList.ForeColor = System.Drawing.Color.White;
 			this.timerDurationsList.FormattingEnabled = true;
 			this.timerDurationsList.ItemHeight = 20;
-			this.timerDurationsList.Location = new System.Drawing.Point(183, 408);
-			this.timerDurationsList.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+			this.timerDurationsList.Location = new System.Drawing.Point(183, 428);
+			this.timerDurationsList.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
 			this.timerDurationsList.Name = "timerDurationsList";
-			this.timerDurationsList.Size = new System.Drawing.Size(107, 204);
+			this.timerDurationsList.Size = new System.Drawing.Size(107, 184);
 			this.timerDurationsList.TabIndex = 32;
 			this.timerDurationsList.SelectedValueChanged += new System.EventHandler(this.timerDurationsList_SelectedValueChanged);
 			// 
@@ -417,7 +416,7 @@ namespace CountDownTimerV0
 			this.timerNameEntry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
 			this.timerNameEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerNameEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerNameEntry.Location = new System.Drawing.Point(292, 388);
+			this.timerNameEntry.Location = new System.Drawing.Point(292, 409);
 			this.timerNameEntry.Margin = new System.Windows.Forms.Padding(0);
 			this.timerNameEntry.MaxLength = 24;
 			this.timerNameEntry.Name = "timerNameEntry";
@@ -450,7 +449,7 @@ namespace CountDownTimerV0
 			// pictureBox3
 			// 
 			this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-			this.pictureBox3.Location = new System.Drawing.Point(383, 413);
+			this.pictureBox3.Location = new System.Drawing.Point(383, 431);
 			this.pictureBox3.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox3.Name = "pictureBox3";
 			this.pictureBox3.Size = new System.Drawing.Size(46, 44);
@@ -461,7 +460,7 @@ namespace CountDownTimerV0
 			// 
 			this.pictureBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-			this.pictureBox4.Location = new System.Drawing.Point(292, 534);
+			this.pictureBox4.Location = new System.Drawing.Point(293, 552);
 			this.pictureBox4.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox4.Name = "pictureBox4";
 			this.pictureBox4.Size = new System.Drawing.Size(43, 45);
@@ -503,7 +502,7 @@ namespace CountDownTimerV0
 			// 
 			this.timerNamesListLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
 			this.timerNamesListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerNamesListLabel.Location = new System.Drawing.Point(6, 388);
+			this.timerNamesListLabel.Location = new System.Drawing.Point(6, 409);
 			this.timerNamesListLabel.Name = "timerNamesListLabel";
 			this.timerNamesListLabel.Size = new System.Drawing.Size(178, 20);
 			this.timerNamesListLabel.TabIndex = 42;
@@ -514,7 +513,7 @@ namespace CountDownTimerV0
 			// 
 			this.timerDurationsListLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
 			this.timerDurationsListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timerDurationsListLabel.Location = new System.Drawing.Point(183, 388);
+			this.timerDurationsListLabel.Location = new System.Drawing.Point(183, 409);
 			this.timerDurationsListLabel.Name = "timerDurationsListLabel";
 			this.timerDurationsListLabel.Size = new System.Drawing.Size(107, 20);
 			this.timerDurationsListLabel.TabIndex = 43;
@@ -525,7 +524,7 @@ namespace CountDownTimerV0
 			// 
 			this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(292, 489);
+			this.pictureBox1.Location = new System.Drawing.Point(293, 507);
 			this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(43, 45);
@@ -537,7 +536,7 @@ namespace CountDownTimerV0
 			this.activeTimerLabel.AutoSize = true;
 			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerLabel.Location = new System.Drawing.Point(182, 315);
+			this.activeTimerLabel.Location = new System.Drawing.Point(182, 344);
 			this.activeTimerLabel.Name = "activeTimerLabel";
 			this.activeTimerLabel.Size = new System.Drawing.Size(103, 20);
 			this.activeTimerLabel.TabIndex = 44;
@@ -550,7 +549,7 @@ namespace CountDownTimerV0
 			this.activeTimerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.activeTimerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerTextBox.Location = new System.Drawing.Point(292, 314);
+			this.activeTimerTextBox.Location = new System.Drawing.Point(292, 343);
 			this.activeTimerTextBox.Name = "activeTimerTextBox";
 			this.activeTimerTextBox.Size = new System.Drawing.Size(240, 24);
 			this.activeTimerTextBox.TabIndex = 45;
