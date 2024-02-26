@@ -602,6 +602,12 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
+			/* To allow resuming count when clicking to another timer and 
+			   back again, have an actively count down/up 'DurationAsBulkSeconds'
+			   that is only updated when clicking the 'startButton', not when
+			   clicking on a different timer by either the 'timerNamesList' or
+			   the 'timerDurationsList'.  */
+
 			/* -give the 'startButton' a switch state machine and two enum states.
 			   -the first enum state being 'FromBeginning' is the default, with 
 			   current implementation as seen below the 'defaultTimerDisplay' guard 
