@@ -49,6 +49,8 @@ namespace CountDownTimerV0
 		private const string COUNT_UP_BUTTON_TEXT = "COUNTING UP";
 		private const string COUNT_DOWN_BUTTON_TEXT = "COUNTIING DOWN";
 		private int _upCount;
+		private Dictionary<string, int> _timerSecondsByNameDict;
+		private string _latestStartedTimer;
 
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
@@ -92,6 +94,13 @@ namespace CountDownTimerV0
 			public string OnlyFileName { get; set; }
 		}
 
+		private enum TimerState
+		{
+			Ticking,
+			Stopped
+		}
+		private TimerState _timerState = TimerState.Stopped;
+
 		private enum Start
 		{
 			FromBeginning,
@@ -126,6 +135,8 @@ namespace CountDownTimerV0
 
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 			_selectedAudio = new SelectedAudio();
+
+			_timerSecondsByNameDict = new Dictionary<string, int>();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -167,7 +178,6 @@ namespace CountDownTimerV0
 			counterSelectorPanel.TabIndex = 4;
 			navigateUpBtn.TabIndex = 5;
 			navigateDwnBtn.TabIndex = 6;
-			continuousModeBtn.TabIndex = 7;
 			countInverseBtn.TabIndex = 8;
 			muteBtn.TabIndex = 9;
 			timerNameEntry.TabIndex = 10;
@@ -372,8 +382,14 @@ namespace CountDownTimerV0
 		/// </summary>
 		/// <param name="bulkSeconds"></param>
 		/// <param name="formattedTimeColumns">Caches the formatted time columns</param>
-		private void FormatTimeFromBulkSeconds(
-			int bulkSeconds, ref FormattedTimeColumns formattedTimeColumns)
+		/// <param name="forceTwoNumberColumns">Toggles whether to force each column
+		/// of the formatted (hh:mm:ss) time be made of two numbers.</param>
+		/// <returns>The formatted time consisting of two numbers per column (if 
+		/// <paramref name="forceTwoNumberColumns"/> is toggled), else returns
+		/// an empty string.</returns>
+		private string FormatTimeFromBulkSeconds(
+			int bulkSeconds, ref FormattedTimeColumns formattedTimeColumns,
+			bool forceTwoNumberColumns = false)
 		{
 			//format seconds column in hh:mm:ss from 'durationAsSeconds' as,
 			formattedTimeColumns.Seconds = bulkSeconds % 60;
@@ -388,6 +404,17 @@ namespace CountDownTimerV0
 			//format hours column in hh:mm:ss from 'hoursCarriedOver' as,
 			bool hoursExceed99 = hoursCarriedOver > 99;
 			formattedTimeColumns.Hours = hoursExceed99 ? 99 : hoursCarriedOver;
+
+			if ( !forceTwoNumberColumns ) return string.Empty;
+
+			//ensures each time column (hh:mm:ss) has a minimum of two numbers
+			//e.g. 01:00:25
+			string twoNumberColumnarTime = FormatHhMmSsTime(
+				formattedTimeColumns.Hours,
+				formattedTimeColumns.Minutes,
+				formattedTimeColumns.Seconds);
+
+			return twoNumberColumnarTime;
 		}
 
 		/// <summary>
@@ -514,7 +541,11 @@ namespace CountDownTimerV0
 			_chosenTimer.Duration = selectedDuration;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
-			timerDisplay.Text = _chosenTimer.Duration;
+			bool stoppedWithoutReset = _timerSecondsByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			timerDisplay.Text = timerDuration;
+			//timerDisplay.Text = selectedDuration;
 
 			//reset 'startButton' state
 			_startButtonState = Start.FromBeginning;
@@ -540,7 +571,11 @@ namespace CountDownTimerV0
 			_chosenTimer.Name = selectedName;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
-			timerDisplay.Text = _chosenTimer.Duration;
+			bool stoppedWithoutReset = _timerSecondsByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			timerDisplay.Text = timerDuration;
+			//timerDisplay.Text = selectedDuration;
 
 			//reset 'startButton' state
 			_startButtonState = Start.FromBeginning;
@@ -602,6 +637,16 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
+			switch ( _timerState )
+			{
+				//if already in START state, do nothing 
+				case TimerState.Ticking:
+					return;
+				case TimerState.Stopped:
+				default:
+					break;
+			}
+
 			/* To allow resuming count when clicking to another timer and 
 			   back again, have an actively count down/up 'DurationAsBulkSeconds'
 			   that is only updated when clicking the 'startButton', not when
@@ -654,6 +699,16 @@ namespace CountDownTimerV0
 				default:
 					break;
 			}
+
+			//save name of started timer 
+			_latestStartedTimer = _chosenTimer.Name;
+
+			//suspend value changing of timerNamesList list box
+			timerNamesList.SelectionMode = SelectionMode.None;
+			//suspend value changing of timerDurationsList list box
+			timerDurationsList.SelectionMode = SelectionMode.None;
+
+			_timerState = TimerState.Ticking;
 		}
 
 		// handles event raised whenever the ticker control's set interval elapses
@@ -732,6 +787,16 @@ namespace CountDownTimerV0
 
 		private void stopButton_Click(object sender, EventArgs e)
 		{
+			switch ( _timerState )
+			{
+				//if already in STOPPED state, do nothing
+				case TimerState.Stopped:
+					return;
+				case TimerState.Ticking:
+				default:
+					break;
+			}
+
 			 /* The continuously running routines started when pressing the 
 			    'startButton' are:
 					- the 'countTimer', and
@@ -740,11 +805,23 @@ namespace CountDownTimerV0
 			    'Start.FromPaused'. */
 			
 			//change the text and image of the 'startButton' to read 'pause'
-			//set the state of the 'startButton' to 'FromPause'
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
 
+			/* Map name:duration to persist count beyond pressing 'STOP' (until pressing
+			   'RESET') and continue despite switching timers */
+			int timerCount = _countDown ? _durationAsSeconds : _upCount;
+			_timerSecondsByNameDict[_chosenTimer.Name] = timerCount;
+
+			//set the state of the 'startButton' to 'FromPause'
 			_startButtonState = Start.FromPaused;
+
+			//re-enable value changing of timerNamesList list box
+			timerNamesList.SelectionMode = SelectionMode.One;
+			//re-enable value changing of timerDurationsList list box
+			timerDurationsList.SelectionMode = SelectionMode.One;
+
+			_timerState = TimerState.Stopped;
 		}
 	}
 }
