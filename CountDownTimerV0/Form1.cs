@@ -50,7 +50,6 @@ namespace CountDownTimerV0
 		private const string COUNT_DOWN_BUTTON_TEXT = "COUNTIING DOWN";
 		private int _upCount;
 		private Dictionary<string, int> _timerSecondsByNameDict;
-		private string _latestStartedTimer;
 
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
@@ -167,7 +166,6 @@ namespace CountDownTimerV0
 			   timer length. The timer length is just an int number counted up to 
 			   (-= 1 every 1000 miliseconds), or that is counted 
 			   down from (+= 1 every 1000 miliseconds). */
-			//
 		}
 
 		private void SetTabIndices()
@@ -336,8 +334,6 @@ namespace CountDownTimerV0
 			}
 
 			/* Enforce correct timer duration format */
-
-			//format seconds column
 			int bulkSeconds = DurationAsBulkSeconds(timerDurationEntry.Text);
 			FormatTimeFromBulkSeconds(bulkSeconds, ref _formattedColumns);
 
@@ -545,10 +541,6 @@ namespace CountDownTimerV0
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
-			//timerDisplay.Text = selectedDuration;
-
-			//reset 'startButton' state
-			_startButtonState = Start.FromBeginning;
 		}
 
 		// so user can select timer by either clicking on its name or duration, then press 'Start'
@@ -575,10 +567,6 @@ namespace CountDownTimerV0
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
-			//timerDisplay.Text = selectedDuration;
-
-			//reset 'startButton' state
-			_startButtonState = Start.FromBeginning;
 		}
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
@@ -651,7 +639,7 @@ namespace CountDownTimerV0
 			   back again, have an actively count down/up 'DurationAsBulkSeconds'
 			   that is only updated when clicking the 'startButton', not when
 			   clicking on a different timer by either the 'timerNamesList' or
-			   the 'timerDurationsList'.  */
+			   the 'timerDurationsList'. */
 
 			/* -give the 'startButton' a switch state machine and two enum states.
 			   -the first enum state being 'FromBeginning' is the default, with 
@@ -677,9 +665,10 @@ namespace CountDownTimerV0
 						return;
 					}
 
-					/* To increment upto or decrement down from the 'ChosenTimer.Duration',
-					   we have to determine what the entire duration is in seconds for simple 
-					   decrement, increment (++,--) operations. */
+					/* To increment upto or decrement down from the 
+					   'ChosenTimer.Duration', we have to determine what the 
+					   entire duration is in seconds for simple decrement, 
+					   increment (++,--) operations. */
 					_durationAsSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
 
 					_upCount = 0;
@@ -691,6 +680,18 @@ namespace CountDownTimerV0
 
 					break;
 				case Start.FromPaused:
+					//retrieve bulk seconds cached when timer was STOPPED (paused)
+					string selectedTimer = _chosenTimer.Name;
+					bool resumingTimer = _timerSecondsByNameDict.TryGetValue(selectedTimer, out int timerCount);
+
+					int newBulkSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
+					//set _durationAsSeconds/_upCount to cached bulk seconds
+					if ( _countDown )
+						_durationAsSeconds = resumingTimer ? timerCount : newBulkSeconds;
+					else
+						_upCount = resumingTimer ? timerCount : 0;
+
+					//re-enable timer
 					countTimer.Enabled = true;
 					countTimer.Start();
 					_startButtonState = Start.FromBeginning;
@@ -699,9 +700,6 @@ namespace CountDownTimerV0
 				default:
 					break;
 			}
-
-			//save name of started timer 
-			_latestStartedTimer = _chosenTimer.Name;
 
 			//suspend value changing of timerNamesList list box
 			timerNamesList.SelectionMode = SelectionMode.None;
