@@ -729,6 +729,10 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
+			//disable timers list navigation buttons
+			/*navigateDwnBtn.Enabled = false;
+			navigateUpBtn.Enabled = false;*/
+
 			//indicate unresponsivenes of respective controls
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
@@ -953,14 +957,14 @@ namespace CountDownTimerV0
 			{
 				//get index of selected item
 				int selectedItemI = timerNamesList.SelectedIndex;
-				//increment said index
+				//decrement said index
 				selectedItemI--;
 				bool neg = selectedItemI < 0;
-				//clamp above -1 & assist loop to bottom
-				selectedItemI = neg ? lastTimerI : selectedItemI; 
+				//clamp above -1 & assist loop to bottom,
 				//loop back to bottom if reached top
+				selectedItemI = neg ? lastTimerI : selectedItemI; 
 
-				//set selected item to Items item at incremented index
+				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 			}
 		}
@@ -968,7 +972,31 @@ namespace CountDownTimerV0
 		// user intends choose the timer below current in the timers list 
 		private void navigateDwnBtn_Click(object sender, EventArgs e)
 		{
+			int timerNamesCount = timerNamesList.Items.Count;
+			bool emptyTimersList = timerNamesCount < 1;
+			//if 'timerNamesList' is empty, return
+			if ( emptyTimersList ) return;
 
+			bool noSelectedTimer = timerNamesList.SelectedItem == null;
+			//if no selected item in 'timerNamesList'
+			if ( noSelectedTimer )
+				//set the very first (list top) item to selected
+				timerNamesList.SelectedItem = timerNamesList.Items[0];
+			//else,
+			else
+			{
+				//get index of selected item
+				int selectedItemI = timerNamesList.SelectedIndex;
+				//increment said index
+				selectedItemI++;
+				bool indexOutOfBounds = selectedItemI >= timerNamesCount;
+				//clamp below lastI & assist loop to top,
+				//loop back to top if reached bottom
+				selectedItemI = indexOutOfBounds ? 0 : selectedItemI;
+
+				//set selected item to Items' item at incremented index
+				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
+			}
 		}
 	}
 }
