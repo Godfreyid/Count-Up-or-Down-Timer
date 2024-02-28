@@ -933,5 +933,42 @@ namespace CountDownTimerV0
 
 			_timerState = TimerState.Reset;
 		}
+
+		// user intends choose the timer above current in the timers list 
+		private void navigateUpBtn_Click(object sender, EventArgs e)
+		{
+			int timerNamesCount = timerNamesList.Items.Count;
+			int lastTimerI = timerNamesCount - 1;
+			bool emptyTimersList = timerNamesCount < 1;
+			//if 'timerNamesList' is empty, return
+			if ( emptyTimersList ) return;
+
+			bool noSelectedTimer = timerNamesList.SelectedItem == null;
+			//if there is no selected item in 'timerNamesList'
+			if ( noSelectedTimer )
+				//set the very last (list bottom) item as selected
+				timerNamesList.SelectedItem = timerNamesList.Items[lastTimerI];
+			//else,
+			else
+			{
+				//get index of selected item
+				int selectedItemI = timerNamesList.SelectedIndex;
+				//increment said index
+				selectedItemI--;
+				bool neg = selectedItemI < 0;
+				//clamp above -1 & assist loop to bottom
+				selectedItemI = neg ? lastTimerI : selectedItemI; 
+				//loop back to bottom if reached top
+
+				//set selected item to Items item at incremented index
+				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
+			}
+		}
+
+		// user intends choose the timer below current in the timers list 
+		private void navigateDwnBtn_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

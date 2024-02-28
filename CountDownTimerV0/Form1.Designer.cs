@@ -257,6 +257,7 @@ namespace CountDownTimerV0
 			this.navigateUpBtn.Size = new System.Drawing.Size(86, 52);
 			this.navigateUpBtn.TabIndex = 14;
 			this.navigateUpBtn.UseVisualStyleBackColor = false;
+			this.navigateUpBtn.Click += new System.EventHandler(this.navigateUpBtn_Click);
 			// 
 			// loadProfileBtn
 			// 
@@ -313,6 +314,7 @@ namespace CountDownTimerV0
 			this.navigateDwnBtn.Size = new System.Drawing.Size(86, 52);
 			this.navigateDwnBtn.TabIndex = 36;
 			this.navigateDwnBtn.UseVisualStyleBackColor = false;
+			this.navigateDwnBtn.Click += new System.EventHandler(this.navigateDwnBtn_Click);
 			// 
 			// timersLabel
 			// 
