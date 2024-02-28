@@ -148,6 +148,7 @@ namespace CountDownTimerV0
 			this.resetButton.Text = "RESET";
 			this.resetButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.resetButton.UseVisualStyleBackColor = false;
+			this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
 			// 
 			// countInverseBtn
 			// 

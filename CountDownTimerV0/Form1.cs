@@ -96,7 +96,8 @@ namespace CountDownTimerV0
 		private enum TimerState
 		{
 			Ticking,
-			Stopped
+			Stopped,
+			Reset
 		}
 		private TimerState _timerState = TimerState.Stopped;
 
@@ -820,6 +821,30 @@ namespace CountDownTimerV0
 			timerDurationsList.SelectionMode = SelectionMode.One;
 
 			_timerState = TimerState.Stopped;
+		}
+
+		private void resetButton_Click(object sender, EventArgs e)
+		{
+			switch ( _timerState )
+			{
+				//if already reset OR ticking, do nothing
+				case TimerState.Reset:
+				case TimerState.Ticking:
+
+					return;
+				case TimerState.Stopped:
+				default:
+
+					break;
+			}
+
+			//set value (duration) of name:duration mapping to _chosenTimer.Duration
+			int inputBulkSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
+			_timerSecondsByNameDict[_chosenTimer.Name] = inputBulkSeconds;
+			//set timerDisplay.Text to _chosenTimer.Duration
+			timerDisplay.Text = _chosenTimer.Duration;
+
+			_timerState = TimerState.Reset;
 		}
 	}
 }
