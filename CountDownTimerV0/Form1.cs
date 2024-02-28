@@ -730,12 +730,28 @@ namespace CountDownTimerV0
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
 			//indicate unresponsivenes of respective controls
-			ToggleCursorOfControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
+			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
 			_timerState = TimerState.Ticking;
 		}
 
-		private void ToggleCursorOfControls( 
+		/// <summary>
+		/// Toggles the mouse cursor of the form controls according to the 
+		/// current timer state, as toggled by the main controls, START, and
+		/// STOP. E.g. you could decide that when pressing 'START', the 'STOP'
+		/// button mouse cursor is set to 'default' (normal), and the rest
+		/// of the controls (including START) has their mouse cursors set
+		/// to 'no' (disallowed).
+		/// </summary>
+		/// <param name="controlEngaged">Either the STOP, or START buttons.</param>
+		/// <param name="cursorValue">The cursor value to set for all controls
+		/// who are not one of the 'major' (START/STOP) controls.</param>
+		/// <param name="invCursorValue">The cursor value to set for the
+		/// other (opposing) major control. E.g. if 
+		/// <paramref name="controlEngaged"/> is the START button, then
+		/// the STOP button mouse cursor is set to whatever
+		/// <paramref name="invCursorValue"/>is.</param>
+		private void ToggleCursorOfMainControls( 
 			ControlEngaged controlEngaged, 
 			Cursor cursorValue,
 			Cursor invCursorValue )
@@ -891,7 +907,7 @@ namespace CountDownTimerV0
 			_timerState = TimerState.Stopped;
 
 			//indicate restored responsivenes of respective controls
-			ToggleCursorOfControls(ControlEngaged.StopButton, Cursors.Default, Cursors.No);
+			ToggleCursorOfMainControls(ControlEngaged.StopButton, Cursors.Default, Cursors.No);
 		}
 
 		private void resetButton_Click(object sender, EventArgs e)
