@@ -784,6 +784,7 @@ namespace CountDownTimerV0
 			_soundPlayer.Stop();
 		}
 
+		// user intends to reset the chosen timer to its initial (input) duration
 		private void stopButton_Click(object sender, EventArgs e)
 		{
 			switch ( _timerState )
