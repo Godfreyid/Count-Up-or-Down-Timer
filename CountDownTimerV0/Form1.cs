@@ -941,6 +941,16 @@ namespace CountDownTimerV0
 		// user intends choose the timer above current in the timers list 
 		private void navigateUpBtn_Click(object sender, EventArgs e)
 		{
+			switch ( _timerState )
+			{
+				//if TICKING, do nothing
+				case TimerState.Ticking:
+					return;
+				case TimerState.Stopped:
+				default:
+					break;
+			}
+
 			int timerNamesCount = timerNamesList.Items.Count;
 			int lastTimerI = timerNamesCount - 1;
 			bool emptyTimersList = timerNamesCount < 1;
@@ -972,6 +982,16 @@ namespace CountDownTimerV0
 		// user intends choose the timer below current in the timers list 
 		private void navigateDwnBtn_Click(object sender, EventArgs e)
 		{
+			switch ( _timerState )
+			{
+				//if TICKING, do nothing
+				case TimerState.Ticking:
+					return;
+				case TimerState.Stopped:
+				default:
+					break;
+			}
+
 			int timerNamesCount = timerNamesList.Items.Count;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
