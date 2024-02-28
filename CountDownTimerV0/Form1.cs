@@ -729,10 +729,52 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
-			//indicate unresponsivenes of 'RESET' button
-			resetButton.Cursor = Cursors.No;
+			//indicate unresponsivenes of respective controls
+			ToggleCursorOfControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
 			_timerState = TimerState.Ticking;
+		}
+
+		private void ToggleCursorOfControls( 
+			ControlEngaged controlEngaged, 
+			Cursor cursorValue,
+			Cursor invCursorValue )
+		{
+			switch ( controlEngaged )
+			{
+				case ControlEngaged.StartButton:
+					stopButton.Cursor = invCursorValue;
+
+					startButton.Cursor = cursorValue;
+					resetButton.Cursor = cursorValue;
+					countInverseBtn.Cursor = cursorValue;
+					navigateUpBtn.Cursor = cursorValue;
+					navigateDwnBtn.Cursor = cursorValue;
+					timerNameEntry.Cursor = cursorValue;
+					timerDurationEntry.Cursor = cursorValue;
+					timerAddBtn.Cursor = cursorValue;
+					clearTimersListBtn.Cursor = cursorValue;
+					timerNamesList.Cursor = cursorValue;
+					timerDurationsList.Cursor = cursorValue;
+
+					break;
+				case ControlEngaged.StopButton:
+					stopButton.Cursor = invCursorValue;
+
+					startButton.Cursor = cursorValue;
+					resetButton.Cursor = cursorValue;
+					countInverseBtn.Cursor = cursorValue;
+					navigateUpBtn.Cursor = cursorValue;
+					navigateDwnBtn.Cursor = cursorValue;
+					timerNameEntry.Cursor = cursorValue;
+					timerDurationEntry.Cursor = cursorValue;
+					timerAddBtn.Cursor = cursorValue;
+					clearTimersListBtn.Cursor = cursorValue;
+					timerNamesList.Cursor = cursorValue;
+					timerDurationsList.Cursor = cursorValue;
+
+					break;
+			}
 		}
 
 		// handles event raised whenever the ticker control's set interval elapses
@@ -847,6 +889,9 @@ namespace CountDownTimerV0
 			timerDurationsList.SelectionMode = SelectionMode.One;
 
 			_timerState = TimerState.Stopped;
+
+			//indicate restored responsivenes of respective controls
+			ToggleCursorOfControls(ControlEngaged.StopButton, Cursors.Default, Cursors.No);
 		}
 
 		private void resetButton_Click(object sender, EventArgs e)
@@ -869,9 +914,6 @@ namespace CountDownTimerV0
 			_timerSecondsByNameDict[_chosenTimer.Name] = inputBulkSeconds;
 			//set timerDisplay.Text to _chosenTimer.Duration
 			timerDisplay.Text = _chosenTimer.Duration;
-
-			//indicate responsivenes of 'RESET' button
-			resetButton.Cursor = Cursors.Default;
 
 			_timerState = TimerState.Reset;
 		}
