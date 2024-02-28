@@ -108,6 +108,28 @@ namespace CountDownTimerV0
 		}
 		private Start _startButtonState;
 
+		#region COSMETIC (NON-FUNCTIONALITY) CONSTRUCTS
+
+		private enum ControlEngaged
+		{
+			StartButton,
+			StopButton,
+			ResetButton,
+			CountInversionButton,
+			NavigateUpButton,
+			NavigateDownButton,
+			MuteAudioButton,
+			TimerNameEntryBox,
+			TimerDurationEntryBox,
+			TimerAddButton,
+			ClearTimersButton,
+			ChooseAudioButton,
+			TimerNamesList,
+			TimerDurationsList
+		}
+
+		#endregion
+
 		public DigitalCountTimer()
 		{
 			InitializeComponent();
@@ -707,6 +729,9 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
+			//indicate unresponsivenes of 'RESET' button
+			resetButton.Cursor = Cursors.No;
+
 			_timerState = TimerState.Ticking;
 		}
 
@@ -844,6 +869,9 @@ namespace CountDownTimerV0
 			_timerSecondsByNameDict[_chosenTimer.Name] = inputBulkSeconds;
 			//set timerDisplay.Text to _chosenTimer.Duration
 			timerDisplay.Text = _chosenTimer.Duration;
+
+			//indicate responsivenes of 'RESET' button
+			resetButton.Cursor = Cursors.Default;
 
 			_timerState = TimerState.Reset;
 		}
