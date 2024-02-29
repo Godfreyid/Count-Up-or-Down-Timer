@@ -749,7 +749,7 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
-			//indicate unresponsivenes of respective controls
+			//indicate restricted (disallowed) controls while timer ticks
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
 			_timerState = TimerState.Ticking;
@@ -1047,18 +1047,46 @@ namespace CountDownTimerV0
 			//if missing the rememberance file, create it
 			if (!memFileExists )
 			{
-				using (FileStream fileStream = File.Create(LAPSES_MEM_FILE_PATH))
-				{
-
-				}
+				//only ensure the file exists for next step, no writing here
+				using (FileStream fileStream = File.Create(LAPSES_MEM_FILE_PATH)) {}
 			}
 
 			//open a file stream
-			//using (FileStream fileStream = 
-			//get a list of the keys from _timerSecondsByNameDict
-			//foreach key in said list
-				//get the bulkseconds
-				//write comma separated key and value to file stream
+			using ( FileStream fileStream = File.OpenWrite(LAPSES_MEM_FILE_PATH) )
+			{
+				//get a list of the keys from _timerSecondsByNameDict
+				Dictionary<string, int>.KeyCollection keys =  _timerSecondsByNameDict.Keys;
+				//convert colon separated timer name and bulkSeconds string
+				string[] keysArray = keys.ToArray<string>();
+
+				foreach ( string name in keysArray )
+				{
+					string durationAsString = _timerSecondsByNameDict[name].ToString();
+					string nameAndSecondsStr = $"{name}:{durationAsString}\r\n";
+					byte[] timerAsBytes = new UTF8Encoding(true, true).GetBytes(nameAndSecondsStr);
+					fileStream.WriteAsync(timerAsBytes, 0, timerAsBytes.Length);
+				}
+
+				/*byte[] namesAsBytes = new byte[keys.Count];
+				//foreach key in said list
+				int keyI = 0;
+				foreach ( string key in keys )
+				{
+					//to write comma separated key and value to file stream,
+					//get name (key) as array byte array
+					//get unicode of said byt
+					byte timerNameByte = byte.Parse(key);
+					namesAsBytes[keyI] = timerNameByte;
+
+					fileStream.Write(key, bulkSeconds);
+
+					//get the bulkseconds
+					int bulkSeconds = _timerSecondsByNameDict[key];
+
+					keyI++;
+				}*/
+
+			}
 		}
 
 	}
