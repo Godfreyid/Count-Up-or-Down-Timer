@@ -270,7 +270,7 @@ namespace CountDownTimerV0
 			this.loadProfileBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.loadProfileBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.loadProfileBtn.Image = ((System.Drawing.Image)(resources.GetObject("loadProfileBtn.Image")));
-			this.loadProfileBtn.Location = new System.Drawing.Point(124, 0);
+			this.loadProfileBtn.Location = new System.Drawing.Point(124, 3);
 			this.loadProfileBtn.Name = "loadProfileBtn";
 			this.loadProfileBtn.Size = new System.Drawing.Size(118, 32);
 			this.loadProfileBtn.TabIndex = 16;
@@ -286,7 +286,7 @@ namespace CountDownTimerV0
 			this.saveProfileBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.saveProfileBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.saveProfileBtn.Image = ((System.Drawing.Image)(resources.GetObject("saveProfileBtn.Image")));
-			this.saveProfileBtn.Location = new System.Drawing.Point(0, 0);
+			this.saveProfileBtn.Location = new System.Drawing.Point(0, 3);
 			this.saveProfileBtn.Name = "saveProfileBtn";
 			this.saveProfileBtn.Size = new System.Drawing.Size(118, 32);
 			this.saveProfileBtn.TabIndex = 17;
