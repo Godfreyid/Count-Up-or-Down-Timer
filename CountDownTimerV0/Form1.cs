@@ -219,6 +219,21 @@ namespace CountDownTimerV0
 		{
 			saveLapsesCheckBox.SendToBack();
 		}
+		
+		private void LoadSavedTimerLapses()
+		{
+			//open the saved file at LAPSES_MEM_FILE_PATH
+			using ( FileStream fileStream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
+			{
+				if ( fileStream == null ) return;
+				//fileStream.
+				//foreach line in the fileStream
+					//split the line (string) at the comma
+					//make _timerSecondsByNameDict name:duration entry
+					//i.e. 1st elem of split = key and 2nd = value
+
+			}
+		}
 
 		// user clicked in text field to begin entering timer name
 		private void timerNameEntry_Enter(object sender, EventArgs e)
@@ -1062,7 +1077,7 @@ namespace CountDownTimerV0
 				foreach ( string name in keysArray )
 				{
 					string durationAsString = _timerSecondsByNameDict[name].ToString();
-					string nameAndSecondsStr = $"{name}:{durationAsString}\r\n";
+					string nameAndSecondsStr = $"{name}:{durationAsString}{Environment.NewLine}";
 					byte[] timerAsBytes = new UTF8Encoding(true, true).GetBytes(nameAndSecondsStr);
 					fileStream.WriteAsync(timerAsBytes, 0, timerAsBytes.Length);
 				}
