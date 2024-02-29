@@ -593,16 +593,18 @@ namespace CountDownTimerV0
 			// 
 			// saveLapsesCheckBox
 			// 
-			this.saveLapsesCheckBox.AutoSize = true;
 			this.saveLapsesCheckBox.BackColor = System.Drawing.Color.Transparent;
 			this.saveLapsesCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.saveLapsesCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.saveLapsesCheckBox.Image = ((System.Drawing.Image)(resources.GetObject("saveLapsesCheckBox.Image")));
-			this.saveLapsesCheckBox.Location = new System.Drawing.Point(354, 1);
+			this.saveLapsesCheckBox.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.saveLapsesCheckBox.Location = new System.Drawing.Point(353, 5);
+			this.saveLapsesCheckBox.Margin = new System.Windows.Forms.Padding(0);
 			this.saveLapsesCheckBox.Name = "saveLapsesCheckBox";
-			this.saveLapsesCheckBox.Size = new System.Drawing.Size(174, 32);
+			this.saveLapsesCheckBox.Size = new System.Drawing.Size(174, 30);
 			this.saveLapsesCheckBox.TabIndex = 49;
 			this.saveLapsesCheckBox.Text = "Remember Lapses";
+			this.saveLapsesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.saveLapsesCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveLapsesCheckBox.UseVisualStyleBackColor = false;
 			// 
@@ -664,7 +666,6 @@ namespace CountDownTimerV0
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
