@@ -8,11 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
+using System.IO;
 
 namespace CountDownTimerV0
 {
 	public partial class DigitalCountTimer : Form
 	{
+		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
+
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
@@ -141,6 +144,8 @@ namespace CountDownTimerV0
 		{
 			SetTabIndices();
 
+			SendControlsToBack();
+
 			_formattedColumns = new FormattedTimeColumns();
 
 			_timerNameMsgBoxInfo = new MessageBoxInfo(
@@ -208,6 +213,11 @@ namespace CountDownTimerV0
 			clearTimersListBtn.TabIndex = 14;
 			saveProfileBtn.TabIndex = 15;
 			loadProfileBtn.TabIndex = 16;
+		}
+
+		private void SendControlsToBack()
+		{
+			saveLapsesCheckBox.SendToBack();
 		}
 
 		// user clicked in text field to begin entering timer name
@@ -1018,5 +1028,32 @@ namespace CountDownTimerV0
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 			}
 		}
+
+		// user intends to close the timer form window
+		private void DigitalCountTimer_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			bool saveTimerLapses = saveLapsesCheckBox.Checked;
+			//if 'saveLapesesCheckBox is NOT checked, return
+			if ( !saveTimerLapses ) return;
+
+			//else
+			bool memFileExists = File.Exists(LAPSES_MEM_FILE_PATH);
+			//if missing the rememberance file, create it
+			if (!memFileExists )
+			{
+				using (FileStream fileStream = File.Create(LAPSES_MEM_FILE_PATH))
+				{
+
+				}
+			}
+
+			//open a file stream
+			//using (FileStream fileStream = 
+			//get a list of the keys from _timerSecondsByNameDict
+			//foreach key in said list
+				//get the bulkseconds
+				//write comma separated key and value to file stream
+		}
+
 	}
 }
