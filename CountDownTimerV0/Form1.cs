@@ -749,10 +749,6 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
-			//disable timers list navigation buttons
-			/*navigateDwnBtn.Enabled = false;
-			navigateUpBtn.Enabled = false;*/
-
 			//indicate unresponsivenes of respective controls
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
