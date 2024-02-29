@@ -18,10 +18,10 @@ namespace CountDownTimerV0
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
 
 		private const string MISSING_NAME_CAPTION = "Missing Name Input";
-		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name Retry.";
+		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name. Retry.";
 
 		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
-		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration Retry.";
+		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration. Retry.";
 
 		private const string SELECT_A_TIMER_CAPTION = "Select a Timer";
 		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
@@ -471,7 +471,7 @@ namespace CountDownTimerV0
 			bool invalidName = 
 				RefocusInvalidTextEntry(timerNameEntry, NAME_ENTRY_PROMPT_STRING, _timerNameMsgBoxInfo);
 			bool invalidDuration = 
-				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, _timerDurationMsgBoxInfo);
+				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, _timerDurationMsgBoxInfo, invalidName);
 
 			if ( invalidName || invalidDuration ) return;
 
@@ -501,11 +501,18 @@ namespace CountDownTimerV0
 		/// <param name="invalidMsgInfo">A struct containing the minimal required
 		/// information for a MessageBox informing the user on what to correct in the
 		/// event of an invalid timer name or duration entry.</param>
+		/// <param name="skipRefocus">A flag to skip refocusing on the subject TextBox
+		/// despite potentially detecting invalid <paramref name="defaultBoxText"/>.
+		/// Usefull when you just want to alert the user of invalid entry, but
+		/// do not want to refocus, but instead refocus on another TextBox -like
+		/// one coming before or after this <paramref name="refocusedOn"/>
+		/// text bos.</param>
 		/// <returns></returns>
 		private bool RefocusInvalidTextEntry(
 			TextBox refocusedOn, 
 			string defaultBoxText, 
-			MessageBoxInfo invalidMsgInfo)
+			MessageBoxInfo invalidMsgInfo,
+			bool skipRefocus = false)
 		{
 			bool emptyTextField = string.IsNullOrEmpty(refocusedOn.Text);
 			bool defaultText = refocusedOn.Text.Equals(defaultBoxText);
@@ -519,6 +526,9 @@ namespace CountDownTimerV0
 			//display popup informing user to enter a valid text string
 			MessageBox.Show(
 				invalidMsgInfo.Message, invalidMsgInfo.Caption, invalidMsgInfo.Buttons);
+
+			// skip refocusing on 'refocusedOn' text box despite invalid 'defaultBoxText'
+			if ( skipRefocus ) return true;
 
 			//return focus to 'refocusedOn' TextBox
 			refocusedOn.Focus();
