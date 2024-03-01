@@ -15,6 +15,7 @@ namespace CountDownTimerV0
 	public partial class DigitalCountTimer : Form
 	{
 		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
+		private bool _saveTimerLapses;
 
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
@@ -164,7 +165,10 @@ namespace CountDownTimerV0
 			_selectedAudio = new SelectedAudio();
 
 			_timerSecondsByNameDict = new Dictionary<string, int>();
+
 			LoadSavedTimerLapses();
+
+			LoadLapsesIntoTimersList();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -234,12 +238,44 @@ namespace CountDownTimerV0
 				await fileStream.ReadAsync(timersAsBytes, 0, timersAsBytes.Length);
 				
 				string timersToString = Encoding.ASCII.GetString(timersAsBytes);
-				timerDisplay.Text = timersToString;
+				//timerDisplay.Text = timersToString;
+				//split contiguous timers string at the new line characters
+				char[] newLineChars = Environment.NewLine.ToCharArray();
+				string[] splitTimers = timersToString.Split(newLineChars);
 				//foreach line in the fileStream
+				foreach ( string timerLapse in splitTimers )
+				{
+					//skip empty strings introduced by Environment.NewLine
+					if (string.IsNullOrEmpty( timerLapse )) continue;
+
 					//split the line (string) at the comma
+					string[] splitTimer = timerLapse.Split(':');
 					//make _timerSecondsByNameDict name:duration entry
 					//i.e. 1st elem of split = key and 2nd = value
+					string timerName = splitTimer[0];
+					_timerSecondsByNameDict[timerName] = int.Parse(splitTimer[1]);
+				}
+			}
+		}
 
+		private void LoadLapsesIntoTimersList()
+		{
+			//if not toggled _saveTimerLapses before previous app closing, return
+
+			//fill timerNamesList and timerDurationsList boxes with _timerSecondsByNameDict
+			//so...
+			//get keys from _timerSecondsByNameDict
+			string[] keys = _timerSecondsByNameDict.Keys.ToArray<string>();
+			//foreach key in keys,
+			foreach( string key in keys )
+			{
+				//add key to timerNamesList box
+				timerNamesList.Items.Add(key);
+				//add value to timerDurationsList box
+				int bulkSeconds = _timerSecondsByNameDict[key];
+				string hhMmSsFormatted = 
+					FormatTimeFromBulkSeconds(bulkSeconds, ref _formattedColumns, true);
+				timerDurationsList.Items.Add(hhMmSsFormatted);
 			}
 		}
 
