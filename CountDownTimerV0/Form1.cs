@@ -164,6 +164,7 @@ namespace CountDownTimerV0
 			_selectedAudio = new SelectedAudio();
 
 			_timerSecondsByNameDict = new Dictionary<string, int>();
+			LoadSavedTimerLapses();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -220,13 +221,20 @@ namespace CountDownTimerV0
 			saveLapsesCheckBox.SendToBack();
 		}
 		
-		private void LoadSavedTimerLapses()
+		private async void LoadSavedTimerLapses()
 		{
+			byte[] timersAsBytes;
+
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( FileStream fileStream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
+			using ( FileStream fileStream = File.Open(LAPSES_MEM_FILE_PATH, FileMode.Open) )
 			{
 				if ( fileStream == null ) return;
-				//fileStream.
+
+				timersAsBytes = new byte[fileStream.Length];
+				await fileStream.ReadAsync(timersAsBytes, 0, timersAsBytes.Length);
+				
+				string timersToString = Encoding.ASCII.GetString(timersAsBytes);
+				timerDisplay.Text = timersToString;
 				//foreach line in the fileStream
 					//split the line (string) at the comma
 					//make _timerSecondsByNameDict name:duration entry
@@ -1081,25 +1089,6 @@ namespace CountDownTimerV0
 					byte[] timerAsBytes = new UTF8Encoding(true, true).GetBytes(nameAndSecondsStr);
 					fileStream.WriteAsync(timerAsBytes, 0, timerAsBytes.Length);
 				}
-
-				/*byte[] namesAsBytes = new byte[keys.Count];
-				//foreach key in said list
-				int keyI = 0;
-				foreach ( string key in keys )
-				{
-					//to write comma separated key and value to file stream,
-					//get name (key) as array byte array
-					//get unicode of said byt
-					byte timerNameByte = byte.Parse(key);
-					namesAsBytes[keyI] = timerNameByte;
-
-					fileStream.Write(key, bulkSeconds);
-
-					//get the bulkseconds
-					int bulkSeconds = _timerSecondsByNameDict[key];
-
-					keyI++;
-				}*/
 
 			}
 		}
