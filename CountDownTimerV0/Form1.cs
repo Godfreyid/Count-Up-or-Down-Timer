@@ -230,15 +230,16 @@ namespace CountDownTimerV0
 		private void LoadSavedTimerLapses()
 		{
 			//if NOT toggled 'save' lapses on last exit, return
-			//if ( !ToggledSaveLapsesOnPrevExit() ) return;
+			if ( !ToggledSaveLapsesOnPrevExit() ) return;
+
+			bool timerLapsesFileExists = File.Exists(LAPSES_MEM_FILE_PATH);
+			if ( !timerLapsesFileExists ) return;
 
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
 			using ( StreamReader reader = new StreamReader(LAPSES_MEM_FILE_PATH) )
 			{
-				if ( reader == null ) return;
-
 				string line;
 				while ( (line = reader.ReadLine()) != null )
 				{
@@ -247,7 +248,7 @@ namespace CountDownTimerV0
 				}
 			}
 
-			//split the line (string) at the comma
+			//split the line (string) at the new lines
 			char[] newLineChars = Environment.NewLine.ToCharArray();
 			string[] splitTimers = entireTimersStr.Split(newLineChars);
 			foreach ( string lapse in splitTimers ) 
@@ -255,6 +256,7 @@ namespace CountDownTimerV0
 				//skip empty strings introduced by Environment.NewLine
 				if ( string.IsNullOrEmpty(lapse) ) continue;
 
+				//split string at colons separating name and seconds
 				string[] timerAndBulkSeconds = lapse.Split(':');
 				//make _timerSecondsByNameDict name:duration entry
 				//i.e. 1st elem of split = key and 2nd = value
@@ -278,27 +280,38 @@ namespace CountDownTimerV0
 
 			string extractedFlagStr = string.Empty;
 			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
-			using ( FileStream stream = File.OpenRead(SAVE_LAPSES_ON_EXIT_PATH) )
+			using ( StreamReader reader = new StreamReader(SAVE_LAPSES_ON_EXIT_PATH) )
 			{
-				if ( stream == null ) return false;
-				//read the text in the file
-				byte[] flagBytes = new byte[stream.Length];
+				string line;
+				/*//read the text in the file
+				byte[] flagBytes = new byte[reader.Length];
 				UTF8Encoding strEncode = new UTF8Encoding(true, true);
-				int readLength;
-				while ( (readLength = stream.Read(flagBytes, 0, flagBytes.Length)) > 0 )
+				int readLength;*/
+				while ( (line = reader.ReadLine()) != null )
 				{
-					string flagString = strEncode.GetString(flagBytes);
-					extractedFlagStr = flagString;
+					//string flagString = strEncode.GetString(flagBytes);
+					extractedFlagStr += $"{line}{Environment.NewLine}";
 				}
-				//assuming dict-like mapping of flag name and value,
-				//so split the string at the colon
-				string[] splitFlagStr = extractedFlagStr.Split(':');
-				//get the second value of the split consequent array
-				string flagValStr = splitFlagStr[1];
-				//assuming the value is a binary 0 or 1, so...
-				int flagValue = int.Parse(flagValStr);
-				//if the parsed int is 0, it means the flag to save lapses was FALSE,
-				bool toggledSaveLapses = flagValue == 1;
+
+				bool toggledSaveLapses = false;
+				char[] newLineChars = Environment.NewLine.ToCharArray();
+				string[] splitNewLines = extractedFlagStr.Split(newLineChars);
+				foreach ( string splitStr in splitNewLines )
+				{
+					//skip empty string introducted by Environment.NewLine
+					if ( string.IsNullOrEmpty(splitStr) ) continue;
+
+					//assuming dict-like mapping of flag name and value,
+					//so split the string at the colon
+					string[] flagAndVal = splitStr.Split(':');
+					//get the second value of the split consequent array
+					string flagValStr = flagAndVal[1];
+					//assuming the value is a binary 0 or 1, so...
+					int flagValue = int.Parse(flagValStr);
+					//if the parsed int is 0, it means the flag to save lapses was FALSE,
+					toggledSaveLapses = flagValue == 1;
+				}
+
 				return toggledSaveLapses;
 			}
 		}
