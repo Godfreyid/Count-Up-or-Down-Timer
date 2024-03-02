@@ -15,7 +15,8 @@ namespace CountDownTimerV0
 	public partial class DigitalCountTimer : Form
 	{
 		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
-		private bool _saveTimerLapses;
+		private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";
+		private bool _saveLapsesOnExit;
 
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
@@ -168,8 +169,6 @@ namespace CountDownTimerV0
 
 			LoadSavedTimerLapses();
 
-			LoadLapsesIntoTimersList();
-
 			StartPosition = FormStartPosition.CenterScreen;
 
 			//setup alarm alert window shown when the alarm is raised
@@ -186,12 +185,6 @@ namespace CountDownTimerV0
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
 
-			_startButtonState = Start.FromBeginning;
-
-			timerNameEntry.Focus();
-
-			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
-
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
 			/* f.y.i. a profile is just a .txt file of 'newline' separated strings
@@ -199,6 +192,15 @@ namespace CountDownTimerV0
 			   timer length. The timer length is just an int number counted up to 
 			   (-= 1 every 1000 miliseconds), or that is counted 
 			   down from (+= 1 every 1000 miliseconds). */
+
+			/* SET STARTING STATE */
+			_startButtonState = Start.FromBeginning;
+
+			timerNameEntry.Focus();
+
+			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
+
+			
 		}
 
 		private void SetTabIndices()
@@ -225,40 +227,95 @@ namespace CountDownTimerV0
 			saveLapsesCheckBox.SendToBack();
 		}
 		
-		private async void LoadSavedTimerLapses()
+		private void LoadSavedTimerLapses()
 		{
-			byte[] timersAsBytes;
+			//if NOT toggled 'save' lapses on last exit, return
+			if ( !ToggledSaveLapsesOnPrevExit() ) return;
+
+			//get number of timer lapses
+			int totalTimers;
+			using ( FileStream stream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
+			{
+				totalTimers = (int)stream.Length;
+			}
+
+			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( FileStream fileStream = File.Open(LAPSES_MEM_FILE_PATH, FileMode.Open) )
+			using ( FileStream stream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
 			{
-				if ( fileStream == null ) return;
+				if ( stream == null ) return;
 
-				timersAsBytes = new byte[fileStream.Length];
-				await fileStream.ReadAsync(timersAsBytes, 0, timersAsBytes.Length);
-				
-				string timersToString = Encoding.ASCII.GetString(timersAsBytes);
-				//timerDisplay.Text = timersToString;
-				//split contiguous timers string at the new line characters
-				char[] newLineChars = Environment.NewLine.ToCharArray();
-				string[] splitTimers = timersToString.Split(newLineChars);
-				//foreach line in the fileStream
-				foreach ( string timerLapse in splitTimers )
+				byte[] timersBytes = new byte[stream.Length];
+				UTF8Encoding strEncode = new UTF8Encoding(true, true);
+				int readLength;
+				while ( (readLength = stream.Read(timersBytes, 0, timersBytes.Length)) > 0 ) 
 				{
-					//skip empty strings introduced by Environment.NewLine
-					if (string.IsNullOrEmpty( timerLapse )) continue;
-
-					//split the line (string) at the comma
-					string[] splitTimer = timerLapse.Split(':');
-					//make _timerSecondsByNameDict name:duration entry
-					//i.e. 1st elem of split = key and 2nd = value
-					string timerName = splitTimer[0];
-					_timerSecondsByNameDict[timerName] = int.Parse(splitTimer[1]);
+					string timerString = strEncode.GetString(timersBytes, 0, readLength);
+					//timerDisplay.Text = timerString; // DEBUGGING - DELETE!!!
+					entireTimersStr = timerString;
 				}
+			}
+
+			//timerDisplay.Text = retrievedTimers[0]; // DEBUGGING!!!
+
+			//split the line (string) at the comma
+			char[] newLineChars = Environment.NewLine.ToCharArray();
+			string[] splitTimers = entireTimersStr.Split(newLineChars);
+			foreach ( string lapse in splitTimers ) 
+			{
+				//skip empty strings introduced by Environment.NewLine
+				if ( string.IsNullOrEmpty(lapse) ) continue;
+
+				string[] timerAndBulkSeconds = lapse.Split(':');
+				//make _timerSecondsByNameDict name:duration entry
+				//i.e. 1st elem of split = key and 2nd = value
+				string timerName = timerAndBulkSeconds[0];
+				_timerSecondsByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);
+			}
+
+			//LoadLapsesIntoMappingCacheDict();
+		}
+
+		private bool ToggledSaveLapsesOnPrevExit()
+		{
+			bool flagFileExists = File.Exists(SAVE_LAPSES_ON_EXIT_PATH);
+			if ( !flagFileExists ) return false;
+
+			int streamLenth;
+			using ( FileStream stream = File.OpenRead(SAVE_LAPSES_ON_EXIT_PATH) ) 
+			{
+				streamLenth = (int)stream.Length;
+			}
+
+			string extractedFlagStr = string.Empty;
+			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
+			using ( FileStream stream = File.OpenRead(SAVE_LAPSES_ON_EXIT_PATH) )
+			{
+				if ( stream == null ) return false;
+				//read the text in the file
+				byte[] flagBytes = new byte[stream.Length];
+				UTF8Encoding strEncode = new UTF8Encoding(true, true);
+				int readLength;
+				while ( (readLength = stream.Read(flagBytes, 0, flagBytes.Length)) > 0 )
+				{
+					string flagString = strEncode.GetString(flagBytes);
+					extractedFlagStr = flagString;
+				}
+				//assuming dict-like mapping of flag name and value,
+				//so split the string at the colon
+				string[] splitFlagStr = extractedFlagStr.Split(':');
+				//get the second value of the split consequent array
+				string flagValStr = splitFlagStr[1];
+				//assuming the value is a binary 0 or 1, so...
+				int flagValue = int.Parse(flagValStr);
+				//if the parsed int is 0, it means the flag to save lapses was FALSE,
+				bool toggledSaveLapses = flagValue == 1;
+				return toggledSaveLapses;
 			}
 		}
 
-		private void LoadLapsesIntoTimersList()
+		private void LoadLapsesIntoMappingCacheDict()
 		{
 			//if not toggled _saveTimerLapses before previous app closing, return
 
@@ -1101,10 +1158,35 @@ namespace CountDownTimerV0
 			//if 'saveLapesesCheckBox is NOT checked, return
 			if ( !saveTimerLapses ) return;
 
-			//else
+			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
+
+			bool flaggingFileExists = File.Exists(SAVE_LAPSES_ON_EXIT_PATH);
+			//if missing the flag file, create it
+			if ( !flaggingFileExists )
+			{
+				//only ensure the file exists for next step, no writing here
+				using (FileStream fileStream = File.Create(SAVE_LAPSES_ON_EXIT_PATH)) {}
+			}
+
+			//open flag file stream
+			using ( FileStream fileStream = File.OpenWrite(SAVE_LAPSES_ON_EXIT_PATH) ) 
+			{
+				//write string that maps flag name and value, akin to a dict pair
+				bool saveLapses = saveLapsesCheckBox.Checked;
+				int boolAsBinary = saveLapses ? 1 : 0;
+				string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
+
+				byte[] flagMappingAsBytes = new UTF8Encoding(true, true).GetBytes(flagString);
+				fileStream.WriteAsync(flagMappingAsBytes, 0, flagMappingAsBytes.Length);
+			}
+
+			#endregion
+
+			#region SAVE LAPSES TO FILE
+
 			bool memFileExists = File.Exists(LAPSES_MEM_FILE_PATH);
 			//if missing the rememberance file, create it
-			if (!memFileExists )
+			if ( !memFileExists )
 			{
 				//only ensure the file exists for next step, no writing here
 				using (FileStream fileStream = File.Create(LAPSES_MEM_FILE_PATH)) {}
@@ -1127,6 +1209,8 @@ namespace CountDownTimerV0
 				}
 
 			}
+
+			#endregion
 		}
 
 	}
