@@ -232,13 +232,6 @@ namespace CountDownTimerV0
 			//if NOT toggled 'save' lapses on last exit, return
 			//if ( !ToggledSaveLapsesOnPrevExit() ) return;
 
-			//get number of timer lapses
-			int totalTimers;
-			using ( FileStream stream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
-			{
-				totalTimers = (int)stream.Length;
-			}
-
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
