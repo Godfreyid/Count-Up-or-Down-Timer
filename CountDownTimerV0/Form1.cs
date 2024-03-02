@@ -1160,14 +1160,6 @@ namespace CountDownTimerV0
 
 			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
 
-			bool flaggingFileExists = File.Exists(SAVE_LAPSES_ON_EXIT_PATH);
-			//if missing the flag file, create it
-			if ( !flaggingFileExists )
-			{
-				//only ensure the file exists for next step, no writing here
-				using (FileStream fileStream = File.Create(SAVE_LAPSES_ON_EXIT_PATH)) {}
-			}
-
 			//open flag file stream
 			using ( FileStream fileStream = File.OpenWrite(SAVE_LAPSES_ON_EXIT_PATH) ) 
 			{
@@ -1183,14 +1175,6 @@ namespace CountDownTimerV0
 			#endregion
 
 			#region SAVE LAPSES TO FILE
-
-			bool memFileExists = File.Exists(LAPSES_MEM_FILE_PATH);
-			//if missing the rememberance file, create it
-			if ( !memFileExists )
-			{
-				//only ensure the file exists for next step, no writing here
-				using (FileStream fileStream = File.Create(LAPSES_MEM_FILE_PATH)) {}
-			}
 
 			//open a file stream
 			using ( FileStream fileStream = File.OpenWrite(LAPSES_MEM_FILE_PATH) )
