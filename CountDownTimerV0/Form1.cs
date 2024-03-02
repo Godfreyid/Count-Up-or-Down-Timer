@@ -1168,20 +1168,9 @@ namespace CountDownTimerV0
 				int boolAsBinary = saveLapses ? 1 : 0;
 				string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
 
-				byte[] flagMappingAsBytes = new UTF8Encoding(true, true).GetBytes(flagString);
 				char[] flagMapping = flagString.ToCharArray();
 				writer.WriteAsync(flagMapping, 0, flagMapping.Length);
 			}
-			/*using ( FileStream fileStream = File.OpenWrite(SAVE_LAPSES_ON_EXIT_PATH) ) 
-			{
-				//write string that maps flag name and value, akin to a dict pair
-				bool saveLapses = saveLapsesCheckBox.Checked;
-				int boolAsBinary = saveLapses ? 1 : 0;
-				string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
-
-				byte[] flagMappingAsBytes = new UTF8Encoding(true, true).GetBytes(flagString);
-				fileStream.WriteAsync(flagMappingAsBytes, 0, flagMappingAsBytes.Length);
-			}*/
 
 			#endregion
 
@@ -1200,27 +1189,9 @@ namespace CountDownTimerV0
 					string durationAsString = _timerSecondsByNameDict[name].ToString();
 					string nameAndSecondsStr = $"{name}:{durationAsString}{Environment.NewLine}";
 					char[] timerChars = nameAndSecondsStr.ToCharArray();
-					byte[] timerAsBytes = new UTF8Encoding(true, true).GetBytes(nameAndSecondsStr);
 					writer.WriteAsync(timerChars, 0, timerChars.Length);
 				}
-
 			}
-			/*using ( FileStream fileStream = File.OpenWrite(LAPSES_MEM_FILE_PATH) )
-			{
-				//get a list of the keys from _timerSecondsByNameDict
-				Dictionary<string, int>.KeyCollection keys =  _timerSecondsByNameDict.Keys;
-				//convert colon separated timer name and bulkSeconds string
-				string[] keysArray = keys.ToArray<string>();
-
-				foreach ( string name in keysArray )
-				{
-					string durationAsString = _timerSecondsByNameDict[name].ToString();
-					string nameAndSecondsStr = $"{name}:{durationAsString}{Environment.NewLine}";
-					byte[] timerAsBytes = new UTF8Encoding(true, true).GetBytes(nameAndSecondsStr);
-					fileStream.WriteAsync(timerAsBytes, 0, timerAsBytes.Length);
-				}
-
-			}*/
 
 			#endregion
 		}
