@@ -230,7 +230,7 @@ namespace CountDownTimerV0
 		private void LoadSavedTimerLapses()
 		{
 			//if NOT toggled 'save' lapses on last exit, return
-			if ( !ToggledSaveLapsesOnPrevExit() ) return;
+			//if ( !ToggledSaveLapsesOnPrevExit() ) return;
 
 			//get number of timer lapses
 			int totalTimers;
@@ -242,22 +242,17 @@ namespace CountDownTimerV0
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( FileStream stream = File.OpenRead(LAPSES_MEM_FILE_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_MEM_FILE_PATH) )
 			{
-				if ( stream == null ) return;
+				if ( reader == null ) return;
 
-				byte[] timersBytes = new byte[stream.Length];
-				UTF8Encoding strEncode = new UTF8Encoding(true, true);
-				int readLength;
-				while ( (readLength = stream.Read(timersBytes, 0, timersBytes.Length)) > 0 ) 
+				string line;
+				while ( (line = reader.ReadLine()) != null )
 				{
-					string timerString = strEncode.GetString(timersBytes, 0, readLength);
-					//timerDisplay.Text = timerString; // DEBUGGING - DELETE!!!
-					entireTimersStr = timerString;
+					//timerDisplay.Text = line; // DEBUGGING - DELETE!!!
+					entireTimersStr += $"{line}{Environment.NewLine}";
 				}
 			}
-
-			//timerDisplay.Text = retrievedTimers[0]; // DEBUGGING!!!
 
 			//split the line (string) at the comma
 			char[] newLineChars = Environment.NewLine.ToCharArray();
