@@ -73,6 +73,8 @@ namespace CountDownTimerV0
 			this.secondsLabel = new System.Windows.Forms.Label();
 			this.saveLapsesCheckBox = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.loadProfileDiaglog = new System.Windows.Forms.OpenFileDialog();
+			this.saveProfileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.counterSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -84,14 +86,14 @@ namespace CountDownTimerV0
 			// timerDisplay
 			// 
 			this.timerDisplay.BackColor = System.Drawing.Color.Black;
-			this.timerDisplay.Font = new System.Drawing.Font("Bodoni MT Condensed", 108.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDisplay.Font = new System.Drawing.Font("Bodoni MT Condensed", 108F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
 			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
 			this.timerDisplay.Name = "timerDisplay";
 			this.timerDisplay.Size = new System.Drawing.Size(527, 179);
 			this.timerDisplay.TabIndex = 0;
 			this.timerDisplay.Text = "00:00:00";
-			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// startButton
 			// 
@@ -293,6 +295,7 @@ namespace CountDownTimerV0
 			this.saveProfileBtn.Text = "Save Profile";
 			this.saveProfileBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveProfileBtn.UseVisualStyleBackColor = false;
+			this.saveProfileBtn.Click += new System.EventHandler(this.saveProfileBtn_Click);
 			// 
 			// loadProfile
 			// 
@@ -598,13 +601,13 @@ namespace CountDownTimerV0
 			this.saveLapsesCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.saveLapsesCheckBox.Image = ((System.Drawing.Image)(resources.GetObject("saveLapsesCheckBox.Image")));
 			this.saveLapsesCheckBox.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.saveLapsesCheckBox.Location = new System.Drawing.Point(353, 5);
+			this.saveLapsesCheckBox.Location = new System.Drawing.Point(346, 5);
 			this.saveLapsesCheckBox.Margin = new System.Windows.Forms.Padding(0);
 			this.saveLapsesCheckBox.Name = "saveLapsesCheckBox";
-			this.saveLapsesCheckBox.Size = new System.Drawing.Size(174, 30);
+			this.saveLapsesCheckBox.Size = new System.Drawing.Size(181, 30);
 			this.saveLapsesCheckBox.TabIndex = 49;
 			this.saveLapsesCheckBox.Text = "Remember Lapses";
-			this.saveLapsesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.saveLapsesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.saveLapsesCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveLapsesCheckBox.UseVisualStyleBackColor = false;
 			// 
@@ -618,6 +621,14 @@ namespace CountDownTimerV0
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(527, 37);
 			this.panel1.TabIndex = 50;
+			// 
+			// loadProfileDiaglog
+			// 
+			this.loadProfileDiaglog.FileName = "openFileDialog1";
+			// 
+			// saveProfileDialog
+			// 
+			this.saveProfileDialog.InitialDirectory = "C:\\Users\\GDK\\Documents\\Count Down Up Timer\\Profiles";
 			// 
 			// DigitalCountTimer
 			// 
@@ -715,6 +726,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Label secondsLabel;
 		private System.Windows.Forms.CheckBox saveLapsesCheckBox;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.OpenFileDialog loadProfileDiaglog;
+		private System.Windows.Forms.SaveFileDialog saveProfileDialog;
 	}
 }
 

@@ -14,8 +14,12 @@ namespace CountDownTimerV0
 {
 	public partial class DigitalCountTimer : Form
 	{
+		/* THESE PATHS NEED TO USE THE Environment.SpecialFolder.MyDocuments var */
+		private const string PROFILE_SAVE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\";
+		private const string PROFILE_LOAD_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\";
 		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
 		private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";
+
 		private bool _saveLapsesOnExit;
 
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
@@ -198,6 +202,9 @@ namespace CountDownTimerV0
 
 			timerNameEntry.Focus();
 
+			/* CREATE MAIN DIRECTORY FOR SAVING/LOADING PROFILES, LAPSES, AND FLAGS */
+			//Directory.CreateDirectory
+
 			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
 
 			
@@ -283,10 +290,6 @@ namespace CountDownTimerV0
 			using ( StreamReader reader = new StreamReader(SAVE_LAPSES_ON_EXIT_PATH) )
 			{
 				string line;
-				/*//read the text in the file
-				byte[] flagBytes = new byte[reader.Length];
-				UTF8Encoding strEncode = new UTF8Encoding(true, true);
-				int readLength;*/
 				while ( (line = reader.ReadLine()) != null )
 				{
 					//string flagString = strEncode.GetString(flagBytes);
@@ -1197,5 +1200,43 @@ namespace CountDownTimerV0
 			#endregion
 		}
 
+		// user intends to save the current list of timers and chosen audio
+		private void saveProfileBtn_Click(object sender, EventArgs e)
+		{
+			//open 'saveProfileDialog' save file dialog at the PROFILE_SAVE_PATH
+			//if user did NOT press the 'ok' button of said dialog, return
+
+			//
+
+			#region SAVE LIST OF TIMERS
+
+			//open file stream
+			using ( StreamWriter writer = new StreamWriter(PROFILE_SAVE_PATH, false) )
+			{
+				ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
+				ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
+				string[] timerNames = new string[timerNameItems.Count];
+				string[] timerDurations = new string[timerDurationItems.Count];
+				for (int nameI = 0; nameI < timerNames.Length; nameI++ )
+				{
+					//get timer name from timerNamesList
+					timerNames[nameI] = timerNameItems[nameI].ToString();
+					//get timer duration from from timerDurationsList
+					timerDurations[nameI] = timerDurationItems[nameI].ToString();
+					//write name:duration pair to file
+				}
+
+				//write chosen audio path to file
+				
+			}
+
+			#endregion
+
+			#region SAVE CHOSEN AUDIO
+
+
+
+			#endregion
+		}
 	}
 }
