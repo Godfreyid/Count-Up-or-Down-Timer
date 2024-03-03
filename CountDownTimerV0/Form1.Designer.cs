@@ -279,6 +279,7 @@ namespace CountDownTimerV0
 			this.loadProfileBtn.Text = "Load Profile";
 			this.loadProfileBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.loadProfileBtn.UseVisualStyleBackColor = false;
+			this.loadProfileBtn.Click += new System.EventHandler(this.loadProfileBtn_Click);
 			// 
 			// saveProfileBtn
 			// 
@@ -622,13 +623,9 @@ namespace CountDownTimerV0
 			this.panel1.Size = new System.Drawing.Size(527, 37);
 			this.panel1.TabIndex = 50;
 			// 
-			// loadProfileDiaglog
-			// 
-			this.loadProfileDiaglog.FileName = "openFileDialog1";
-			// 
 			// saveProfileDialog
 			// 
-			this.saveProfileDialog.InitialDirectory = "C:\\Users\\GDK\\Documents\\Count Down Up Timer\\Profiles";
+			this.saveProfileDialog.DefaultExt = "txt";
 			// 
 			// DigitalCountTimer
 			// 

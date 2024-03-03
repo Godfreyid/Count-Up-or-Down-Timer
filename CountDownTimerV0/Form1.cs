@@ -15,12 +15,23 @@ namespace CountDownTimerV0
 	public partial class DigitalCountTimer : Form
 	{
 		/* THESE PATHS NEED TO USE THE Environment.SpecialFolder.MyDocuments var */
-		private const string PROFILE_SAVE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\";
-		private const string PROFILE_LOAD_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\";
+		private const string PROFILE_DIRECTORY = @"\Count Down Up Timer\Profiles\";
+		private string PROFILE_SAVE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + PROFILE_DIRECTORY;
+		private string PROFILE_LOAD_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + PROFILE_DIRECTORY;
+
+		/*private const string LAPSES_MEM_FILE_NAME = "Remembered Lapses.txt";
+		private string LAPSES_MEM_FILE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + LAPSES_MEM_FILE_NAME;*/
 		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
+		/*private const string SAVE_LAPSES_FLAG_FILE_NAME = "Save Lapses OnExit Flag.txt";
+		private string SAVE_LAPSES_ON_EXIT_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + SAVE_LAPSES_FLAG_FILE_NAME;*/
 		private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";
 
+		private const string DEFAULT_PROFILE_FILE_EXT = ".txt";
+
 		private bool _saveLapsesOnExit;
+
+		private const char DELIMITER_TIMER_LAPSES = ':';
+		private const char DELIMITER_TIMER_PROFILES = '|';
 
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
@@ -62,6 +73,7 @@ namespace CountDownTimerV0
 
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
+		private string _currentAudioFilePath;
 
 		private struct FormattedTimeColumns
 		{
@@ -205,9 +217,15 @@ namespace CountDownTimerV0
 			/* CREATE MAIN DIRECTORY FOR SAVING/LOADING PROFILES, LAPSES, AND FLAGS */
 			//Directory.CreateDirectory
 
+			/* SET INITIAL VALUES FOR FILE OPEN AND SAVE DIALOG CONTROLLERS */
+			saveProfileDialog.InitialDirectory = PROFILE_SAVE_PATH;
+			loadProfileDiaglog.InitialDirectory = PROFILE_LOAD_PATH;
+
+			saveProfileDialog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
+			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
 
-			
+
 		}
 
 		private void SetTabIndices()
@@ -252,16 +270,25 @@ namespace CountDownTimerV0
 				{
 					//timerDisplay.Text = line; // DEBUGGING - DELETE!!!
 					entireTimersStr += $"{line}{Environment.NewLine}";
+
+					/* TRY ADDING THE BELOW */
+					/*//split string at colons separating name and seconds
+					string[] timerAndBulkSeconds = line.Split(':');
+					//make _timerSecondsByNameDict name:duration entry
+					//i.e. 1st elem of split = key and 2nd = value
+					string timerName = timerAndBulkSeconds[0];
+					_timerSecondsByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);*/
 				}
 			}
 
+			/* THE BELOW MIGHT NOT BE NECESSARY */
 			//split the line (string) at the new lines
 			char[] newLineChars = Environment.NewLine.ToCharArray();
-			string[] splitTimers = entireTimersStr.Split(newLineChars);
-			foreach ( string lapse in splitTimers ) 
+			string[] splitTimers = entireTimersStr.Split(newLineChars, StringSplitOptions.RemoveEmptyEntries);
+			foreach ( string lapse in splitTimers )
 			{
 				//skip empty strings introduced by Environment.NewLine
-				if ( string.IsNullOrEmpty(lapse) ) continue;
+				//if ( string.IsNullOrEmpty(lapse) ) continue;
 
 				//split string at colons separating name and seconds
 				string[] timerAndBulkSeconds = lapse.Split(':');
@@ -298,11 +325,11 @@ namespace CountDownTimerV0
 
 				bool toggledSaveLapses = false;
 				char[] newLineChars = Environment.NewLine.ToCharArray();
-				string[] splitNewLines = extractedFlagStr.Split(newLineChars);
+				string[] splitNewLines = extractedFlagStr.Split(newLineChars, StringSplitOptions.RemoveEmptyEntries);
 				foreach ( string splitStr in splitNewLines )
 				{
 					//skip empty string introducted by Environment.NewLine
-					if ( string.IsNullOrEmpty(splitStr) ) continue;
+					//if ( string.IsNullOrEmpty(splitStr) ) continue;
 
 					//assuming dict-like mapping of flag name and value,
 					//so split the string at the colon
@@ -1203,36 +1230,72 @@ namespace CountDownTimerV0
 		// user intends to save the current list of timers and chosen audio
 		private void saveProfileBtn_Click(object sender, EventArgs e)
 		{
-			//open 'saveProfileDialog' save file dialog at the PROFILE_SAVE_PATH
+			//open 'saveProfileDialog' save file dialog so user sets PROFILE_SAVE_PATH
+			bool specifiedSaveFile = saveProfileDialog.ShowDialog() == DialogResult.OK;
 			//if user did NOT press the 'ok' button of said dialog, return
-
-			//
+			if ( !specifiedSaveFile ) return;
 
 			#region SAVE LIST OF TIMERS
 
+			//now that user specified profile save file name,
+			//open that file by building its path
+			string userSetFilePath = Path.Combine(PROFILE_SAVE_PATH, saveProfileDialog.FileName);
 			//open file stream
-			using ( StreamWriter writer = new StreamWriter(PROFILE_SAVE_PATH, false) )
+			using ( StreamWriter writer = new StreamWriter(userSetFilePath, false) )
 			{
 				ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
 				ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
-				string[] timerNames = new string[timerNameItems.Count];
-				string[] timerDurations = new string[timerDurationItems.Count];
-				for (int nameI = 0; nameI < timerNames.Length; nameI++ )
+				for (int nameI = 0; nameI < timerNameItems.Count; nameI++ )
 				{
 					//get timer name from timerNamesList
-					timerNames[nameI] = timerNameItems[nameI].ToString();
+					string timerName = timerNameItems[nameI].ToString();
 					//get timer duration from from timerDurationsList
-					timerDurations[nameI] = timerDurationItems[nameI].ToString();
+					string timerDuration = timerDurationItems[nameI].ToString();
 					//write name:duration pair to file
+					string timer = $"{timerName}|{timerDuration}{Environment.NewLine}";
+					writer.WriteAsync(timer);
 				}
-
-				//write chosen audio path to file
-				
 			}
 
 			#endregion
 
 			#region SAVE CHOSEN AUDIO
+
+			//write chosen audio path to file
+
+			#endregion
+		}
+
+		// user intends to load a previously saved list of timers and chosen audio
+		private void loadProfileBtn_Click(object sender, EventArgs e)
+		{
+			//open 'loadProfileDialog' load file dialog so user sets PROFILE_LOAD_PATH 
+			bool specifiedLoadFile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
+			if ( !specifiedLoadFile ) return;
+
+			#region LOAD LIST OF TIMERS
+
+			//now that user specified profile load file name,
+			//open that file by building its path
+			string userSetFilePath = Path.Combine(PROFILE_LOAD_PATH, loadProfileDiaglog.FileName);
+			//open file stream
+			using ( StreamReader reader = new StreamReader(userSetFilePath) )
+			{
+				string line;
+				while ( (line = reader.ReadLine()) != null )
+				{
+					//split line at profiles delimiter
+					string[] timerConjugate = line.Split(DELIMITER_TIMER_PROFILES);
+					//add timer name to timerNamesList.Items[i]
+					timerNamesList.Items.Add( timerConjugate[0] );
+					//add timer duration to timerDurationsList.Items[i]
+					timerDurationsList.Items.Add( timerConjugate[1] );
+				}
+			}
+
+			#endregion
+
+			#region LOAD PREVIOUSLY CHOSEN AUDIO
 
 
 
