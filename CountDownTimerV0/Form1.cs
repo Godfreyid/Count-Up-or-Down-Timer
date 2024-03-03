@@ -291,7 +291,7 @@ namespace CountDownTimerV0
 				//if ( string.IsNullOrEmpty(lapse) ) continue;
 
 				//split string at colons separating name and seconds
-				string[] timerAndBulkSeconds = lapse.Split(':');
+				string[] timerAndBulkSeconds = lapse.Split(DELIMITER_TIMER_LAPSES);
 				//make _timerSecondsByNameDict name:duration entry
 				//i.e. 1st elem of split = key and 2nd = value
 				string timerName = timerAndBulkSeconds[0];
@@ -333,7 +333,7 @@ namespace CountDownTimerV0
 
 					//assuming dict-like mapping of flag name and value,
 					//so split the string at the colon
-					string[] flagAndVal = splitStr.Split(':');
+					string[] flagAndVal = splitStr.Split(DELIMITER_TIMER_LAPSES);
 					//get the second value of the split consequent array
 					string flagValStr = flagAndVal[1];
 					//assuming the value is a binary 0 or 1, so...
@@ -343,27 +343,6 @@ namespace CountDownTimerV0
 				}
 
 				return toggledSaveLapses;
-			}
-		}
-
-		private void LoadLapsesIntoMappingCacheDict()
-		{
-			//if not toggled _saveTimerLapses before previous app closing, return
-
-			//fill timerNamesList and timerDurationsList boxes with _timerSecondsByNameDict
-			//so...
-			//get keys from _timerSecondsByNameDict
-			string[] keys = _timerSecondsByNameDict.Keys.ToArray<string>();
-			//foreach key in keys,
-			foreach( string key in keys )
-			{
-				//add key to timerNamesList box
-				timerNamesList.Items.Add(key);
-				//add value to timerDurationsList box
-				int bulkSeconds = _timerSecondsByNameDict[key];
-				string hhMmSsFormatted = 
-					FormatTimeFromBulkSeconds(bulkSeconds, ref _formattedColumns, true);
-				timerDurationsList.Items.Add(hhMmSsFormatted);
 			}
 		}
 
