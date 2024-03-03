@@ -27,6 +27,7 @@ namespace CountDownTimerV0
 		private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";
 
 		private const string DEFAULT_PROFILE_FILE_EXT = ".txt";
+		private const string AUDIO_SAVE_FILE_SUFFIX = "_chosenAudio.txt";
 
 		private bool _saveLapsesOnExit;
 
@@ -73,7 +74,6 @@ namespace CountDownTimerV0
 
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
-		private string _currentAudioFilePath;
 
 		private struct FormattedTimeColumns
 		{
@@ -1261,7 +1261,18 @@ namespace CountDownTimerV0
 
 			#region SAVE CHOSEN AUDIO
 
-			//write chosen audio path to file
+			//now that user specified profile save file name,
+			//strip its '.txt' extension before adding audio save file suffix
+			//use suffix appended file name (path) to open (create) audio save file
+			int profilePathLen = userSetFilePath.Length;
+			int profileExtLen = DEFAULT_PROFILE_FILE_EXT.Length;
+			int lenMinusExt = profilePathLen - profileExtLen;
+			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
+			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
+			using ( StreamWriter writer = new StreamWriter(audioSaveFilePath, false) )
+			{
+				writer.WriteLine(_selectedAudio.FullPath);
+			}
 
 			#endregion
 		}
@@ -1297,7 +1308,29 @@ namespace CountDownTimerV0
 
 			#region LOAD PREVIOUSLY CHOSEN AUDIO
 
+			//now that user specified profile load file name,
+			//strip its '.txt' extension before adding audio save file suffix
+			//use suffix appended file name (path) to open audio load file
+			int profilePathLen = userSetFilePath.Length;
+			int profileExtLen = DEFAULT_PROFILE_FILE_EXT.Length;
+			int lenMinusExt = profilePathLen - profileExtLen;
+			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
+			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
+			using ( StreamReader reader = new StreamReader(audioSaveFilePath) )
+			{
+				string line;
+				while ( (line = reader.ReadLine()) != null )
+				{
+					_selectedAudio.FullPath = line;
+				}
 
+				//set 'selectedAudioName' text to read path to show loading
+				string audioFilePath = _selectedAudio.FullPath;
+				string[] dirsToAudioFile = audioFilePath.Split('\\');
+				int lastI = dirsToAudioFile.Length - 1;
+				string justAudioFileName = dirsToAudioFile[lastI];
+				selectedAudioName.Text = justAudioFileName;
+			}
 
 			#endregion
 		}
