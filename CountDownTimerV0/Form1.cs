@@ -408,6 +408,14 @@ namespace CountDownTimerV0
 		/// into <paramref name="textBoxLeft"/>.</param>
 		private void LeavingTextBox(TextBox textBoxLeft, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
 		{
+			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
+			//if empty name/duration text field, set to default
+			if ( emptyName )
+			{
+				textBoxLeft.Text = defaultTextBoxString;
+				return;
+			}
+
 			/* Enforce string format via regex */
 			//only leave if correct string format
 			if ( requireProperFormat )
@@ -425,11 +433,7 @@ namespace CountDownTimerV0
 
 			}
 
-			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
-			//if empty name text field, show prompt text of required name string format
-			if ( !emptyName ) return;
-
-			textBoxLeft.Text = defaultTextBoxString;
+			
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
