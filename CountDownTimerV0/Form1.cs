@@ -408,9 +408,9 @@ namespace CountDownTimerV0
 		/// into <paramref name="textBoxLeft"/>.</param>
 		private void LeavingTextBox(TextBox textBoxLeft, string defaultTextBoxString, bool requireProperFormat = false, string requiredFormatRegex = "")
 		{
-			bool emptyName = string.IsNullOrEmpty(textBoxLeft.Text);
+			bool emptyTextField = string.IsNullOrEmpty(textBoxLeft.Text);
 			//if empty name/duration text field, set to default
-			if ( emptyName )
+			if ( emptyTextField )
 			{
 				textBoxLeft.Text = defaultTextBoxString;
 				return;
