@@ -51,6 +51,9 @@ namespace CountDownTimerV0
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
 
+		private const string INCORRECT_FORMAT_TOOLTIP = "Incorrect format, use empty default as template";
+		private const int INCORRECT_FORMAT_TOOLTIP_DUR = 3000;
+
 		Form _alarmAlertWindow;
 		
 		private const int MINUTES_PER_HOUR = 60;
@@ -417,23 +420,17 @@ namespace CountDownTimerV0
 			}
 
 			/* Enforce string format via regex */
-			//only leave if correct string format
-			if ( requireProperFormat )
-			{
-				//if incorrect timer duration format
-				bool timerHhMmSsFormat = Regex.IsMatch(textBoxLeft.Text, requiredFormatRegex); /* ########### NEEDS CHECKING WITH REGEX ########### */
-				//bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
-				if (!timerHhMmSsFormat)
-				{
-					//show popup prompting user to re-input with correct hh:mm:ss format
-					//bring focus back to the 'timerDurationEntry' control for retry
-					//return
+			//if not requireing proper formate, return
+			if ( !requireProperFormat ) return;
 
-				}
+			//if correct timer duration format, return
+			bool timerHhMmSsFormat = Regex.IsMatch(textBoxLeft.Text, requiredFormatRegex);
+			if ( timerHhMmSsFormat ) return;
 
-			}
-
-			
+			//show popup prompting user to re-input with correct hh:mm:ss format
+			durationFormatTip.SetToolTip(textBoxLeft, "Incorrect format");
+			durationFormatTip.Show(
+				INCORRECT_FORMAT_TOOLTIP, textBoxLeft, INCORRECT_FORMAT_TOOLTIP_DUR);
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
