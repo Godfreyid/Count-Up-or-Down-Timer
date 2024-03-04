@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Media;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace CountDownTimerV0
 {
@@ -412,10 +413,15 @@ namespace CountDownTimerV0
 			if ( requireProperFormat )
 			{
 				//if incorrect timer duration format
-				bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
+				bool timerHhMmSsFormat = Regex.IsMatch(textBoxLeft.Text, requiredFormatRegex); /* ########### NEEDS CHECKING WITH REGEX ########### */
+				//bool timerHhMmSsFormat = true; /* ########### NEEDS CHECKING WITH REGEX ########### */
+				if (!timerHhMmSsFormat)
+				{
 					//show popup prompting user to re-input with correct hh:mm:ss format
 					//bring focus back to the 'timerDurationEntry' control for retry
 					//return
+
+				}
 
 			}
 
@@ -428,7 +434,8 @@ namespace CountDownTimerV0
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
 		{
-			LeavingTextBox(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, true, "");
+			string formatPattern = @"\d{2}:\d{2}:\d{2}";
+			LeavingTextBox(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, true, formatPattern);
 		}
 
 		// user finished entering name and presses 'Enter' to start entering duration 
@@ -1187,6 +1194,7 @@ namespace CountDownTimerV0
 			#region SAVE LAPSES TO FILE
 
 			//open a file stream
+			
 			using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
 			{
 				//get a list of the keys from _timerSecondsByNameDict
