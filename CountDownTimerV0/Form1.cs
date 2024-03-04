@@ -428,8 +428,8 @@ namespace CountDownTimerV0
 			if ( timerHhMmSsFormat ) return;
 
 			//show popup prompting user to re-input with correct hh:mm:ss format
-			//durationFormatTip.SetToolTip(textBoxLeft, "Incorrect format");
-			durationFormatTip.Show(
+			//timerFormatTip.SetToolTip(textBoxLeft, "Incorrect format");
+			timerFormatTip.Show(
 				INCORRECT_FORMAT_TOOLTIP, textBoxLeft, INCORRECT_FORMAT_TOOLTIP_DUR);
 		}
 
