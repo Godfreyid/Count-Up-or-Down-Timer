@@ -166,7 +166,7 @@ namespace CountDownTimerV0
 		{
 			SetTabIndices();
 
-			SendControlsToBack();
+			MoveControlsToBack();
 
 			_formattedColumns = new FormattedTimeColumns();
 
@@ -186,8 +186,6 @@ namespace CountDownTimerV0
 			_selectedAudio = new SelectedAudio();
 
 			_timerSecondsByNameDict = new Dictionary<string, int>();
-
-			LoadSavedTimerLapses();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -229,7 +227,7 @@ namespace CountDownTimerV0
 			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
 
-
+			LoadSavedTimerLapses();
 		}
 
 		private void SetTabIndices()
@@ -251,7 +249,7 @@ namespace CountDownTimerV0
 			loadProfileBtn.TabIndex = 16;
 		}
 
-		private void SendControlsToBack()
+		private void MoveControlsToBack()
 		{
 			saveLapsesCheckBox.SendToBack();
 		}
@@ -1172,14 +1170,12 @@ namespace CountDownTimerV0
 		// user intends to close the timer form window
 		private void DigitalCountTimer_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			bool saveTimerLapses = saveLapsesCheckBox.Checked;
-			//if 'saveLapesesCheckBox is NOT checked, return
-			if ( !saveTimerLapses ) return;
-
 			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
 
-			//open flag file stream
-			using ( StreamWriter writer = new StreamWriter(SAVE_LAPSES_ON_EXIT_PATH, false) )
+			//open a file stream
+			FileInfo flagFileInfo = new FileInfo(SAVE_LAPSES_ON_EXIT_PATH);
+			using ( StreamWriter writer = new StreamWriter(flagFileInfo.Open(FileMode.Truncate)) )
+			//using ( StreamWriter writer = new StreamWriter(SAVE_LAPSES_ON_EXIT_PATH, false) )
 			{
 				//write string that maps flag name and value, akin to a dict pair
 				bool saveLapses = saveLapsesCheckBox.Checked;
@@ -1194,9 +1190,14 @@ namespace CountDownTimerV0
 
 			#region SAVE LAPSES TO FILE
 
+			bool saveTimerLapses = saveLapsesCheckBox.Checked;
+			//if 'saveLapesesCheckBox is NOT checked, return
+			if ( !saveTimerLapses ) return;
+
 			//open a file stream
-			
-			using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
+			FileInfo lapseFileInfo = new FileInfo(LAPSES_MEM_FILE_PATH);
+			using ( StreamWriter writer = new StreamWriter(lapseFileInfo.Open(FileMode.Truncate)) )
+			//using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
 			{
 				//get a list of the keys from _timerSecondsByNameDict
 				Dictionary<string, int>.KeyCollection keys = _timerSecondsByNameDict.Keys;
@@ -1226,14 +1227,16 @@ namespace CountDownTimerV0
 			#region SAVE LIST OF TIMERS
 
 			//now that user specified profile save file name,
-			//open that file by building its path
+			//build the file path
 			string userSetFilePath = Path.Combine(PROFILE_SAVE_PATH, saveProfileDialog.FileName);
 			//open file stream
-			using ( StreamWriter writer = new StreamWriter(userSetFilePath, false) )
+			FileInfo listFileInfo = new FileInfo(userSetFilePath);
+			using ( StreamWriter writer = new StreamWriter(listFileInfo.Open(FileMode.Truncate)) )
+			//using ( StreamWriter writer = new StreamWriter(userSetFilePath, false) )
 			{
 				ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
 				ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
-				for (int nameI = 0; nameI < timerNameItems.Count; nameI++ )
+				for ( int nameI = 0; nameI < timerNameItems.Count; nameI++ )
 				{
 					//get timer name from timerNamesList
 					string timerName = timerNameItems[nameI].ToString();
@@ -1257,7 +1260,10 @@ namespace CountDownTimerV0
 			int lenMinusExt = profilePathLen - profileExtLen;
 			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
 			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
-			using ( StreamWriter writer = new StreamWriter(audioSaveFilePath, false) )
+
+			FileInfo audioFileInfo = new FileInfo(audioSaveFilePath);
+			using ( StreamWriter writer = new StreamWriter(audioFileInfo.Open(FileMode.Truncate)) )
+			//using ( StreamWriter writer = new StreamWriter(audioSaveFilePath, false) )
 			{
 				writer.WriteLine(_selectedAudio.FullPath);
 			}
