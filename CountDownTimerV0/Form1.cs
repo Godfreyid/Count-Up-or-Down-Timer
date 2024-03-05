@@ -1227,10 +1227,25 @@ namespace CountDownTimerV0
 
 			#region SAVE LIST OF TIMERS
 
+			ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
+			ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
+			string timer = string.Empty;
+			for ( int nameI = 0; nameI < timerNameItems.Count; nameI++ )
+			{
+				//get timer name from timerNamesList
+				string timerName = timerNameItems[nameI].ToString();
+				//get timer duration from from timerDurationsList
+				string timerDuration = timerDurationItems[nameI].ToString();
+				//write name:duration pair to file
+				timer += $"{timerName}|{timerDuration}{Environment.NewLine}";
+			}
 			//now that user specified profile save file name,
 			//build the file path
 			string userSetFilePath = Path.Combine(PROFILE_SAVE_PATH, saveProfileDialog.FileName);
-			//open file stream
+			//write to file
+			File.WriteAllText(userSetFilePath, timer);
+
+			/*//open file stream
 			FileInfo listFileInfo = new FileInfo(userSetFilePath);
 			using ( StreamWriter writer = new StreamWriter(listFileInfo.Open(FileMode.Truncate)) )
 			//using ( StreamWriter writer = new StreamWriter(userSetFilePath, false) )
@@ -1247,7 +1262,7 @@ namespace CountDownTimerV0
 					string timer = $"{timerName}|{timerDuration}{Environment.NewLine}";
 					writer.WriteAsync(timer);
 				}
-			}
+			}*/
 
 			#endregion
 
@@ -1265,13 +1280,15 @@ namespace CountDownTimerV0
 			int lenMinusExt = profilePathLen - profileExtLen;
 			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
 			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
+			//write to file
+			File.WriteAllText(audioSaveFilePath, _selectedAudio.FullPath);
 
-			FileInfo audioFileInfo = new FileInfo(audioSaveFilePath);
+			/*FileInfo audioFileInfo = new FileInfo(audioSaveFilePath);
 			using ( StreamWriter writer = new StreamWriter(audioFileInfo.Open(FileMode.Truncate)) )
 			//using ( StreamWriter writer = new StreamWriter(audioSaveFilePath, false) )
 			{
 				writer.WriteLine(_selectedAudio.FullPath);
-			}
+			}*/
 
 			#endregion
 		}
