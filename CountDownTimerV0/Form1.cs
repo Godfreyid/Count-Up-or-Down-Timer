@@ -16,22 +16,32 @@ namespace CountDownTimerV0
 	public partial class DigitalCountTimer : Form
 	{
 		/* THESE PATHS NEED TO USE THE Environment.SpecialFolder.MyDocuments var */
-		private const string PROFILE_DIRECTORY = @"\Count Down Up Timer\Profiles\";
-		private string PROFILE_SAVE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + PROFILE_DIRECTORY;
-		private string PROFILE_LOAD_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + PROFILE_DIRECTORY;
+		private const string PROFILE_DIR = @"\Count Down Up Timer\Profiles\";
+		private readonly string MY_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		private readonly string PROFILE_SAVE_PATH;
+		private readonly string PROFILE_LOAD_PATH;
+
+		private const string PROFILE_AUDIO_DIR = @"\Count Down Up Timer\Profile Audio\";
+		private readonly string PROFILE_SAVE_AUDIO_PATH;
+		private readonly string PROFILE_LOAD_AUDIO_PATH;
+
+		private const string SAVED_LAPSES_DIR = @"\Count Down Up Timer\Remembered Lapses\";
+		private readonly string LAPSES_SAVE_PATH;
+		private readonly string LAPSES_LOAD_PATH;
 
 		/*private const string LAPSES_MEM_FILE_NAME = "Remembered Lapses.txt";
 		private string LAPSES_MEM_FILE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + LAPSES_MEM_FILE_NAME;*/
-		private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";
+		/*private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";*/
 		/*private const string SAVE_LAPSES_FLAG_FILE_NAME = "Save Lapses OnExit Flag.txt";
 		private string SAVE_LAPSES_ON_EXIT_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + SAVE_LAPSES_FLAG_FILE_NAME;*/
-		private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";
+		/*private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";*/
 
 		private const string DEFAULT_PROFILE_FILE_EXT = ".txt";
 		private const string AUDIO_SAVE_FILE_SUFFIX = "_chosenAudio.txt";
+		private const string LAPSES_SAVE_FILE_SUFFIX = "_cachedLapses.txt";
 
 		private bool _saveLapsesOnExit;
-		private string _loadedProfilePath;
+		private string _currentProfilePath;
 
 		private const char DELIMITER_TIMER_LAPSES = ':';
 		private const char DELIMITER_TIMER_PROFILES = '|';
@@ -39,6 +49,9 @@ namespace CountDownTimerV0
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
+
+		private const string ASSIGN_TO_PROFILE_CAPTION = "Needs Assigning to a Profile";
+		private const string ASSIGN_TO_PROFILE_MESSAGE = "You need to choose a profile to assign the remembered lapses to.";
 
 		private const string MISSING_NAME_CAPTION = "Missing Name Input";
 		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name. Retry.";
@@ -61,10 +74,13 @@ namespace CountDownTimerV0
 		private const int SECONDS_PER_MINUTE = 60;
 
 		private FormattedTimeColumns _formattedColumns;
+
+		private MessageBoxInfo _assignProfileMsgBoxInfo;
 		private MessageBoxInfo _timerNameMsgBoxInfo;
 		private MessageBoxInfo _timerDurationMsgBoxInfo;
 		private MessageBoxInfo _startButtonMsgBoxInfo;
 		private MessageBoxInfo _alarmMsgBoxInfo;
+
 		private ChosenTimer _chosenTimer;
 
 		private string[] _durationTimeColumns;
@@ -160,6 +176,16 @@ namespace CountDownTimerV0
 		{
 			InitializeComponent();
 
+			/* INITIALIZE DIRECTORY PATHS */
+			PROFILE_SAVE_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
+			PROFILE_LOAD_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
+
+			PROFILE_SAVE_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
+			PROFILE_LOAD_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
+
+			LAPSES_SAVE_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
+			LAPSES_LOAD_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
+
 			SetupForm();
 		}
 
@@ -170,6 +196,9 @@ namespace CountDownTimerV0
 			MoveControlsToBack();
 
 			_formattedColumns = new FormattedTimeColumns();
+
+			_assignProfileMsgBoxInfo = new MessageBoxInfo(
+				ASSIGN_TO_PROFILE_MESSAGE, ASSIGN_TO_PROFILE_CAPTION, MessageBoxButtons.OKCancel);
 
 			_timerNameMsgBoxInfo = new MessageBoxInfo(
 				MISSING_NAME_MESSAGE, MISSING_NAME_CAPTION, MessageBoxButtons.OK);
@@ -218,7 +247,7 @@ namespace CountDownTimerV0
 			timerNameEntry.Focus();
 
 			/* CREATE MAIN DIRECTORY FOR SAVING/LOADING PROFILES, LAPSES, AND FLAGS */
-			//Directory.CreateDirectory
+			CreateAppDirectories();
 
 			/* SET INITIAL VALUES FOR FILE OPEN AND SAVE DIALOG CONTROLLERS */
 			saveProfileDialog.InitialDirectory = PROFILE_SAVE_PATH;
@@ -255,18 +284,36 @@ namespace CountDownTimerV0
 			saveLapsesCheckBox.SendToBack();
 		}
 		
+		private void CreateAppDirectories() 
+		{
+			bool existingProfilesDir = Directory.Exists(PROFILE_SAVE_PATH);
+			//if not existing, create 'Profiles' directory 
+			if ( !existingProfilesDir )
+				Directory.CreateDirectory(PROFILE_SAVE_PATH);
+
+			bool existingProfileAudioDir = Directory.Exists(PROFILE_SAVE_AUDIO_PATH);
+			//if not existing, create 'Profile Audio' directory
+			if ( !existingProfileAudioDir )
+				Directory.CreateDirectory(PROFILE_SAVE_AUDIO_PATH);
+
+			bool existingLapsesDir = Directory.Exists(LAPSES_SAVE_PATH);
+			//if not existing, create 'Remembered Lapses' directory
+			if ( !existingLapsesDir )
+				Directory.CreateDirectory(LAPSES_SAVE_PATH);
+		}
+
 		private void LoadSavedTimerLapses()
 		{
 			//if NOT toggled 'save' lapses on last exit, return
 			if ( !ToggledSaveLapsesOnPrevExit() ) return;
 
-			bool timerLapsesFileExists = File.Exists(LAPSES_MEM_FILE_PATH);
+			bool timerLapsesFileExists = File.Exists(LAPSES_LOAD_PATH);
 			if ( !timerLapsesFileExists ) return;
 
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_MEM_FILE_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_LOAD_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -306,18 +353,18 @@ namespace CountDownTimerV0
 
 		private bool ToggledSaveLapsesOnPrevExit()
 		{
-			bool flagFileExists = File.Exists(SAVE_LAPSES_ON_EXIT_PATH);
+			bool flagFileExists = File.Exists(LAPSES_SAVE_PATH);
 			if ( !flagFileExists ) return false;
 
 			int streamLenth;
-			using ( FileStream stream = File.OpenRead(SAVE_LAPSES_ON_EXIT_PATH) ) 
+			using ( FileStream stream = File.OpenRead(LAPSES_SAVE_PATH) ) 
 			{
 				streamLenth = (int)stream.Length;
 			}
 
 			string extractedFlagStr = string.Empty;
 			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
-			using ( StreamReader reader = new StreamReader(SAVE_LAPSES_ON_EXIT_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_LOAD_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -1173,12 +1220,12 @@ namespace CountDownTimerV0
 		{
 			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
 
-			//create string that maps flag name and value, akin to a dict pair
+			/*//create string that maps flag name and value, akin to a dict pair
 			bool saveLapses = saveLapsesCheckBox.Checked;
 			int boolAsBinary = saveLapses ? 1 : 0;
 			string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
 			//write to file
-			File.WriteAllText(SAVE_LAPSES_ON_EXIT_PATH, flagString);
+			File.WriteAllText(SAVE_LAPSES_ON_EXIT_PATH, flagString);*/
 
 			/*//open a file stream
 			FileInfo flagFileInfo = new FileInfo(SAVE_LAPSES_ON_EXIT_PATH);
@@ -1202,8 +1249,37 @@ namespace CountDownTimerV0
 			//if 'saveLapesesCheckBox is NOT checked, return
 			if ( !saveTimerLapses ) return;
 
-			string nameAndSecondsStr = string.Empty;
+			//if no profile to associate saved lapses with, open dialogs
+			bool noCurrentProfile = string.IsNullOrEmpty(_currentProfilePath);
+			bool willChooseProfile = false;
+			if ( noCurrentProfile )
+			{
+				//show message box telling user of need for profile to assign to
+				willChooseProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
+			}
 
+			//open 'save profile' dialog in case no profile to load exists
+			bool profilesExist = false;
+			bool savedProfile = false;
+			bool choseProfile = false;
+			if ( willChooseProfile )
+			{
+				profilesExist = Directory.GetFiles(PROFILE_LOAD_PATH).Length > 0;
+			}
+			if ( !profilesExist )
+			{
+				savedProfile = saveProfileDialog.ShowDialog() == DialogResult.OK;
+			}
+			//open 'load profile' dialog if profiles exist
+			else if (profilesExist)
+			{
+				choseProfile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
+			}
+
+			bool abortLapseSave = !savedProfile || !choseProfile;
+			if ( abortLapseSave ) return;
+
+			string nameAndSecondsStr = string.Empty;
 			//get a list of the keys from _lapsesByNameDict
 			Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
 			string[] keysArray = keys.ToArray<string>();
@@ -1214,7 +1290,12 @@ namespace CountDownTimerV0
 				nameAndSecondsStr += $"{name}:{durationAsString}{Environment.NewLine}";
 			}
 
-			File.WriteAllText(LAPSES_MEM_FILE_PATH, nameAndSecondsStr);
+			//build lapses file name with profile name
+			string userSetFilePath = Path.Combine(PROFILE_LOAD_PATH, loadProfileDiaglog.FileName);
+			string lapsesFilePath = SuffixedFileName(
+				userSetFilePath, DEFAULT_PROFILE_FILE_EXT, LAPSES_SAVE_FILE_SUFFIX);
+			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
+			//File.WriteAllText(LAPSES_SAVE_PATH, nameAndSecondsStr);
 
 			/*//open a file stream
 			FileInfo lapseFileInfo = new FileInfo(LAPSES_MEM_FILE_PATH);
@@ -1266,24 +1347,8 @@ namespace CountDownTimerV0
 			//write to file
 			File.WriteAllText(userSetFilePath, timer);
 
-			/*//open file stream
-			FileInfo listFileInfo = new FileInfo(userSetFilePath);
-			using ( StreamWriter writer = new StreamWriter(listFileInfo.Open(FileMode.Truncate)) )
-			//using ( StreamWriter writer = new StreamWriter(userSetFilePath, false) )
-			{
-				ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
-				ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
-				for ( int nameI = 0; nameI < timerNameItems.Count; nameI++ )
-				{
-					//get timer name from timerNamesList
-					string timerName = timerNameItems[nameI].ToString();
-					//get timer duration from from timerDurationsList
-					string timerDuration = timerDurationItems[nameI].ToString();
-					//write name:duration pair to file
-					string timer = $"{timerName}|{timerDuration}{Environment.NewLine}";
-					writer.WriteAsync(timer);
-				}
-			}*/
+			//cache current profile path
+			_currentProfilePath = userSetFilePath;
 
 			#endregion
 
@@ -1296,22 +1361,42 @@ namespace CountDownTimerV0
 			//now that user specified profile save file name,
 			//strip its '.txt' extension before adding audio save file suffix
 			//use suffix appended file name (path) to open (create) audio save file
-			int profilePathLen = userSetFilePath.Length;
+			string audioSaveFilePath = SuffixedFileName(
+				userSetFilePath, DEFAULT_PROFILE_FILE_EXT, AUDIO_SAVE_FILE_SUFFIX);
+			/*int profilePathLen = userSetFilePath.Length;
 			int profileExtLen = DEFAULT_PROFILE_FILE_EXT.Length;
 			int lenMinusExt = profilePathLen - profileExtLen;
 			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
-			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
+			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";*/
 			//write to file
 			File.WriteAllText(audioSaveFilePath, _selectedAudio.FullPath);
 
-			/*FileInfo audioFileInfo = new FileInfo(audioSaveFilePath);
-			using ( StreamWriter writer = new StreamWriter(audioFileInfo.Open(FileMode.Truncate)) )
-			//using ( StreamWriter writer = new StreamWriter(audioSaveFilePath, false) )
-			{
-				writer.WriteLine(_selectedAudio.FullPath);
-			}*/
-
 			#endregion
+		}
+
+		/// <summary>
+		/// Adds a suffix to the file at the provided path.
+		/// </summary>
+		/// <param name="pathToFile">The path to the file that will be suffixed.</param>
+		/// <param name="fileExtension">The file extension of the file at
+		/// <paramref name="pathToFile"/>.</param>
+		/// <param name="suffixAddedToFileName">The suffix that will be added to the 
+		/// file at <paramref name="pathToFile"/>. The suffix should end with the
+		/// existing file extension of the file at
+		/// <paramref name="pathToFile"/>.</param>
+		/// <returns></returns>
+		private string SuffixedFileName(
+			string pathToFile, 
+			string fileExtension,
+			string suffixAddedToFileName)
+		{
+			int pathLen = pathToFile.Length;
+			int fileExtLen = fileExtension.Length;
+			int lenMinusExt = pathLen - fileExtLen;
+			string pathMinusExt = pathToFile.Substring(0, lenMinusExt);
+			string suffixedFileName = $"{pathMinusExt}{suffixAddedToFileName}";
+
+			return suffixedFileName;
 		}
 
 		// user intends to load a previously saved list of timers and chosen audio
@@ -1340,6 +1425,15 @@ namespace CountDownTimerV0
 					timerDurationsList.Items.Add( timerConjugate[1] );
 				}
 			}
+
+			//cache loaded profile path as current profile path
+			_currentProfilePath = userSetFilePath;
+
+			#endregion
+
+			#region LOAD POTENTIAL LAPSES ASSIGNED TO LOADED PROFILE
+
+
 
 			#endregion
 
@@ -1371,8 +1465,6 @@ namespace CountDownTimerV0
 
 			#endregion
 
-			//cache loaded profile path
-			_loadedProfilePath = userSetFilePath;
 		}
 	}
 }
