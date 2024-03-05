@@ -31,6 +31,7 @@ namespace CountDownTimerV0
 		private const string AUDIO_SAVE_FILE_SUFFIX = "_chosenAudio.txt";
 
 		private bool _saveLapsesOnExit;
+		private string _loadedProfilePath;
 
 		private const char DELIMITER_TIMER_LAPSES = ':';
 		private const char DELIMITER_TIMER_PROFILES = '|';
@@ -1252,6 +1253,10 @@ namespace CountDownTimerV0
 
 			#region SAVE CHOSEN AUDIO
 
+			bool noAudioSelected = string.IsNullOrEmpty(_selectedAudio.FullPath);
+			//to preserve audio select start directory, if no audio path selected, return
+			if ( noAudioSelected ) return;
+
 			//now that user specified profile save file name,
 			//strip its '.txt' extension before adding audio save file suffix
 			//use suffix appended file name (path) to open (create) audio save file
@@ -1327,6 +1332,9 @@ namespace CountDownTimerV0
 			}
 
 			#endregion
+
+			//cache loaded profile path
+			_loadedProfilePath = userSetFilePath;
 		}
 	}
 }
