@@ -74,7 +74,7 @@ namespace CountDownTimerV0
 		private const string COUNT_UP_BUTTON_TEXT = "COUNTING UP";
 		private const string COUNT_DOWN_BUTTON_TEXT = "COUNTIING DOWN";
 		private int _upCount;
-		private Dictionary<string, int> _timerSecondsByNameDict;
+		private Dictionary<string, int> _lapsesByNameDict;
 
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
@@ -185,7 +185,7 @@ namespace CountDownTimerV0
 			_chosenTimer = new ChosenTimer(NAME_ENTRY_PROMPT_STRING, DURATION_ENTRY_PROMPT_STRING);
 			_selectedAudio = new SelectedAudio();
 
-			_timerSecondsByNameDict = new Dictionary<string, int>();
+			_lapsesByNameDict = new Dictionary<string, int>();
 
 			StartPosition = FormStartPosition.CenterScreen;
 
@@ -297,7 +297,7 @@ namespace CountDownTimerV0
 				//make _timerSecondsByNameDict name:duration entry
 				//i.e. 1st elem of split = key and 2nd = value
 				string timerName = timerAndBulkSeconds[0];
-				_timerSecondsByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);
+				_lapsesByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);
 			}
 
 			//LoadLapsesIntoMappingCacheDict();
@@ -712,7 +712,7 @@ namespace CountDownTimerV0
 			_chosenTimer.Duration = selectedDuration;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
-			bool stoppedWithoutReset = _timerSecondsByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
@@ -738,7 +738,7 @@ namespace CountDownTimerV0
 			_chosenTimer.Name = selectedName;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
-			bool stoppedWithoutReset = _timerSecondsByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
@@ -857,7 +857,7 @@ namespace CountDownTimerV0
 				case Start.FromPaused:
 					//retrieve bulk seconds cached when timer was STOPPED (paused)
 					string selectedTimer = _chosenTimer.Name;
-					bool resumingTimer = _timerSecondsByNameDict.TryGetValue(selectedTimer, out int timerCount);
+					bool resumingTimer = _lapsesByNameDict.TryGetValue(selectedTimer, out int timerCount);
 
 					int newBulkSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
 					//set _durationAsSeconds/_upCount to cached bulk seconds
@@ -1046,7 +1046,7 @@ namespace CountDownTimerV0
 			/* Map name:duration to persist count beyond pressing 'STOP' (until pressing
 			   'RESET') and continue despite switching timers */
 			int timerCount = _countDown ? _durationAsSeconds : _upCount;
-			_timerSecondsByNameDict[_chosenTimer.Name] = timerCount;
+			_lapsesByNameDict[_chosenTimer.Name] = timerCount;
 
 			//set the state of the 'startButton' to 'FromPause'
 			_startButtonState = Start.FromPaused;
@@ -1079,7 +1079,7 @@ namespace CountDownTimerV0
 
 			//set value (duration) of name:duration mapping to _chosenTimer.Duration
 			int inputBulkSeconds = DurationAsBulkSeconds(_chosenTimer.Duration);
-			_timerSecondsByNameDict[_chosenTimer.Name] = inputBulkSeconds;
+			_lapsesByNameDict[_chosenTimer.Name] = inputBulkSeconds;
 			//set timerDisplay.Text to _chosenTimer.Duration
 			timerDisplay.Text = _chosenTimer.Duration;
 
@@ -1199,14 +1199,14 @@ namespace CountDownTimerV0
 			using ( StreamWriter writer = new StreamWriter(lapseFileInfo.Open(FileMode.Truncate)) )
 			//using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
 			{
-				//get a list of the keys from _timerSecondsByNameDict
-				Dictionary<string, int>.KeyCollection keys = _timerSecondsByNameDict.Keys;
+				//get a list of the keys from _lapsesByNameDict
+				Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
 				//convert colon separated timer name and bulkSeconds string
 				string[] keysArray = keys.ToArray<string>();
 
 				foreach ( string name in keysArray )
 				{
-					string durationAsString = _timerSecondsByNameDict[name].ToString();
+					string durationAsString = _lapsesByNameDict[name].ToString();
 					string nameAndSecondsStr = $"{name}:{durationAsString}{Environment.NewLine}";
 					char[] timerChars = nameAndSecondsStr.ToCharArray();
 					writer.WriteAsync(timerChars, 0, timerChars.Length);
