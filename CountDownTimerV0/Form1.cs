@@ -1173,7 +1173,14 @@ namespace CountDownTimerV0
 		{
 			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
 
-			//open a file stream
+			//create string that maps flag name and value, akin to a dict pair
+			bool saveLapses = saveLapsesCheckBox.Checked;
+			int boolAsBinary = saveLapses ? 1 : 0;
+			string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
+			//write to file
+			File.WriteAllText(SAVE_LAPSES_ON_EXIT_PATH, flagString);
+
+			/*//open a file stream
 			FileInfo flagFileInfo = new FileInfo(SAVE_LAPSES_ON_EXIT_PATH);
 			using ( StreamWriter writer = new StreamWriter(flagFileInfo.Open(FileMode.Truncate)) )
 			//using ( StreamWriter writer = new StreamWriter(SAVE_LAPSES_ON_EXIT_PATH, false) )
@@ -1185,7 +1192,7 @@ namespace CountDownTimerV0
 
 				char[] flagMapping = flagString.ToCharArray();
 				writer.WriteAsync(flagMapping, 0, flagMapping.Length);
-			}
+			}*/
 
 			#endregion
 
@@ -1195,7 +1202,21 @@ namespace CountDownTimerV0
 			//if 'saveLapesesCheckBox is NOT checked, return
 			if ( !saveTimerLapses ) return;
 
-			//open a file stream
+			string nameAndSecondsStr = string.Empty;
+
+			//get a list of the keys from _lapsesByNameDict
+			Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
+			string[] keysArray = keys.ToArray<string>();
+			//convert colon separated timer name and bulkSeconds string
+			foreach ( string name in keysArray )
+			{
+				string durationAsString = _lapsesByNameDict[name].ToString();
+				nameAndSecondsStr += $"{name}:{durationAsString}{Environment.NewLine}";
+			}
+
+			File.WriteAllText(LAPSES_MEM_FILE_PATH, nameAndSecondsStr);
+
+			/*//open a file stream
 			FileInfo lapseFileInfo = new FileInfo(LAPSES_MEM_FILE_PATH);
 			using ( StreamWriter writer = new StreamWriter(lapseFileInfo.Open(FileMode.Truncate)) )
 			//using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
@@ -1212,7 +1233,7 @@ namespace CountDownTimerV0
 					char[] timerChars = nameAndSecondsStr.ToCharArray();
 					writer.WriteAsync(timerChars, 0, timerChars.Length);
 				}
-			}
+			}*/
 
 			#endregion
 		}
