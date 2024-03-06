@@ -1287,14 +1287,15 @@ namespace CountDownTimerV0
 			}
 
 			//build lapses file name in lapses dir, with suffixed profile name 
-			/*string profileName = string.Empty;
+			/*string profileFullPath = string.Empty;
 			if ( savedProfile ) 
-				profileName = saveProfileDialog.FileName;
+				profileFullPath = saveProfileDialog.FileName;
 			else if ( choseProfile ) 
-				profileName = loadProfileDiaglog.FileName;*/
-			string profileName = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
+				profileFullPath = loadProfileDiaglog.FileName;*/
+			string profileFullPath = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
+			string profileFileName = Path.GetFileName( profileFullPath );
 			string lapsesFilePath = SuffixFileAtPath(
-				profileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
+				profileFileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
 			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
 			//File.WriteAllText(LAPSES_PATH, nameAndSecondsStr);
 
