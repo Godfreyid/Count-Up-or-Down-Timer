@@ -1220,13 +1220,14 @@ namespace CountDownTimerV0
 
 			//if no profile to associate saved lapses with, open dialogs
 			bool activeProfile = File.Exists(_currentProfilePath);
-			//bool activeProfile = string.IsNullOrEmpty(_currentProfilePath);
-			bool willChooseProfile = false;
-			if ( !activeProfile )
+			if ( activeProfile )
 			{
-				//show message box telling user of need for profile to assign to
-				willChooseProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
+				SaveTimerLapses(_currentProfilePath);
+				return;
 			}
+
+			//show message box telling user of need for profile to assign to
+			bool willChooseProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
 
 			//open 'save profile' dialog in case no profile to load exists
 			bool profilesExist = false;
@@ -1252,6 +1253,15 @@ namespace CountDownTimerV0
 			bool abortLapseSave = !savedProfile && !choseProfile;
 			if ( abortLapseSave ) return;
 
+			string profileFullPath = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
+
+			SaveTimerLapses(profileFullPath);
+
+			#endregion
+		}
+
+		private void SaveTimerLapses(string profileFullPath)
+		{
 			string nameAndSecondsStr = string.Empty;
 			//get a list of the keys from _lapsesByNameDict
 			Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
@@ -1264,14 +1274,11 @@ namespace CountDownTimerV0
 			}
 
 			//build lapses file name in lapses dir, with suffixed profile name 
-			string profileFullPath = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
-			string profileFileName = Path.GetFileName( profileFullPath );
+			string profileFileName = Path.GetFileName(profileFullPath);
 			string lapsesFilePath = SuffixFileAtPath(
 				profileFileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
 			//write to file
 			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
-
-			#endregion
 		}
 
 		// user intends to save the current list of timers and chosen audio
