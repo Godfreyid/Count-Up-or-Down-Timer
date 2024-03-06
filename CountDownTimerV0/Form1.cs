@@ -18,13 +18,13 @@ namespace CountDownTimerV0
 		/* THESE PATHS NEED TO USE THE Environment.SpecialFolder.MyDocuments var */
 		private const string PROFILE_DIR = @"\Count Down Up Timer\Profiles\";
 		private readonly string MY_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		private readonly string PROFILES_PATH;
+		private readonly string PROFILES_DIR_PATH;
 
 		private const string PROFILE_AUDIO_DIR = @"\Count Down Up Timer\Profile Audio\";
-		private readonly string PROFILES_AUDIO_PATH;
+		private readonly string PROFILES_AUDIO_DIR_PATH;
 
 		private const string SAVED_LAPSES_DIR = @"\Count Down Up Timer\Remembered Lapses\";
-		private readonly string LAPSES_PATH;
+		private readonly string LAPSES_DIR_PATH;
 
 		/*private const string LAPSES_MEM_FILE_NAME = "Remembered Lapses.txt";
 		private string LAPSES_MEM_FILE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + LAPSES_MEM_FILE_NAME;*/
@@ -51,13 +51,13 @@ namespace CountDownTimerV0
 		private const string ASSIGN_TO_PROFILE_MESSAGE = "You need to choose a profile to assign the remembered lapses to.";
 
 		private const string MISSING_NAME_CAPTION = "Missing Name Input";
-		private const string MISSING_NAME_MESSAGE = "You did not enter a timer name. Retry.";
+		private const string MISSING_NAME_MESSAGE = "You did not enter a timers name. Retry.";
 
 		private const string MISSING_DURATION_CAPTION = "Missing Duration Input";
-		private const string MISSING_DURATION_MESSAGE = "You did not enter a timer duration. Retry.";
+		private const string MISSING_DURATION_MESSAGE = "You did not enter a timers duration. Retry.";
 
 		private const string SELECT_A_TIMER_CAPTION = "Select a Timer";
-		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
+		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timers to start.";
 
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
@@ -174,11 +174,11 @@ namespace CountDownTimerV0
 			InitializeComponent();
 
 			/* INITIALIZE DIRECTORY PATHS */
-			PROFILES_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
+			PROFILES_DIR_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
 
-			PROFILES_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
+			PROFILES_AUDIO_DIR_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
 
-			LAPSES_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
+			LAPSES_DIR_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
 
 			SetupForm();
 		}
@@ -230,8 +230,8 @@ namespace CountDownTimerV0
 			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
 			//get the count up/down time from the profile of timers
 			/* f.y.i. a profile is just a .txt file of 'newline' separated strings
-			   each containing the name of the timer and a 'comma' separating the 
-			   timer length. The timer length is just an int number counted up to 
+			   each containing the name of the timers and a 'comma' separating the 
+			   timers length. The timers length is just an int number counted up to 
 			   (-= 1 every 1000 miliseconds), or that is counted 
 			   down from (+= 1 every 1000 miliseconds). */
 
@@ -244,8 +244,8 @@ namespace CountDownTimerV0
 			CreateAppDirectories();
 
 			/* SET INITIAL VALUES FOR FILE OPEN AND SAVE DIALOG CONTROLLERS */
-			saveProfileDialog.InitialDirectory = PROFILES_PATH;
-			loadProfileDiaglog.InitialDirectory = PROFILES_PATH;
+			saveProfileDialog.InitialDirectory = PROFILES_DIR_PATH;
+			loadProfileDiaglog.InitialDirectory = PROFILES_DIR_PATH;
 
 			saveProfileDialog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
@@ -280,20 +280,20 @@ namespace CountDownTimerV0
 		
 		private void CreateAppDirectories() 
 		{
-			bool existingProfilesDir = Directory.Exists(PROFILES_PATH);
+			bool existingProfilesDir = Directory.Exists(PROFILES_DIR_PATH);
 			//if not existing, create 'Profiles' directory 
 			if ( !existingProfilesDir )
-				Directory.CreateDirectory(PROFILES_PATH);
+				Directory.CreateDirectory(PROFILES_DIR_PATH);
 
-			bool existingProfileAudioDir = Directory.Exists(PROFILES_AUDIO_PATH);
+			bool existingProfileAudioDir = Directory.Exists(PROFILES_AUDIO_DIR_PATH);
 			//if not existing, create 'Profile Audio' directory
 			if ( !existingProfileAudioDir )
-				Directory.CreateDirectory(PROFILES_AUDIO_PATH);
+				Directory.CreateDirectory(PROFILES_AUDIO_DIR_PATH);
 
-			bool existingLapsesDir = Directory.Exists(LAPSES_PATH);
+			bool existingLapsesDir = Directory.Exists(LAPSES_DIR_PATH);
 			//if not existing, create 'Remembered Lapses' directory
 			if ( !existingLapsesDir )
-				Directory.CreateDirectory(LAPSES_PATH);
+				Directory.CreateDirectory(LAPSES_DIR_PATH);
 		}
 
 		private void LoadSavedTimerLapses()
@@ -301,13 +301,13 @@ namespace CountDownTimerV0
 			//if NOT toggled 'save' lapses on last exit, return
 			if ( !ToggledSaveLapsesOnPrevExit() ) return;
 
-			bool timerLapsesFileExists = File.Exists(LAPSES_PATH);
+			bool timerLapsesFileExists = File.Exists(LAPSES_DIR_PATH);
 			if ( !timerLapsesFileExists ) return;
 
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_DIR_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -347,18 +347,18 @@ namespace CountDownTimerV0
 
 		private bool ToggledSaveLapsesOnPrevExit()
 		{
-			bool flagFileExists = File.Exists(LAPSES_PATH);
+			bool flagFileExists = File.Exists(LAPSES_DIR_PATH);
 			if ( !flagFileExists ) return false;
 
 			int streamLenth;
-			using ( FileStream stream = File.OpenRead(LAPSES_PATH) ) 
+			using ( FileStream stream = File.OpenRead(LAPSES_DIR_PATH) ) 
 			{
 				streamLenth = (int)stream.Length;
 			}
 
 			string extractedFlagStr = string.Empty;
 			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_DIR_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -390,7 +390,7 @@ namespace CountDownTimerV0
 			}
 		}
 
-		// user clicked in text field to begin entering timer name
+		// user clicked in text field to begin entering timers name
 		private void timerNameEntry_Enter(object sender, EventArgs e)
 		{
 			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
@@ -420,7 +420,7 @@ namespace CountDownTimerV0
 			return;
 		}
 
-		// user clicked in text field to begin entering timer duration
+		// user clicked in text field to begin entering timers duration
 		private void timerDurationEntry_Enter(object sender, EventArgs e)
 		{
 			ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
@@ -463,7 +463,7 @@ namespace CountDownTimerV0
 			//if not requireing proper formate, return
 			if ( !requireProperFormat ) return;
 
-			//if correct timer duration format, return
+			//if correct timers duration format, return
 			bool timerHhMmSsFormat = Regex.IsMatch(textBoxLeft.Text, requiredFormatRegex);
 			if ( timerHhMmSsFormat ) return;
 
@@ -526,7 +526,7 @@ namespace CountDownTimerV0
 			return true;
 		}
 
-		// user finished entering duration and presses 'Enter' to move tab focus to timer submit btn
+		// user finished entering duration and presses 'Enter' to move tab focus to timers submit btn
 		private void timerDurationEntry_KeyDown(object sender, KeyEventArgs e)
 		{
 			bool pressedEnter = e.KeyCode == Keys.Enter;
@@ -540,7 +540,7 @@ namespace CountDownTimerV0
 				return;
 			}
 
-			/* Enforce correct timer duration format */
+			/* Enforce correct timers duration format */
 			int bulkSeconds = DurationAsBulkSeconds(timerDurationEntry.Text);
 			FormatTimeFromBulkSeconds(bulkSeconds, ref _formattedColumns);
 
@@ -553,10 +553,10 @@ namespace CountDownTimerV0
 		}
 
 		/// <summary>
-		/// Takes the string input timer duration and computes the equivalent in seconds
+		/// Takes the string input timers duration and computes the equivalent in seconds
 		/// of said entire duration.
 		/// </summary>
-		/// <param name="durationString">The user input timer duration</param>
+		/// <param name="durationString">The user input timers duration</param>
 		/// <returns></returns>
 		private int DurationAsBulkSeconds(string durationString)
 		{
@@ -648,7 +648,7 @@ namespace CountDownTimerV0
 			return rebuiltDurationString;
 		}
 
-		// user clicks to submit timer (name+duration) to 'Timers' list
+		// user clicks to submit timers (name+duration) to 'Timers' list
 		private void listAddBtn_Click(object sender, EventArgs e)
 		{
 			/* Ensure valid data submission */
@@ -665,7 +665,7 @@ namespace CountDownTimerV0
 			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
 			AddTextBoxTextToListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 
-			//focus on 'timerNameEntry' control to ready for next timer entry
+			//focus on 'timerNameEntry' control to ready for next timers entry
 			timerNameEntry.Focus();
 		}
 
@@ -684,7 +684,7 @@ namespace CountDownTimerV0
 		/// text is valid.</param>
 		/// <param name="invalidMsgInfo">A struct containing the minimal required
 		/// information for a MessageBox informing the user on what to correct in the
-		/// event of an invalid timer name or duration entry.</param>
+		/// event of an invalid timers name or duration entry.</param>
 		/// <param name="skipRefocus">A flag to skip refocusing on the subject TextBox
 		/// despite potentially detecting invalid <paramref name="defaultBoxText"/>.
 		/// Usefull when you just want to alert the user of invalid entry, but
@@ -734,7 +734,7 @@ namespace CountDownTimerV0
 			listBox.EndUpdate();
 		}
 
-		// so user can select timer by either clicking on its name or duration, then press 'Start'
+		// so user can select timers by either clicking on its name or duration, then press 'Start'
 		private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
 		{
 			/* only the name at the selected row will be highlighted, but we also
@@ -760,7 +760,7 @@ namespace CountDownTimerV0
 			timerDisplay.Text = timerDuration;
 		}
 
-		// so user can select timer by either clicking on its name or duration, then press 'Start'
+		// so user can select timers by either clicking on its name or duration, then press 'Start'
 		private void timerDurationsList_SelectedValueChanged(object sender, EventArgs e)
 		{
 			/* only the duration at the selected row will be highlighted, but we also
@@ -852,10 +852,10 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			/* To allow resuming count when clicking to another timer and 
+			/* To allow resuming count when clicking to another timers and 
 			   back again, have an actively count down/up 'DurationAsBulkSeconds'
 			   that is only updated when clicking the 'startButton', not when
-			   clicking on a different timer by either the 'timerNamesList' or
+			   clicking on a different timers by either the 'timerNamesList' or
 			   the 'timerDurationsList'. */
 
 			/* -give the 'startButton' a switch state machine and two enum states.
@@ -868,12 +868,12 @@ namespace CountDownTimerV0
 			switch ( _startButtonState )
 			{
 				case Start.FromBeginning:
-					//if no timer is selected from the list
+					//if no timers is selected from the list
 					bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
 					//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
 					if ( defaultTimerDisplay )
 					{
-						//display message box informing user to first select a timer
+						//display message box informing user to first select a timers
 						MessageBox.Show(_startButtonMsgBoxInfo.Message, _startButtonMsgBoxInfo.Caption, _startButtonMsgBoxInfo.Buttons);
 						//put focus back on the 'navigateDwnBtn' control
 						navigateDwnBtn.Focus();
@@ -891,13 +891,13 @@ namespace CountDownTimerV0
 					_upCount = 0;
 					_countUpDurationTarget = _durationAsSeconds;
 
-					//start the timer that will raise an 'elapsed' event every 1000 milliseconds (1 second)
+					//start the timers that will raise an 'elapsed' event every 1000 milliseconds (1 second)
 					countTimer.Enabled = true;
 					countTimer.Start();
 
 					break;
 				case Start.FromPaused:
-					//retrieve bulk seconds cached when timer was STOPPED (paused)
+					//retrieve bulk seconds cached when timers was STOPPED (paused)
 					string selectedTimer = _chosenTimer.Name;
 					bool resumingTimer = _lapsesByNameDict.TryGetValue(selectedTimer, out int timerCount);
 
@@ -908,7 +908,7 @@ namespace CountDownTimerV0
 					else
 						_upCount = resumingTimer ? timerCount : 0;
 
-					//re-enable timer
+					//re-enable timers
 					countTimer.Enabled = true;
 					countTimer.Start();
 					_startButtonState = Start.FromBeginning;
@@ -923,7 +923,7 @@ namespace CountDownTimerV0
 			//suspend value changing of timerDurationsList list box
 			timerDurationsList.SelectionMode = SelectionMode.None;
 
-			//indicate restricted (disallowed) controls while timer ticks
+			//indicate restricted (disallowed) controls while timers ticks
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
 			_timerState = TimerState.Ticking;
@@ -931,7 +931,7 @@ namespace CountDownTimerV0
 
 		/// <summary>
 		/// Toggles the mouse cursor of the form controls according to the 
-		/// current timer state, as toggled by the main controls, START, and
+		/// current timers state, as toggled by the main controls, START, and
 		/// STOP. E.g. you could decide that when pressing 'START', the 'STOP'
 		/// button mouse cursor is set to 'default' (normal), and the rest
 		/// of the controls (including START) has their mouse cursors set
@@ -1025,7 +1025,7 @@ namespace CountDownTimerV0
 		}
 
 		/// <summary>
-		/// Sound alarm if timer duration expired (counted down to zero or up to duration).
+		/// Sound alarm if timers duration expired (counted down to zero or up to duration).
 		/// </summary>
 		private void PlayExpirationAlarm()
 		{
@@ -1061,7 +1061,7 @@ namespace CountDownTimerV0
 			_soundPlayer.Stop();
 		}
 
-		// user intends to reset the chosen timer to its initial (input) duration
+		// user intends to reset the chosen timers to its initial (input) duration
 		private void stopButton_Click(object sender, EventArgs e)
 		{
 			switch ( _timerState )
@@ -1077,7 +1077,7 @@ namespace CountDownTimerV0
 			 /* The continuously running routines started when pressing the 
 			    'startButton' are:
 					- the 'countTimer', and
-					- the '_soundPlayer' as a consequence of the timer
+					- the '_soundPlayer' as a consequence of the timers
 			    So disable those two, then set the 'startButton' state to
 			    'Start.FromPaused'. */
 			
@@ -1128,7 +1128,7 @@ namespace CountDownTimerV0
 			_timerState = TimerState.Reset;
 		}
 
-		// user intends choose the timer above current in the timers list 
+		// user intends choose the timers above current in the timers list 
 		private void navigateUpBtn_Click(object sender, EventArgs e)
 		{
 			switch ( _timerState )
@@ -1169,7 +1169,7 @@ namespace CountDownTimerV0
 			}
 		}
 
-		// user intends choose the timer below current in the timers list 
+		// user intends choose the timers below current in the timers list 
 		private void navigateDwnBtn_Click(object sender, EventArgs e)
 		{
 			switch ( _timerState )
@@ -1209,7 +1209,7 @@ namespace CountDownTimerV0
 			}
 		}
 
-		// user intends to close the timer form window
+		// user intends to close the timers form window
 		private void DigitalCountTimer_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			#region SAVE LAPSES TO FILE
@@ -1252,7 +1252,7 @@ namespace CountDownTimerV0
 			//get a list of the keys from _lapsesByNameDict
 			Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
 			string[] keysArray = keys.ToArray<string>();
-			//convert colon separated timer name and bulkSeconds string
+			//convert colon separated timers name and bulkSeconds string
 			foreach ( string name in keysArray )
 			{
 				string durationStr = _lapsesByNameDict[name].ToString();
@@ -1262,7 +1262,7 @@ namespace CountDownTimerV0
 			//build lapses file name in lapses dir, with suffixed profile name 
 			string profileFileName = Path.GetFileName(profileFullPath);
 			string lapsesFilePath = SuffixFileAtPath(
-				profileFileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
+				profileFileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_DIR_PATH, LAPSES_SAVE_FILE_SUFFIX);
 			//write to file
 			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
 		}
@@ -1270,7 +1270,7 @@ namespace CountDownTimerV0
 		// user intends to save the current list of timers and chosen audio
 		private void saveProfileBtn_Click(object sender, EventArgs e)
 		{
-			//open 'saveProfileDialog' save file dialog so user sets PROFILES_PATH
+			//open 'saveProfileDialog' save file dialog so user sets PROFILES_DIR_PATH
 			bool specifiedSaveFile = saveProfileDialog.ShowDialog() == DialogResult.OK;
 			//if user did NOT press the 'ok' button of said dialog, return
 			if ( !specifiedSaveFile ) return;
@@ -1293,21 +1293,21 @@ namespace CountDownTimerV0
 		{
 			ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
 			ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
-			string timer = string.Empty;
+			string timers = string.Empty;
 			for ( int nameI = 0; nameI < timerNameItems.Count; nameI++ )
 			{
-				//get timer name from timerNamesList
+				//get timers name from timerNamesList
 				string timerName = timerNameItems[nameI].ToString();
-				//get timer duration from from timerDurationsList
+				//get timers duration from from timerDurationsList
 				string timerDuration = timerDurationItems[nameI].ToString();
 				//write name:duration pair to file
-				timer += $"{timerName}|{timerDuration}{Environment.NewLine}";
+				timers += $"{timerName}|{timerDuration}{Environment.NewLine}";
 			}
 			//now that user specified profile save file name,
 			//build the file path
-			string saveFilePath = Path.Combine(PROFILES_PATH, fileName);
+			string saveFilePath = Path.Combine(PROFILES_DIR_PATH, fileName);
 			//write to file
-			File.WriteAllText(saveFilePath, timer);
+			File.WriteAllText(saveFilePath, timers);
 
 			//cache current profile path
 			_currentProfilePath = saveFilePath;
@@ -1323,7 +1323,7 @@ namespace CountDownTimerV0
 			string audioSaveFilePath = SuffixFileAtPath(
 				profileFileName, 
 				DEFAULT_PROFILE_FILE_EXT, 
-				PROFILES_AUDIO_PATH,
+				PROFILES_AUDIO_DIR_PATH,
 				AUDIO_SAVE_FILE_SUFFIX);
 			//write to file
 			File.WriteAllText(audioSaveFilePath, _selectedAudio.FullPath);
@@ -1379,9 +1379,14 @@ namespace CountDownTimerV0
 
 			#region LOAD LIST OF TIMERS
 
+			//clear out timers list in case of consecutive profile loading
+			timerNamesList.Items.Clear();
+			timerDurationsList.Items.Clear();
+
 			//now that user specified profile load file name,
 			//open that file by building its path
-			string userSetFilePath = Path.Combine(PROFILES_PATH, loadProfileDiaglog.FileName);
+			string profilePath = loadProfileDiaglog.FileName;
+			string userSetFilePath = Path.Combine(PROFILES_DIR_PATH, profilePath);
 			//open file stream
 			using ( StreamReader reader = new StreamReader(userSetFilePath) )
 			{
@@ -1390,9 +1395,9 @@ namespace CountDownTimerV0
 				{
 					//split line at profiles delimiter
 					string[] timerConjugate = line.Split(DELIMITER_TIMER_PROFILES);
-					//add timer name to timerNamesList.Items[i]
+					//add timers name to timerNamesList.Items[i]
 					timerNamesList.Items.Add( timerConjugate[0] );
-					//add timer duration to timerDurationsList.Items[i]
+					//add timers duration to timerDurationsList.Items[i]
 					timerDurationsList.Items.Add( timerConjugate[1] );
 				}
 			}
@@ -1404,7 +1409,23 @@ namespace CountDownTimerV0
 
 			#region LOAD POTENTIAL LAPSES ASSIGNED TO LOADED PROFILE
 
-
+			string profileFileName = Path.GetFileName(profilePath);
+			string lapsesFilePath = SuffixFileAtPath(
+				profileFileName,
+				DEFAULT_PROFILE_FILE_EXT,
+				LAPSES_DIR_PATH,
+				LAPSES_SAVE_FILE_SUFFIX);
+			using ( StreamReader lapseReader = new StreamReader(lapsesFilePath) )
+			{
+				string line;
+				while ( (line = lapseReader.ReadLine()) != null )
+				{
+					string[] lapsesConjugate = line.Split(DELIMITER_TIMER_LAPSES);
+					string timerName = lapsesConjugate[0];
+					string bulkSeconds = lapsesConjugate[1];
+					_lapsesByNameDict[timerName] = int.Parse(bulkSeconds);
+				}
+			}
 
 			#endregion
 
@@ -1413,15 +1434,15 @@ namespace CountDownTimerV0
 			//now that user specified profile load file name,
 			//strip its '.txt' extension before adding audio save file suffix
 			//use suffix appended file name (path) to open audio load file
-			int profilePathLen = userSetFilePath.Length;
-			int profileExtLen = DEFAULT_PROFILE_FILE_EXT.Length;
-			int lenMinusExt = profilePathLen - profileExtLen;
-			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
-			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";
-			using ( StreamReader reader = new StreamReader(audioSaveFilePath) )
+			string audioSaveFilePath = SuffixFileAtPath(
+				profileFileName, 
+				DEFAULT_PROFILE_FILE_EXT, 
+				PROFILES_AUDIO_DIR_PATH, 
+				AUDIO_SAVE_FILE_SUFFIX);
+			using ( StreamReader profAudioReader = new StreamReader(audioSaveFilePath) )
 			{
 				string line;
-				while ( (line = reader.ReadLine()) != null )
+				while ( (line = profAudioReader.ReadLine()) != null )
 				{
 					_selectedAudio.FullPath = line;
 				}
