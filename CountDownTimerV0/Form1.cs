@@ -1227,34 +1227,20 @@ namespace CountDownTimerV0
 			}
 
 			//show message box telling user of need for profile to assign to
-			bool willChooseProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
+			bool willSaveProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
+			if ( !willSaveProfile ) return;
 
+			/* Since no active profile was detected, it means user entered 
+			   timers without saving them to a profile. So give user a chance
+			   to save entered timers to a profile. */
 			//open 'save profile' dialog in case no profile to load exists
-			bool profilesExist = false;
-			bool savedProfile = false;
-			bool choseProfile = false;
-			if ( willChooseProfile )
-			{
-				profilesExist = Directory.GetFiles(PROFILES_PATH).Length > 0;
-			}
-			//if no profiles exist, then save one to assign to
-			if ( !profilesExist )
-			{
-				savedProfile = saveProfileDialog.ShowDialog() == DialogResult.OK;
-				string profileName = Path.GetFileName(saveProfileDialog.FileName);
-				SaveTimersList(profileName);
-				SaveChosenAudio(profileName);
-			}
-			else //profiles exist, so open 'load profile' dialog to pick one
-			{
-				choseProfile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
-			}
+			bool enteredProfileName = saveProfileDialog.ShowDialog() == DialogResult.OK;
+			if ( !enteredProfileName ) return;
 
-			bool abortLapseSave = !savedProfile && !choseProfile;
-			if ( abortLapseSave ) return;
-
-			string profileFullPath = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
-
+			string profileFullPath = saveProfileDialog.FileName;
+			string profileName = Path.GetFileName(profileFullPath);
+			SaveTimersList(profileName);
+			SaveChosenAudio(profileName);
 			SaveTimerLapses(profileFullPath);
 
 			#endregion
