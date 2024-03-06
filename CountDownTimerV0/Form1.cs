@@ -1212,31 +1212,6 @@ namespace CountDownTimerV0
 		// user intends to close the timer form window
 		private void DigitalCountTimer_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			#region SAVE TO FILE, THE FLAG TELLING TO SAVE LAPSES
-
-			/*//create string that maps flag name and value, akin to a dict pair
-			bool saveLapses = saveLapsesCheckBox.Checked;
-			int boolAsBinary = saveLapses ? 1 : 0;
-			string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
-			//write to file
-			File.WriteAllText(SAVE_LAPSES_ON_EXIT_PATH, flagString);*/
-
-			/*//open a file stream
-			FileInfo flagFileInfo = new FileInfo(SAVE_LAPSES_ON_EXIT_PATH);
-			using ( StreamWriter writer = new StreamWriter(flagFileInfo.Open(FileMode.Truncate)) )
-			//using ( StreamWriter writer = new StreamWriter(SAVE_LAPSES_ON_EXIT_PATH, false) )
-			{
-				//write string that maps flag name and value, akin to a dict pair
-				bool saveLapses = saveLapsesCheckBox.Checked;
-				int boolAsBinary = saveLapses ? 1 : 0;
-				string flagString = $"_saveLapsesOnExit:{boolAsBinary}";
-
-				char[] flagMapping = flagString.ToCharArray();
-				writer.WriteAsync(flagMapping, 0, flagMapping.Length);
-			}*/
-
-			#endregion
-
 			#region SAVE LAPSES TO FILE
 
 			bool saveTimerLapses = saveLapsesCheckBox.Checked;
@@ -1287,36 +1262,12 @@ namespace CountDownTimerV0
 			}
 
 			//build lapses file name in lapses dir, with suffixed profile name 
-			/*string profileFullPath = string.Empty;
-			if ( savedProfile ) 
-				profileFullPath = saveProfileDialog.FileName;
-			else if ( choseProfile ) 
-				profileFullPath = loadProfileDiaglog.FileName;*/
 			string profileFullPath = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
 			string profileFileName = Path.GetFileName( profileFullPath );
 			string lapsesFilePath = SuffixFileAtPath(
 				profileFileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
+			//write to file
 			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
-			//File.WriteAllText(LAPSES_PATH, nameAndSecondsStr);
-
-			/*//open a file stream
-			FileInfo lapseFileInfo = new FileInfo(LAPSES_MEM_FILE_PATH);
-			using ( StreamWriter writer = new StreamWriter(lapseFileInfo.Open(FileMode.Truncate)) )
-			//using ( StreamWriter writer = new StreamWriter(LAPSES_MEM_FILE_PATH, false) )
-			{
-				//get a list of the keys from _lapsesByNameDict
-				Dictionary<string, int>.KeyCollection keys = _lapsesByNameDict.Keys;
-				//convert colon separated timer name and bulkSeconds string
-				string[] keysArray = keys.ToArray<string>();
-
-				foreach ( string name in keysArray )
-				{
-					string durationStr = _lapsesByNameDict[name].ToString();
-					string nameAndSecondsStr = $"{name}:{durationStr}{Environment.NewLine}";
-					char[] timerChars = nameAndSecondsStr.ToCharArray();
-					writer.WriteAsync(timerChars, 0, timerChars.Length);
-				}
-			}*/
 
 			#endregion
 		}
