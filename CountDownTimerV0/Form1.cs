@@ -1219,9 +1219,10 @@ namespace CountDownTimerV0
 			if ( !saveTimerLapses ) return;
 
 			//if no profile to associate saved lapses with, open dialogs
-			bool noCurrentProfile = string.IsNullOrEmpty(_currentProfilePath);
+			bool activeProfile = File.Exists(_currentProfilePath);
+			//bool activeProfile = string.IsNullOrEmpty(_currentProfilePath);
 			bool willChooseProfile = false;
-			if ( noCurrentProfile )
+			if ( !activeProfile )
 			{
 				//show message box telling user of need for profile to assign to
 				willChooseProfile = MessageBox.Show(_assignProfileMsgBoxInfo.Message, _assignProfileMsgBoxInfo.Caption, _assignProfileMsgBoxInfo.Buttons) == DialogResult.OK;
