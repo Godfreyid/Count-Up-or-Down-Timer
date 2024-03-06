@@ -563,15 +563,21 @@ namespace CountDownTimerV0
 			//convert the formatted 'ChosenTimer.Duration' to 'durationAsSeconds' as,
 			//hours column to minutes to seconds, i.e. ( (hours * 60mins) * 60secs ) as 'hoursAsSeconds', 
 			_durationTimeColumns = durationString.Split(':');
-			string hoursColumn = _durationTimeColumns[0];
+			//guard against no hours entry
+			bool noHours = string.IsNullOrEmpty(_durationTimeColumns[0]);
+			string hoursColumn = noHours ? "0" : _durationTimeColumns[0];
 			int hours = int.Parse(hoursColumn);
 			int hoursInSeconds = (hours * MINUTES_PER_HOUR) * SECONDS_PER_MINUTE;
 			//PLUS minutes column to seconds, i.e. (mins * 60secs) as 'minutesAsSeconds',
-			string minutesColumn = _durationTimeColumns[1];
+			//guard against no minutes entry
+			bool noMinutes = string.IsNullOrEmpty(_durationTimeColumns[1]);
+			string minutesColumn = noMinutes ? "0" : _durationTimeColumns[1];
 			int minutes = int.Parse(minutesColumn);
 			int minutesInSeconds = minutes * SECONDS_PER_MINUTE;
 			//PLUS seconds column
-			string secondsColumn = _durationTimeColumns[2];
+			//guard against no seconds entry
+			bool noSeconds = string.IsNullOrEmpty(_durationTimeColumns[2]);
+			string secondsColumn = noSeconds ? "0" : _durationTimeColumns[2];
 			int seconds = int.Parse(secondsColumn);
 			int durationAsSeconds = hoursInSeconds + minutesInSeconds + seconds;
 
