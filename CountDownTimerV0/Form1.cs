@@ -18,16 +18,13 @@ namespace CountDownTimerV0
 		/* THESE PATHS NEED TO USE THE Environment.SpecialFolder.MyDocuments var */
 		private const string PROFILE_DIR = @"\Count Down Up Timer\Profiles\";
 		private readonly string MY_DOCUMENTS_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		private readonly string PROFILE_SAVE_PATH;
-		private readonly string PROFILE_LOAD_PATH;
+		private readonly string PROFILES_PATH;
 
 		private const string PROFILE_AUDIO_DIR = @"\Count Down Up Timer\Profile Audio\";
-		private readonly string PROFILE_SAVE_AUDIO_PATH;
-		private readonly string PROFILE_LOAD_AUDIO_PATH;
+		private readonly string PROFILES_AUDIO_PATH;
 
 		private const string SAVED_LAPSES_DIR = @"\Count Down Up Timer\Remembered Lapses\";
-		private readonly string LAPSES_SAVE_PATH;
-		private readonly string LAPSES_LOAD_PATH;
+		private readonly string LAPSES_PATH;
 
 		/*private const string LAPSES_MEM_FILE_NAME = "Remembered Lapses.txt";
 		private string LAPSES_MEM_FILE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + LAPSES_MEM_FILE_NAME;*/
@@ -177,14 +174,11 @@ namespace CountDownTimerV0
 			InitializeComponent();
 
 			/* INITIALIZE DIRECTORY PATHS */
-			PROFILE_SAVE_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
-			PROFILE_LOAD_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
+			PROFILES_PATH = MY_DOCUMENTS_PATH + PROFILE_DIR;
 
-			PROFILE_SAVE_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
-			PROFILE_LOAD_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
+			PROFILES_AUDIO_PATH = MY_DOCUMENTS_PATH + PROFILE_AUDIO_DIR;
 
-			LAPSES_SAVE_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
-			LAPSES_LOAD_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
+			LAPSES_PATH = MY_DOCUMENTS_PATH + SAVED_LAPSES_DIR;
 
 			SetupForm();
 		}
@@ -250,8 +244,8 @@ namespace CountDownTimerV0
 			CreateAppDirectories();
 
 			/* SET INITIAL VALUES FOR FILE OPEN AND SAVE DIALOG CONTROLLERS */
-			saveProfileDialog.InitialDirectory = PROFILE_SAVE_PATH;
-			loadProfileDiaglog.InitialDirectory = PROFILE_LOAD_PATH;
+			saveProfileDialog.InitialDirectory = PROFILES_PATH;
+			loadProfileDiaglog.InitialDirectory = PROFILES_PATH;
 
 			saveProfileDialog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
@@ -286,20 +280,20 @@ namespace CountDownTimerV0
 		
 		private void CreateAppDirectories() 
 		{
-			bool existingProfilesDir = Directory.Exists(PROFILE_SAVE_PATH);
+			bool existingProfilesDir = Directory.Exists(PROFILES_PATH);
 			//if not existing, create 'Profiles' directory 
 			if ( !existingProfilesDir )
-				Directory.CreateDirectory(PROFILE_SAVE_PATH);
+				Directory.CreateDirectory(PROFILES_PATH);
 
-			bool existingProfileAudioDir = Directory.Exists(PROFILE_SAVE_AUDIO_PATH);
+			bool existingProfileAudioDir = Directory.Exists(PROFILES_AUDIO_PATH);
 			//if not existing, create 'Profile Audio' directory
 			if ( !existingProfileAudioDir )
-				Directory.CreateDirectory(PROFILE_SAVE_AUDIO_PATH);
+				Directory.CreateDirectory(PROFILES_AUDIO_PATH);
 
-			bool existingLapsesDir = Directory.Exists(LAPSES_SAVE_PATH);
+			bool existingLapsesDir = Directory.Exists(LAPSES_PATH);
 			//if not existing, create 'Remembered Lapses' directory
 			if ( !existingLapsesDir )
-				Directory.CreateDirectory(LAPSES_SAVE_PATH);
+				Directory.CreateDirectory(LAPSES_PATH);
 		}
 
 		private void LoadSavedTimerLapses()
@@ -307,13 +301,13 @@ namespace CountDownTimerV0
 			//if NOT toggled 'save' lapses on last exit, return
 			if ( !ToggledSaveLapsesOnPrevExit() ) return;
 
-			bool timerLapsesFileExists = File.Exists(LAPSES_LOAD_PATH);
+			bool timerLapsesFileExists = File.Exists(LAPSES_PATH);
 			if ( !timerLapsesFileExists ) return;
 
 			string entireTimersStr = string.Empty;
 
 			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_LOAD_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -353,18 +347,18 @@ namespace CountDownTimerV0
 
 		private bool ToggledSaveLapsesOnPrevExit()
 		{
-			bool flagFileExists = File.Exists(LAPSES_SAVE_PATH);
+			bool flagFileExists = File.Exists(LAPSES_PATH);
 			if ( !flagFileExists ) return false;
 
 			int streamLenth;
-			using ( FileStream stream = File.OpenRead(LAPSES_SAVE_PATH) ) 
+			using ( FileStream stream = File.OpenRead(LAPSES_PATH) ) 
 			{
 				streamLenth = (int)stream.Length;
 			}
 
 			string extractedFlagStr = string.Empty;
 			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_LOAD_PATH) )
+			using ( StreamReader reader = new StreamReader(LAPSES_PATH) )
 			{
 				string line;
 				while ( (line = reader.ReadLine()) != null )
@@ -1264,19 +1258,21 @@ namespace CountDownTimerV0
 			bool choseProfile = false;
 			if ( willChooseProfile )
 			{
-				profilesExist = Directory.GetFiles(PROFILE_LOAD_PATH).Length > 0;
+				profilesExist = Directory.GetFiles(PROFILES_PATH).Length > 0;
 			}
+			//if no profiles exist, then save one to assign to
 			if ( !profilesExist )
 			{
 				savedProfile = saveProfileDialog.ShowDialog() == DialogResult.OK;
+				SaveTimersList(saveProfileDialog.FileName);
+				SaveChosenAudio(saveProfileDialog.FileName);
 			}
-			//open 'load profile' dialog if profiles exist
-			else if (profilesExist)
+			else //profiles exist, so open 'load profile' dialog to pick one
 			{
 				choseProfile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
 			}
 
-			bool abortLapseSave = !savedProfile || !choseProfile;
+			bool abortLapseSave = !savedProfile && !choseProfile;
 			if ( abortLapseSave ) return;
 
 			string nameAndSecondsStr = string.Empty;
@@ -1286,16 +1282,21 @@ namespace CountDownTimerV0
 			//convert colon separated timer name and bulkSeconds string
 			foreach ( string name in keysArray )
 			{
-				string durationAsString = _lapsesByNameDict[name].ToString();
-				nameAndSecondsStr += $"{name}:{durationAsString}{Environment.NewLine}";
+				string durationStr = _lapsesByNameDict[name].ToString();
+				nameAndSecondsStr += $"{name}{DELIMITER_TIMER_LAPSES}{durationStr}{Environment.NewLine}";
 			}
 
-			//build lapses file name with profile name
-			string userSetFilePath = Path.Combine(PROFILE_LOAD_PATH, loadProfileDiaglog.FileName);
-			string lapsesFilePath = SuffixedFileName(
-				userSetFilePath, DEFAULT_PROFILE_FILE_EXT, LAPSES_SAVE_FILE_SUFFIX);
+			//build lapses file name in lapses dir, with suffixed profile name 
+			/*string profileName = string.Empty;
+			if ( savedProfile ) 
+				profileName = saveProfileDialog.FileName;
+			else if ( choseProfile ) 
+				profileName = loadProfileDiaglog.FileName;*/
+			string profileName = savedProfile ? saveProfileDialog.FileName : loadProfileDiaglog.FileName;
+			string lapsesFilePath = SuffixFileAtPath(
+				profileName, DEFAULT_PROFILE_FILE_EXT, LAPSES_PATH, LAPSES_SAVE_FILE_SUFFIX);
 			File.WriteAllText(lapsesFilePath, nameAndSecondsStr);
-			//File.WriteAllText(LAPSES_SAVE_PATH, nameAndSecondsStr);
+			//File.WriteAllText(LAPSES_PATH, nameAndSecondsStr);
 
 			/*//open a file stream
 			FileInfo lapseFileInfo = new FileInfo(LAPSES_MEM_FILE_PATH);
@@ -1309,8 +1310,8 @@ namespace CountDownTimerV0
 
 				foreach ( string name in keysArray )
 				{
-					string durationAsString = _lapsesByNameDict[name].ToString();
-					string nameAndSecondsStr = $"{name}:{durationAsString}{Environment.NewLine}";
+					string durationStr = _lapsesByNameDict[name].ToString();
+					string nameAndSecondsStr = $"{name}:{durationStr}{Environment.NewLine}";
 					char[] timerChars = nameAndSecondsStr.ToCharArray();
 					writer.WriteAsync(timerChars, 0, timerChars.Length);
 				}
@@ -1322,13 +1323,26 @@ namespace CountDownTimerV0
 		// user intends to save the current list of timers and chosen audio
 		private void saveProfileBtn_Click(object sender, EventArgs e)
 		{
-			//open 'saveProfileDialog' save file dialog so user sets PROFILE_SAVE_PATH
+			//open 'saveProfileDialog' save file dialog so user sets PROFILES_PATH
 			bool specifiedSaveFile = saveProfileDialog.ShowDialog() == DialogResult.OK;
 			//if user did NOT press the 'ok' button of said dialog, return
 			if ( !specifiedSaveFile ) return;
 
 			#region SAVE LIST OF TIMERS
 
+			SaveTimersList(saveProfileDialog.FileName);
+
+			#endregion
+
+			#region SAVE CHOSEN AUDIO
+
+			SaveChosenAudio(saveProfileDialog.FileName);
+
+			#endregion
+		}
+
+		private void SaveTimersList(string fileName)
+		{
 			ListBox.ObjectCollection timerNameItems = timerNamesList.Items;
 			ListBox.ObjectCollection timerDurationItems = timerDurationsList.Items;
 			string timer = string.Empty;
@@ -1343,60 +1357,69 @@ namespace CountDownTimerV0
 			}
 			//now that user specified profile save file name,
 			//build the file path
-			string userSetFilePath = Path.Combine(PROFILE_SAVE_PATH, saveProfileDialog.FileName);
+			string saveFilePath = Path.Combine(PROFILES_PATH, fileName);
 			//write to file
-			File.WriteAllText(userSetFilePath, timer);
+			File.WriteAllText(saveFilePath, timer);
 
 			//cache current profile path
-			_currentProfilePath = userSetFilePath;
+			_currentProfilePath = saveFilePath;
+		}
 
-			#endregion
-
-			#region SAVE CHOSEN AUDIO
-
+		private void SaveChosenAudio(string profileFileName)
+		{
 			bool noAudioSelected = string.IsNullOrEmpty(_selectedAudio.FullPath);
 			//to preserve audio select start directory, if no audio path selected, return
 			if ( noAudioSelected ) return;
 
-			//now that user specified profile save file name,
-			//strip its '.txt' extension before adding audio save file suffix
 			//use suffix appended file name (path) to open (create) audio save file
-			string audioSaveFilePath = SuffixedFileName(
-				userSetFilePath, DEFAULT_PROFILE_FILE_EXT, AUDIO_SAVE_FILE_SUFFIX);
-			/*int profilePathLen = userSetFilePath.Length;
-			int profileExtLen = DEFAULT_PROFILE_FILE_EXT.Length;
-			int lenMinusExt = profilePathLen - profileExtLen;
-			string profilePathLessExt = userSetFilePath.Substring(0, lenMinusExt);
-			string audioSaveFilePath = $"{profilePathLessExt}{AUDIO_SAVE_FILE_SUFFIX}";*/
+			string audioSaveFilePath = SuffixFileAtPath(
+				profileFileName, 
+				DEFAULT_PROFILE_FILE_EXT, 
+				PROFILES_AUDIO_PATH,
+				AUDIO_SAVE_FILE_SUFFIX);
 			//write to file
 			File.WriteAllText(audioSaveFilePath, _selectedAudio.FullPath);
-
-			#endregion
 		}
 
 		/// <summary>
-		/// Adds a suffix to the file at the provided path.
+		/// Adds a suffix to the provide file name, then creates a file path with
+		/// the provided directory path.
 		/// </summary>
-		/// <param name="pathToFile">The path to the file that will be suffixed.</param>
-		/// <param name="fileExtension">The file extension of the file at
-		/// <paramref name="pathToFile"/>.</param>
-		/// <param name="suffixAddedToFileName">The suffix that will be added to the 
-		/// file at <paramref name="pathToFile"/>. The suffix should end with the
-		/// existing file extension of the file at
-		/// <paramref name="pathToFile"/>.</param>
+		/// <param name="fileName">The file name to which will be 
+		/// added the <paramref name="suffixToAdd"/>.</param>
+		/// <param name="fileExtension">The file extension shared by
+		/// both the existing <paramref name="fileName"/>, and which should
+		/// be a part of the <paramref name="suffixToAdd"/> by default.</param>
+		/// <param name="directoryPath">Path to the directory in which the
+		/// suffixed <paramref name="fileName"/> will belong (its path).</param>
+		/// <param name="suffixToAdd">The portion that will be added to
+		/// the back of <paramref name="fileName"/>.</param>
 		/// <returns></returns>
-		private string SuffixedFileName(
-			string pathToFile, 
+		private string SuffixFileAtPath(
+			string fileName,
 			string fileExtension,
-			string suffixAddedToFileName)
+			string directoryPath, 
+			string suffixToAdd)
 		{
-			int pathLen = pathToFile.Length;
+			//subtract extension from 'fileName'
+			int fileNameLen = fileName.Length;
+			int fileExtLen = fileExtension.Length;
+			int nameLenMinusExt = fileNameLen - fileExtLen;
+			string nameMinusExt = fileName.Substring(0, nameLenMinusExt);
+			//add suffix to extensionless 'fileName'
+			string namePlusSuffix = $"{nameMinusExt}{suffixToAdd}";
+			//combine directoryPath with final 'fileName' to get 'suffixedFileName'
+			string suffixedFileAtPath = Path.Combine(directoryPath, namePlusSuffix);
+
+			return suffixedFileAtPath;
+
+			/*int pathLen = pathToFile.Length;
 			int fileExtLen = fileExtension.Length;
 			int lenMinusExt = pathLen - fileExtLen;
 			string pathMinusExt = pathToFile.Substring(0, lenMinusExt);
-			string suffixedFileName = $"{pathMinusExt}{suffixAddedToFileName}";
+			string suffixedFileName = $"{pathMinusExt}{suffixToAdd}";
 
-			return suffixedFileName;
+			return suffixedFileName;*/
 		}
 
 		// user intends to load a previously saved list of timers and chosen audio
@@ -1410,7 +1433,7 @@ namespace CountDownTimerV0
 
 			//now that user specified profile load file name,
 			//open that file by building its path
-			string userSetFilePath = Path.Combine(PROFILE_LOAD_PATH, loadProfileDiaglog.FileName);
+			string userSetFilePath = Path.Combine(PROFILES_PATH, loadProfileDiaglog.FileName);
 			//open file stream
 			using ( StreamReader reader = new StreamReader(userSetFilePath) )
 			{
