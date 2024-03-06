@@ -1239,8 +1239,9 @@ namespace CountDownTimerV0
 			if ( !profilesExist )
 			{
 				savedProfile = saveProfileDialog.ShowDialog() == DialogResult.OK;
-				SaveTimersList(saveProfileDialog.FileName);
-				SaveChosenAudio(saveProfileDialog.FileName);
+				string profileName = Path.GetFileName(saveProfileDialog.FileName);
+				SaveTimersList(profileName);
+				SaveChosenAudio(profileName);
 			}
 			else //profiles exist, so open 'load profile' dialog to pick one
 			{
@@ -1282,13 +1283,14 @@ namespace CountDownTimerV0
 
 			#region SAVE LIST OF TIMERS
 
-			SaveTimersList(saveProfileDialog.FileName);
+			string profileFileName = Path.GetFileName(saveProfileDialog.FileName);
+			SaveTimersList(profileFileName);
 
 			#endregion
 
 			#region SAVE CHOSEN AUDIO
 
-			SaveChosenAudio(saveProfileDialog.FileName);
+			SaveChosenAudio(profileFileName);
 
 			#endregion
 		}
