@@ -1409,6 +1409,9 @@ namespace CountDownTimerV0
 
 			#region LOAD POTENTIAL LAPSES ASSIGNED TO LOADED PROFILE
 
+			//clear the lapses by name dictionary in case current timers were lapsed
+			_lapsesByNameDict.Clear();
+
 			string profileFileName = Path.GetFileName(profilePath);
 			string lapsesFilePath = SuffixFileAtPath(
 				profileFileName,
