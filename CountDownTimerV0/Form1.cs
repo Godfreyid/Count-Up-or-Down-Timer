@@ -37,7 +37,6 @@ namespace CountDownTimerV0
 		private const string AUDIO_SAVE_FILE_SUFFIX = "_chosenAudio.txt";
 		private const string LAPSES_SAVE_FILE_SUFFIX = "_cachedLapses.txt";
 
-		private bool _saveLapsesOnExit;
 		private string _currentProfilePath;
 
 		private const char DELIMITER_TIMER_LAPSES = ':';
@@ -1159,7 +1158,9 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			int timerNamesCount = timerNamesList.Items.Count;
+			timerNamesList_SelectedValueChanged(sender, e);
+
+			/*int timerNamesCount = timerNamesList.Items.Count;
 			int lastTimerI = timerNamesCount - 1;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
@@ -1184,7 +1185,7 @@ namespace CountDownTimerV0
 
 				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
-			}
+			}*/
 		}
 
 		// user intends choose the timers below current in the timers list 
@@ -1200,7 +1201,9 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			int timerNamesCount = timerNamesList.Items.Count;
+			timerNamesList_SelectedValueChanged(sender, e);
+
+			/*int timerNamesCount = timerNamesList.Items.Count;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
@@ -1224,7 +1227,7 @@ namespace CountDownTimerV0
 
 				//set selected item to Items' item at incremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
-			}
+			}*/
 		}
 
 		// user intends to close the timers form window
@@ -1395,15 +1398,23 @@ namespace CountDownTimerV0
 			bool specifiedLoadFile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
 			if ( !specifiedLoadFile ) return;
 
-			#region LOAD LIST OF TIMERS
+			string profilePath = loadProfileDiaglog.FileName;
 
+			LoadTimersList(profilePath);
+			
+			LoaderTimerLapses(profilePath);
+
+			LoadTimerAudio(profilePath);
+		}
+
+		private void LoadTimersList(string profilePath)
+		{
 			//clear out timers list in case of consecutive profile loading
 			timerNamesList.Items.Clear();
 			timerDurationsList.Items.Clear();
 
 			//now that user specified profile load file name,
 			//open that file by building its path
-			string profilePath = loadProfileDiaglog.FileName;
 			string userSetFilePath = Path.Combine(PROFILES_DIR_PATH, profilePath);
 			//open file stream
 			using ( StreamReader reader = new StreamReader(userSetFilePath) )
@@ -1414,19 +1425,18 @@ namespace CountDownTimerV0
 					//split line at profiles delimiter
 					string[] timerConjugate = line.Split(DELIMITER_TIMER_PROFILES);
 					//add timers name to timerNamesList.Items[i]
-					timerNamesList.Items.Add( timerConjugate[0] );
+					timerNamesList.Items.Add(timerConjugate[0]);
 					//add timers duration to timerDurationsList.Items[i]
-					timerDurationsList.Items.Add( timerConjugate[1] );
+					timerDurationsList.Items.Add(timerConjugate[1]);
 				}
 			}
 
 			//cache loaded profile path as current profile path
 			_currentProfilePath = userSetFilePath;
+		}
 
-			#endregion
-
-			#region LOAD POTENTIAL LAPSES ASSIGNED TO LOADED PROFILE
-
+		private void LoaderTimerLapses(string profilePath)
+		{
 			//clear the lapses by name dictionary in case current timers were lapsed
 			_lapsesByNameDict.Clear();
 
@@ -1436,30 +1446,37 @@ namespace CountDownTimerV0
 				DEFAULT_PROFILE_FILE_EXT,
 				LAPSES_DIR_PATH,
 				LAPSES_SAVE_FILE_SUFFIX);
-			using ( StreamReader lapseReader = new StreamReader(lapsesFilePath) )
+
+			bool availableLapses = File.Exists(lapsesFilePath);
+			if ( availableLapses )
 			{
-				string line;
-				while ( (line = lapseReader.ReadLine()) != null )
+
+				using ( StreamReader lapseReader = new StreamReader(lapsesFilePath) )
 				{
-					string[] lapsesConjugate = line.Split(DELIMITER_TIMER_LAPSES);
-					string timerName = lapsesConjugate[0];
-					string bulkSeconds = lapsesConjugate[1];
-					_lapsesByNameDict[timerName] = int.Parse(bulkSeconds);
+					string line;
+					while ( (line = lapseReader.ReadLine()) != null )
+					{
+						string[] lapsesConjugate = line.Split(DELIMITER_TIMER_LAPSES);
+						string timerName = lapsesConjugate[0];
+						string bulkSeconds = lapsesConjugate[1];
+						_lapsesByNameDict[timerName] = int.Parse(bulkSeconds);
+					}
 				}
 			}
+		}
 
-			#endregion
-
-			#region LOAD PREVIOUSLY CHOSEN AUDIO
-
-			//now that user specified profile load file name,
-			//strip its '.txt' extension before adding audio save file suffix
-			//use suffix appended file name (path) to open audio load file
+		private void LoadTimerAudio(string profilePath)
+		{
+			string profileFileName = Path.GetFileName(profilePath);
 			string audioSaveFilePath = SuffixFileAtPath(
-				profileFileName, 
-				DEFAULT_PROFILE_FILE_EXT, 
-				PROFILES_AUDIO_DIR_PATH, 
+				profileFileName,
+				DEFAULT_PROFILE_FILE_EXT,
+				PROFILES_AUDIO_DIR_PATH,
 				AUDIO_SAVE_FILE_SUFFIX);
+
+			bool availableAudioFile = File.Exists(audioSaveFilePath);
+			if ( !availableAudioFile ) return;
+
 			using ( StreamReader profAudioReader = new StreamReader(audioSaveFilePath) )
 			{
 				string line;
@@ -1475,9 +1492,6 @@ namespace CountDownTimerV0
 				string justAudioFileName = dirsToAudioFile[lastI];
 				selectedAudioName.Text = justAudioFileName;
 			}
-
-			#endregion
-
 		}
 	}
 }
