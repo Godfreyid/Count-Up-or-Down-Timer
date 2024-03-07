@@ -223,6 +223,7 @@ namespace CountDownTimerV0
 			this.clearTimersListBtn.TabIndex = 9;
 			this.clearTimersListBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.clearTimersListBtn.UseVisualStyleBackColor = false;
+			this.clearTimersListBtn.Click += new System.EventHandler(this.clearTimersListBtn_Click);
 			this.clearTimersListBtn.MouseHover += new System.EventHandler(this.clearTimersListBtn_MouseHover);
 			// 
 			// selectTimerLabel1
@@ -639,6 +640,7 @@ namespace CountDownTimerV0
 			this.removeTimerBtn.TabIndex = 51;
 			this.removeTimerBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.removeTimerBtn.UseVisualStyleBackColor = false;
+			this.removeTimerBtn.Click += new System.EventHandler(this.removeTimerBtn_Click);
 			this.removeTimerBtn.MouseHover += new System.EventHandler(this.removeTimerBtn_MouseHover);
 			// 
 			// DigitalCountTimer

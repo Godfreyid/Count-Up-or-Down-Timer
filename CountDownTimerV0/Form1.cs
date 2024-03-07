@@ -853,6 +853,43 @@ namespace CountDownTimerV0
 			fileName = justTheName;
 		}
 
+		private void clearTimersListBtn_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void removeTimerBtn_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
+			toolTips.Show(
+				TOOLTIP_CHOOSE_AUDIO_BTN,
+				chooseAudioBtn,
+				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
+		}
+
+		private void removeTimerBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_REMOVE_BTN,
+				removeTimerBtn,
+				TOOLTIP_REMOVE_BTN_DUR);
+		}
+
+		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_CLEAR_TIMERS_LIST,
+				clearTimersListBtn,
+				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
+		}
+
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
@@ -1501,34 +1538,5 @@ namespace CountDownTimerV0
 				selectedAudioName.Text = justAudioFileName;
 			}
 		}
-
-		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
-			toolTips.Show(
-				TOOLTIP_CHOOSE_AUDIO_BTN, 
-				chooseAudioBtn, 
-				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
-		}
-
-		private void removeTimerBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.Show(
-				TOOLTIP_REMOVE_BTN, 
-				removeTimerBtn,
-				TOOLTIP_REMOVE_BTN_DUR);
-		}
-
-		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.Show(
-				TOOLTIP_CLEAR_TIMERS_LIST, 
-				clearTimersListBtn, 
-				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
-		}
-
-		
 	}
 }
