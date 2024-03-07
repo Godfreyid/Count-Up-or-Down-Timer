@@ -249,7 +249,19 @@ namespace CountDownTimerV0
 
 			saveProfileDialog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
-			// CACHE THE SELECTED PATH PROPERTY VALUE OF audioFolderBrowser?
+
+			/* SET INITIAL DIRECTORY FOR AUDIO SELECT DIALOG CONTROLLER */
+			/* exe is in 'Release/', which is in 'bin/', which is in 'CountDownTimerV0/'
+			   soundClips are in 'Standard Alarm Tunes/', which is in 'CountDownTimerV0/'
+			   so from 'Release/', go to parent 'bin/', then again to parent
+			   'CountDownTimerV0/' */
+			var exeParentBinDir = Directory.GetParent(Environment.CurrentDirectory);
+			var binParentCountDownTimerV0Dir = Directory.GetParent(exeParentBinDir.FullName);
+			//then combine that parent 'CountDownTimerV0/' with 'Standard Alarm Tunes/'
+			string alarmTunesDir = Path.Combine(
+				binParentCountDownTimerV0Dir.FullName, @"Standard Alarm Tunes\");
+			//set audioFolderBrowser.InitialDirectory to the combined path
+			audioFileSelector.InitialDirectory = alarmTunesDir;
 
 			LoadSavedTimerLapses();
 		}
