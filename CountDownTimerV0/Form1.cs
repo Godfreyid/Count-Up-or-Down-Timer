@@ -1296,18 +1296,11 @@ namespace CountDownTimerV0
 			//if user did NOT press the 'ok' button of said dialog, return
 			if ( !specifiedSaveFile ) return;
 
-			#region SAVE LIST OF TIMERS
-
 			string profileFileName = Path.GetFileName(saveProfileDialog.FileName);
+
 			SaveTimersList(profileFileName);
 
-			#endregion
-
-			#region SAVE CHOSEN AUDIO
-
 			SaveChosenAudio(profileFileName);
-
-			#endregion
 		}
 
 		private void SaveTimersList(string fileName)
