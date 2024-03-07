@@ -262,7 +262,7 @@ namespace CountDownTimerV0
 			//set audioFolderBrowser.InitialDirectory to the combined path
 			audioFileSelector.InitialDirectory = alarmTunesDir;
 
-			LoadSavedTimerLapses();
+			//LoadSavedTimerLapses();
 		}
 
 		private void SetTabIndices()
@@ -1164,16 +1164,24 @@ namespace CountDownTimerV0
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
 
-			bool noSelectedTimer = timerNamesList.SelectedItem == null;
+			bool noSelectedName = timerNamesList.SelectedItem == null;
+			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
+			bool noSelectedTimer = noSelectedName || noSelectedDuration;
 			//if there is no selected item in 'timerNamesList'
 			if ( noSelectedTimer )
+			{
 				//set the very last (list bottom) item as selected
-				timerNamesList.SelectedItem = timerNamesList.Items[lastTimerI];
+				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[lastTimerI] : timerNamesList.SelectedItem;
+				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[lastTimerI] : timerDurationsList.SelectedItem;
+			}
 			//else,
 			else
 			{
+				bool selectedName = timerNamesList.SelectedItem != null;
+				int selectedNameI = timerNamesList.SelectedIndex;
+				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = timerNamesList.SelectedIndex;
+				int selectedItemI = selectedName ? selectedNameI : selectedDurationI;
 				//decrement said index
 				selectedItemI--;
 				bool neg = selectedItemI < 0;
@@ -1183,6 +1191,7 @@ namespace CountDownTimerV0
 
 				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
+				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
 			}
 		}
 
@@ -1200,20 +1209,29 @@ namespace CountDownTimerV0
 			}
 
 			int timerNamesCount = timerNamesList.Items.Count;
+			int lastTimerI = timerNamesCount - 1;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
 
-			bool noSelectedTimer = timerNamesList.SelectedItem == null;
-			//if no selected item in 'timerNamesList'
+			bool noSelectedName = timerNamesList.SelectedItem == null;
+			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
+			bool noSelectedTimer = noSelectedName || noSelectedDuration;
+			//if there is no selected item in 'timerNamesList'
 			if ( noSelectedTimer )
-				//set the very first (list top) item to selected
-				timerNamesList.SelectedItem = timerNamesList.Items[0];
+			{
+				//set the very last (list bottom) item as selected
+				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[lastTimerI] : timerNamesList.SelectedItem;
+				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[lastTimerI] : timerDurationsList.SelectedItem;
+			}
 			//else,
 			else
 			{
+				bool selectedName = timerNamesList.SelectedItem != null;
+				int selectedNameI = timerNamesList.SelectedIndex;
+				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = timerNamesList.SelectedIndex;
+				int selectedItemI = selectedName ? selectedNameI : selectedDurationI;
 				//increment said index
 				selectedItemI++;
 				bool indexOutOfBounds = selectedItemI >= timerNamesCount;
@@ -1223,6 +1241,7 @@ namespace CountDownTimerV0
 
 				//set selected item to Items' item at incremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
+				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
 			}
 		}
 
