@@ -76,6 +76,8 @@ namespace CountDownTimerV0
 			this.loadProfileDiaglog = new System.Windows.Forms.OpenFileDialog();
 			this.saveProfileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.timerFormatTip = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+			this.removeTimerBtn = new System.Windows.Forms.Button();
 			this.counterSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -214,16 +216,15 @@ namespace CountDownTimerV0
 			this.clearTimersListBtn.Font = new System.Drawing.Font("Arial Narrow", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.clearTimersListBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.clearTimersListBtn.Image = ((System.Drawing.Image)(resources.GetObject("clearTimersListBtn.Image")));
-			this.clearTimersListBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.clearTimersListBtn.Location = new System.Drawing.Point(6, 617);
 			this.clearTimersListBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.clearTimersListBtn.Name = "clearTimersListBtn";
 			this.clearTimersListBtn.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.clearTimersListBtn.Size = new System.Drawing.Size(144, 58);
 			this.clearTimersListBtn.TabIndex = 9;
-			this.clearTimersListBtn.Text = "Clear Timers";
 			this.clearTimersListBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.clearTimersListBtn.UseVisualStyleBackColor = false;
+			this.clearTimersListBtn.MouseHover += new System.EventHandler(this.clearTimersListBtn_MouseHover);
 			// 
 			// selectTimerLabel1
 			// 
@@ -440,16 +441,15 @@ namespace CountDownTimerV0
 			this.chooseAudioBtn.Font = new System.Drawing.Font("Arial Narrow", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.chooseAudioBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.chooseAudioBtn.Image = ((System.Drawing.Image)(resources.GetObject("chooseAudioBtn.Image")));
-			this.chooseAudioBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.chooseAudioBtn.Location = new System.Drawing.Point(393, 616);
+			this.chooseAudioBtn.Location = new System.Drawing.Point(470, 616);
 			this.chooseAudioBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.chooseAudioBtn.Name = "chooseAudioBtn";
-			this.chooseAudioBtn.Size = new System.Drawing.Size(139, 59);
+			this.chooseAudioBtn.Size = new System.Drawing.Size(62, 59);
 			this.chooseAudioBtn.TabIndex = 34;
-			this.chooseAudioBtn.Text = "Choose Audio";
 			this.chooseAudioBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.chooseAudioBtn.UseVisualStyleBackColor = false;
 			this.chooseAudioBtn.Click += new System.EventHandler(this.chooseAudioBtn_Click);
+			this.chooseAudioBtn.MouseHover += new System.EventHandler(this.chooseAudioBtn_MouseHover);
 			// 
 			// pictureBox3
 			// 
@@ -477,12 +477,12 @@ namespace CountDownTimerV0
 			this.chosenAudioLabel.AutoSize = true;
 			this.chosenAudioLabel.Font = new System.Drawing.Font("Arial Narrow", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.chosenAudioLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.chosenAudioLabel.Location = new System.Drawing.Point(151, 636);
+			this.chosenAudioLabel.Location = new System.Drawing.Point(296, 638);
 			this.chosenAudioLabel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.chosenAudioLabel.Name = "chosenAudioLabel";
-			this.chosenAudioLabel.Size = new System.Drawing.Size(89, 20);
+			this.chosenAudioLabel.Size = new System.Drawing.Size(43, 20);
 			this.chosenAudioLabel.TabIndex = 40;
-			this.chosenAudioLabel.Text = "Chosen Audio:";
+			this.chosenAudioLabel.Text = "Audio:";
 			this.chosenAudioLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// selectedAudioName
@@ -491,10 +491,10 @@ namespace CountDownTimerV0
 			this.selectedAudioName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.selectedAudioName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.selectedAudioName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-			this.selectedAudioName.Location = new System.Drawing.Point(239, 638);
+			this.selectedAudioName.Location = new System.Drawing.Point(338, 638);
 			this.selectedAudioName.Margin = new System.Windows.Forms.Padding(0);
 			this.selectedAudioName.Name = "selectedAudioName";
-			this.selectedAudioName.Size = new System.Drawing.Size(151, 18);
+			this.selectedAudioName.Size = new System.Drawing.Size(129, 18);
 			this.selectedAudioName.TabIndex = 41;
 			this.selectedAudioName.Text = "[NONE]";
 			// 
@@ -628,12 +628,27 @@ namespace CountDownTimerV0
 			// 
 			this.saveProfileDialog.DefaultExt = "txt";
 			// 
+			// removeTimerBtn
+			// 
+			this.removeTimerBtn.BackColor = System.Drawing.Color.Gray;
+			this.removeTimerBtn.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+			this.removeTimerBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.removeTimerBtn.Image = ((System.Drawing.Image)(resources.GetObject("removeTimerBtn.Image")));
+			this.removeTimerBtn.Location = new System.Drawing.Point(151, 617);
+			this.removeTimerBtn.Name = "removeTimerBtn";
+			this.removeTimerBtn.Size = new System.Drawing.Size(139, 58);
+			this.removeTimerBtn.TabIndex = 51;
+			this.removeTimerBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.removeTimerBtn.UseVisualStyleBackColor = false;
+			this.removeTimerBtn.MouseHover += new System.EventHandler(this.removeTimerBtn_MouseHover);
+			// 
 			// DigitalCountTimer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.ClientSize = new System.Drawing.Size(537, 676);
+			this.Controls.Add(this.removeTimerBtn);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.secondsLabel);
 			this.Controls.Add(this.minutesLabel);
@@ -727,6 +742,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.OpenFileDialog loadProfileDiaglog;
 		private System.Windows.Forms.SaveFileDialog saveProfileDialog;
 		private System.Windows.Forms.ToolTip timerFormatTip;
+		private System.Windows.Forms.ToolTip toolTips;
+		private System.Windows.Forms.Button removeTimerBtn;
 	}
 }
 

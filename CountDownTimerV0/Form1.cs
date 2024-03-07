@@ -61,8 +61,14 @@ namespace CountDownTimerV0
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
 
-		private const string INCORRECT_FORMAT_TOOLTIP = "Incorrect format, use empty default as template";
-		private const int INCORRECT_FORMAT_TOOLTIP_DUR = 3000;
+		private const string TOOLTIP_CHOOSE_AUDIO_BTN = "Choose timer ALARM	audio";
+		private const int TOOLTIP_CHOOSE_AUDIO_BTN_DUR = 3000;
+		private const string TOOLTIP_INCORRECT_FORMAT = "Wrong format, use empty default as template";
+		private const int TOOLTIP_INCORRECT_FORMAT_DUR = 3000;
+		private const string TOOLTIP_REMOVE_BTN = "Remote SELECTED timer from list";
+		private const int TOOLTIP_REMOVE_BTN_DUR = 3000;
+		private const string TOOLTIP_CLEAR_TIMERS_LIST = "Clear (ENTIRE) timers list";
+		private const int TOOLTIP_CLEAR_TIMERS_LIST_DUR = 3000;
 
 		Form _alarmAlertWindow;
 		
@@ -473,7 +479,7 @@ namespace CountDownTimerV0
 			//show popup prompting user to re-input with correct hh:mm:ss format
 			//timerFormatTip.SetToolTip(textBoxLeft, "Incorrect format");
 			timerFormatTip.Show(
-				INCORRECT_FORMAT_TOOLTIP, textBoxLeft, INCORRECT_FORMAT_TOOLTIP_DUR);
+				TOOLTIP_INCORRECT_FORMAT, textBoxLeft, TOOLTIP_INCORRECT_FORMAT_DUR);
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
@@ -1496,5 +1502,34 @@ namespace CountDownTimerV0
 				selectedAudioName.Text = justAudioFileName;
 			}
 		}
+
+		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
+			toolTips.Show(
+				TOOLTIP_CHOOSE_AUDIO_BTN, 
+				chooseAudioBtn, 
+				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
+		}
+
+		private void removeTimerBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_REMOVE_BTN, 
+				removeTimerBtn,
+				TOOLTIP_REMOVE_BTN_DUR);
+		}
+
+		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_CLEAR_TIMERS_LIST, 
+				clearTimersListBtn, 
+				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
+		}
+
+		
 	}
 }
