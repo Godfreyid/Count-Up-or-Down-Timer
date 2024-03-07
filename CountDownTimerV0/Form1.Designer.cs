@@ -75,7 +75,6 @@ namespace CountDownTimerV0
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.loadProfileDiaglog = new System.Windows.Forms.OpenFileDialog();
 			this.saveProfileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.timerFormatTip = new System.Windows.Forms.ToolTip(this.components);
 			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
 			this.removeTimerBtn = new System.Windows.Forms.Button();
 			this.counterSelectorPanel.SuspendLayout();
@@ -741,7 +740,6 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.OpenFileDialog loadProfileDiaglog;
 		private System.Windows.Forms.SaveFileDialog saveProfileDialog;
-		private System.Windows.Forms.ToolTip timerFormatTip;
 		private System.Windows.Forms.ToolTip toolTips;
 		private System.Windows.Forms.Button removeTimerBtn;
 	}
