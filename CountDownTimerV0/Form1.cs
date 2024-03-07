@@ -1158,9 +1158,7 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			timerNamesList_SelectedValueChanged(sender, e);
-
-			/*int timerNamesCount = timerNamesList.Items.Count;
+			int timerNamesCount = timerNamesList.Items.Count;
 			int lastTimerI = timerNamesCount - 1;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
@@ -1181,11 +1179,11 @@ namespace CountDownTimerV0
 				bool neg = selectedItemI < 0;
 				//clamp above -1 & assist loop to bottom,
 				//loop back to bottom if reached top
-				selectedItemI = neg ? lastTimerI : selectedItemI; 
+				selectedItemI = neg ? lastTimerI : selectedItemI;
 
 				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
-			}*/
+			}
 		}
 
 		// user intends choose the timers below current in the timers list 
@@ -1201,9 +1199,7 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			timerNamesList_SelectedValueChanged(sender, e);
-
-			/*int timerNamesCount = timerNamesList.Items.Count;
+			int timerNamesCount = timerNamesList.Items.Count;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
@@ -1227,7 +1223,7 @@ namespace CountDownTimerV0
 
 				//set selected item to Items' item at incremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
-			}*/
+			}
 		}
 
 		// user intends to close the timers form window
