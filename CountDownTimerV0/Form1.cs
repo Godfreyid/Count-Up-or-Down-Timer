@@ -226,14 +226,6 @@ namespace CountDownTimerV0
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
 
-			/* LOAD TIMER VALUE TO BEGIN COUNT DOWN/UP */
-			//get the count up/down time from the profile of timers
-			/* f.y.i. a profile is just a .txt file of 'newline' separated strings
-			   each containing the name of the timers and a 'comma' separating the 
-			   timers length. The timers length is just an int number counted up to 
-			   (-= 1 every 1000 miliseconds), or that is counted 
-			   down from (+= 1 every 1000 miliseconds). */
-
 			/* SET STARTING STATE */
 			_startButtonState = Start.FromBeginning;
 
@@ -943,6 +935,9 @@ namespace CountDownTimerV0
 			//indicate restricted (disallowed) controls while timers ticks
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
+			//update the 'active timer' label text
+			activeTimerTextBox.Text = _chosenTimer.Name;
+
 			_timerState = TimerState.Ticking;
 		}
 
@@ -1220,9 +1215,9 @@ namespace CountDownTimerV0
 			//if there is no selected item in 'timerNamesList'
 			if ( noSelectedTimer )
 			{
-				//set the very last (list bottom) item as selected
-				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[lastTimerI] : timerNamesList.SelectedItem;
-				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[lastTimerI] : timerDurationsList.SelectedItem;
+				//set the very first (list top) item as selected
+				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[0] : timerNamesList.SelectedItem;
+				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[0] : timerDurationsList.SelectedItem;
 			}
 			//else,
 			else
