@@ -853,11 +853,36 @@ namespace CountDownTimerV0
 			fileName = justTheName;
 		}
 
+		// user intends to clear all selectable timers from the 'Timers' list
 		private void clearTimersListBtn_Click(object sender, EventArgs e)
 		{
+			//when timer state is 'Ticking' return
+			switch ( _timerState )
+			{
+				case TimerState.Ticking:
+				case TimerState.Reset:
+					return;
+				case TimerState.Stopped:
+				default:
+					break;
+			}
 
+			//reset display text
+			timerDisplay.Text = TIMER_DISPLAY_DEFAULT_STRING;
+			//clear the timerNamesList
+			timerNamesList.Items.Clear();
+			//clear the timerDurationsList
+			timerDurationsList.Items.Clear();
+			//clear the lapsesByNameDict
+			_lapsesByNameDict.Clear();
+			//clear the _chosenTimer struct
+			_chosenTimer.Name = string.Empty;
+			_chosenTimer.Duration = string.Empty;
+			//nullify _currentProfilePath
+			_currentProfilePath = string.Empty;
 		}
 
+		// user intends to remove the currently selected timer from 'Timers' list
 		private void removeTimerBtn_Click(object sender, EventArgs e)
 		{
 
@@ -924,7 +949,7 @@ namespace CountDownTimerV0
 					//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
 					if ( defaultTimerDisplay )
 					{
-						//display message box informing user to first select a timers
+						//display message box informing user to first select a timer
 						MessageBox.Show(_startButtonMsgBoxInfo.Message, _startButtonMsgBoxInfo.Caption, _startButtonMsgBoxInfo.Buttons);
 						//put focus back on the 'navigateDwnBtn' control
 						navigateDwnBtn.Focus();
