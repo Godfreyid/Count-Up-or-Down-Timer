@@ -261,8 +261,6 @@ namespace CountDownTimerV0
 				binParentCountDownTimerV0Dir.FullName, @"Standard Alarm Tunes\");
 			//set audioFolderBrowser.InitialDirectory to the combined path
 			audioFileSelector.InitialDirectory = alarmTunesDir;
-
-			//LoadSavedTimerLapses();
 		}
 
 		private void SetTabIndices()
@@ -305,100 +303,6 @@ namespace CountDownTimerV0
 			//if not existing, create 'Remembered Lapses' directory
 			if ( !existingLapsesDir )
 				Directory.CreateDirectory(LAPSES_DIR_PATH);
-		}
-
-		private void LoadSavedTimerLapses()
-		{
-			//if NOT toggled 'save' lapses on last exit, return
-			if ( !ToggledSaveLapsesOnPrevExit() ) return;
-
-			bool timerLapsesFileExists = File.Exists(LAPSES_DIR_PATH);
-			if ( !timerLapsesFileExists ) return;
-
-			string entireTimersStr = string.Empty;
-
-			//open the saved file at LAPSES_MEM_FILE_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_DIR_PATH) )
-			{
-				string line;
-				while ( (line = reader.ReadLine()) != null )
-				{
-					//timerDisplay.Text = line; // DEBUGGING - DELETE!!!
-					entireTimersStr += $"{line}{Environment.NewLine}";
-
-					/* TRY ADDING THE BELOW */
-					/*//split string at colons separating name and seconds
-					string[] timerAndBulkSeconds = line.Split(':');
-					//make _timerSecondsByNameDict name:duration entry
-					//i.e. 1st elem of split = key and 2nd = value
-					string timerName = timerAndBulkSeconds[0];
-					_timerSecondsByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);*/
-				}
-			}
-
-			/* THE BELOW MIGHT NOT BE NECESSARY */
-			//split the line (string) at the new lines
-			char[] newLineChars = Environment.NewLine.ToCharArray();
-			string[] splitTimers = entireTimersStr.Split(newLineChars, StringSplitOptions.RemoveEmptyEntries);
-			foreach ( string lapse in splitTimers )
-			{
-				//skip empty strings introduced by Environment.NewLine
-				//if ( string.IsNullOrEmpty(lapse) ) continue;
-
-				//split string at colons separating name and seconds
-				string[] timerAndBulkSeconds = lapse.Split(DELIMITER_TIMER_LAPSES);
-				//make _timerSecondsByNameDict name:duration entry
-				//i.e. 1st elem of split = key and 2nd = value
-				string timerName = timerAndBulkSeconds[0];
-				_lapsesByNameDict[timerName] = int.Parse(timerAndBulkSeconds[1]);
-			}
-
-			//LoadLapsesIntoMappingCacheDict();
-		}
-
-		private bool ToggledSaveLapsesOnPrevExit()
-		{
-			bool flagFileExists = File.Exists(LAPSES_DIR_PATH);
-			if ( !flagFileExists ) return false;
-
-			int streamLenth;
-			using ( FileStream stream = File.OpenRead(LAPSES_DIR_PATH) ) 
-			{
-				streamLenth = (int)stream.Length;
-			}
-
-			string extractedFlagStr = string.Empty;
-			//open _saveLapsesOnExit file at SAVE_LAPSES_ON_EXIT_PATH
-			using ( StreamReader reader = new StreamReader(LAPSES_DIR_PATH) )
-			{
-				string line;
-				while ( (line = reader.ReadLine()) != null )
-				{
-					//string flagString = strEncode.GetString(flagBytes);
-					extractedFlagStr += $"{line}{Environment.NewLine}";
-				}
-
-				bool toggledSaveLapses = false;
-				char[] newLineChars = Environment.NewLine.ToCharArray();
-				string[] splitNewLines = extractedFlagStr.Split(newLineChars, StringSplitOptions.RemoveEmptyEntries);
-				foreach ( string splitStr in splitNewLines )
-				{
-					//skip empty string introducted by Environment.NewLine
-					//if ( string.IsNullOrEmpty(splitStr) ) continue;
-
-					//assuming dict-like mapping of flag name and value,
-					//so split the string at the colon
-					string[] flagAndVal = splitStr.Split(DELIMITER_TIMER_LAPSES);
-					//get the second value of the split consequent array
-					string flagValStr = flagAndVal[1];
-					//assuming the value is a binary 0 or 1, so...
-					int flagValue = int.Parse(flagValStr);
-					//if the parsed int is 0, it means the flag to save lapses was FALSE,
-					toggledSaveLapses = flagValue == 1;
-				}
-
-				return toggledSaveLapses;
-			}
 		}
 
 		// user clicked in text field to begin entering timers name
