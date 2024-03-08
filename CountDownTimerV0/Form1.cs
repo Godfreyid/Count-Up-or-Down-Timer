@@ -1225,7 +1225,6 @@ namespace CountDownTimerV0
 			}
 
 			int timerNamesCount = timerNamesList.Items.Count;
-			int lastTimerI = timerNamesCount - 1;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
