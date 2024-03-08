@@ -1216,6 +1216,10 @@ namespace CountDownTimerV0
 				//set the very last (list bottom) item as selected
 				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[lastTimerI] : timerNamesList.SelectedItem;
 				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[lastTimerI] : timerDurationsList.SelectedItem;
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = noSelectedName ? lastTimerI : timerNamesList.SelectedIndex;
+				timerDurationsList.SelectedIndex = noSelectedDuration ? lastTimerI : timerDurationsList.SelectedIndex;
 			}
 			//else,
 			else
@@ -1235,6 +1239,10 @@ namespace CountDownTimerV0
 				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = selectedItemI;
+				timerDurationsList.SelectedIndex = selectedItemI;
 			}
 		}
 
@@ -1265,6 +1273,10 @@ namespace CountDownTimerV0
 				//set the very first (list top) item as selected
 				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[0] : timerNamesList.SelectedItem;
 				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[0] : timerDurationsList.SelectedItem;
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = noSelectedName ? 0 : timerNamesList.SelectedIndex;
+				timerDurationsList.SelectedIndex = noSelectedDuration ? 0 : timerDurationsList.SelectedIndex;
 			}
 			//else,
 			else
@@ -1284,6 +1296,10 @@ namespace CountDownTimerV0
 				//set selected item to Items' item at incremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = selectedItemI;
+				timerDurationsList.SelectedIndex = selectedItemI;
 			}
 		}
 
