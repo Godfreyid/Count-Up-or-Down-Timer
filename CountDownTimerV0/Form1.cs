@@ -1193,11 +1193,11 @@ namespace CountDownTimerV0
 			//else,
 			else
 			{
-				bool selectedName = timerNamesList.SelectedItem != null;
+				bool selectedAName = timerNamesList.SelectedItem != null;
 				int selectedNameI = timerNamesList.SelectedIndex;
 				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = selectedName ? selectedNameI : selectedDurationI;
+				int selectedItemI = selectedAName ? selectedNameI : selectedDurationI;
 				//decrement said index
 				selectedItemI--;
 				bool neg = selectedItemI < 0;
@@ -1243,11 +1243,11 @@ namespace CountDownTimerV0
 			//else,
 			else
 			{
-				bool selectedName = timerNamesList.SelectedItem != null;
+				bool selectedAName = timerNamesList.SelectedItem != null;
 				int selectedNameI = timerNamesList.SelectedIndex;
 				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = selectedName ? selectedNameI : selectedDurationI;
+				int selectedItemI = selectedAName ? selectedNameI : selectedDurationI;
 				//increment said index
 				selectedItemI++;
 				bool indexOutOfBounds = selectedItemI >= timerNamesCount;
