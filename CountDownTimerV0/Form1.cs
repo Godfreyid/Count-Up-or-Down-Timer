@@ -642,7 +642,34 @@ namespace CountDownTimerV0
 
 		private void AddTextBoxTextToListBox(ListBox listBox, TextBox textBox, string defaultTextBoxString)
 		{
-			//pause painting list box while adding text
+			#region .NET BUG WORKAROUND
+
+			//transfer contents of 'listBox' to an array that is 1 index longer
+			object[] tempHolding = new object[listBox.Items.Count + 1];
+			listBox.Items.CopyTo(tempHolding, 0);
+			//clear 'listBox'
+			listBox.Items.Clear();
+			//add 'Text' value to the array
+			tempHolding[tempHolding.Length - 1] = textBox.Text;
+
+			//pause painting list box while transferring
+			listBox.BeginUpdate();
+
+			//transfer contents of the array back to the 'listBox'
+			foreach ( object text in tempHolding )
+			{
+				listBox.Items.Add(text);
+			}
+
+			//reset the Text property of textBox control to the defaultBoxText
+			textBox.Text = defaultTextBoxString;
+
+			//upause painting list box
+			listBox.EndUpdate();
+
+			#endregion
+
+			/*//pause painting list box while adding text
 			listBox.BeginUpdate();
 			//get the text value from the Text property of the textBox control
 			//add text value to list box
@@ -651,7 +678,7 @@ namespace CountDownTimerV0
 			//reset the Text property of textBox control to the defaultBoxText
 			textBox.Text = defaultTextBoxString;
 			//un-pause painting list box
-			listBox.EndUpdate();
+			listBox.EndUpdate();*/
 		}
 
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
