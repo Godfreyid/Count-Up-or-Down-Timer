@@ -69,6 +69,8 @@ namespace CountDownTimerV0
 		private const int TOOLTIP_REMOVE_BTN_DUR = 3000;
 		private const string TOOLTIP_CLEAR_TIMERS_LIST = "Clear (ENTIRE) timers list";
 		private const int TOOLTIP_CLEAR_TIMERS_LIST_DUR = 3000;
+		private const string TOOLTIP_SELECT_TIMER_TO_REMOVE = "First SELECT a timer to remove";
+		private const int TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR = 3000;
 
 		Form _alarmAlertWindow;
 		
@@ -867,25 +869,73 @@ namespace CountDownTimerV0
 					break;
 			}
 
+			//pause drawing of the timer name and duration list boxes
+			timerNamesList.BeginUpdate();
+			timerDurationsList.BeginUpdate();
+
 			//reset display text
 			timerDisplay.Text = TIMER_DISPLAY_DEFAULT_STRING;
+
 			//clear the timerNamesList
 			timerNamesList.Items.Clear();
 			//clear the timerDurationsList
 			timerDurationsList.Items.Clear();
+
 			//clear the lapsesByNameDict
 			_lapsesByNameDict.Clear();
+
 			//clear the _chosenTimer struct
 			_chosenTimer.Name = string.Empty;
 			_chosenTimer.Duration = string.Empty;
+
 			//nullify _currentProfilePath
 			_currentProfilePath = string.Empty;
+
+			//resume drawing of the timer name and duration list boxes
+			timerNamesList.EndUpdate();
+			timerDurationsList.EndUpdate();
 		}
 
 		// user intends to remove the currently selected timer from 'Timers' list
 		private void removeTimerBtn_Click(object sender, EventArgs e)
 		{
+			bool timerSelected = timerNamesList.SelectedIndex > -1;
+			//if no timer names or durations list selected item,
+			if ( !timerSelected )
+			{
+				//show tooltip telling user to first select a timer
+				toolTips.Show(
+					TOOLTIP_SELECT_TIMER_TO_REMOVE,
+					removeTimerBtn, 
+					TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR);
+				//return
+				return;
+			}
 
+			//pause drawing of the timer names and durations list boxes
+			timerNamesList.BeginUpdate();
+			timerDurationsList.BeginUpdate();
+
+			//remove the _lapsesByNameDict pair matching the name of _choseTimer
+			bool timerHasLapse = _lapsesByNameDict.ContainsKey(_chosenTimer.Name);
+			if ( timerHasLapse )
+				_lapsesByNameDict.Remove(_chosenTimer.Name);
+
+			//cache seletectedItem of timer names and durations lists
+			object selectedTimerName = timerNamesList.SelectedItem;
+			object selectedTimerDuration = timerDurationsList.SelectedItem;
+
+			//remove selected item from timer names and durations lists
+			timerNamesList.Items.Remove(selectedTimerName);
+			timerDurationsList.Items.Remove(selectedTimerDuration);
+
+			//nullify _chosenTimer struct properties
+			_chosenTimer.Name = string.Empty;
+			_chosenTimer.Duration = string.Empty;
+
+			//unpause drawing of the timer names and durations list boxes
+			timerNamesList.EndUpdate();
+			timerDurationsList.EndUpdate();
 		}
 
 		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
