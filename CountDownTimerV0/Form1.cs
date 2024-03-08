@@ -682,10 +682,10 @@ namespace CountDownTimerV0
 		}
 
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
-		private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
+		/*private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
 		{
-			/* only the name at the selected row will be highlighted, but we also
-			   want to highlight the corresponding duration in timerDurationsList, so*/
+			*//* only the name at the selected row will be highlighted, but we also
+			   want to highlight the corresponding duration in timerDurationsList, so*//*
 			//get the selected index in timerNamesList
 			int selectedNameI = timerNamesList.SelectedIndex;
 			bool unSelected = selectedNameI < 0;
@@ -705,13 +705,13 @@ namespace CountDownTimerV0
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
-		}
+		}*/
 
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
-		private void timerDurationsList_SelectedValueChanged(object sender, EventArgs e)
+		/*private void timerDurationsList_SelectedValueChanged(object sender, EventArgs e)
 		{
-			/* only the duration at the selected row will be highlighted, but we also
-			   want to highlight the corresponding name in timerNamesList, so */
+			*//* only the duration at the selected row will be highlighted, but we also
+			   want to highlight the corresponding name in timerNamesList, so *//*
 			//get the selected index in timerDurationsList
 			int selectedDurationI = timerDurationsList.SelectedIndex;
 			bool unSelected = selectedDurationI < 0;
@@ -731,7 +731,7 @@ namespace CountDownTimerV0
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
 
 			timerDisplay.Text = timerDuration;
-		}
+		}*/
 
 		private void countInverseBtn_Click(object sender, EventArgs e)
 		{
@@ -1236,6 +1236,18 @@ namespace CountDownTimerV0
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
 			}
+
+			//add the name and duration of selected to the 'ChosenTimer' struct
+			string selectedName = timerNamesList.SelectedItem.ToString();
+			string selectedDuration = timerDurationsList.SelectedItem.ToString();
+			_chosenTimer.Name = selectedName;
+			_chosenTimer.Duration = selectedDuration;
+
+			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			timerDisplay.Text = timerDuration;
 		}
 
 		// user intends choose the timers below current in the timers list 
@@ -1285,6 +1297,18 @@ namespace CountDownTimerV0
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
 			}
+
+			//add the name and duration of selected to the 'ChosenTimer' struct
+			string selectedName = timerNamesList.SelectedItem.ToString();
+			string selectedDuration = timerDurationsList.SelectedItem.ToString();
+			_chosenTimer.Name = selectedName;
+			_chosenTimer.Duration = selectedDuration;
+
+			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			timerDisplay.Text = timerDuration;
 		}
 
 		// user intends to close the timers form window
