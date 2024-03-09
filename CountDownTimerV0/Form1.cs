@@ -981,6 +981,8 @@ namespace CountDownTimerV0
 
 			//update the 'active timer' label text
 			activeTimerTextBox.Text = _chosenTimer.Name;
+
+			_timerState = TimerState.Ticking;
 		}
 
 		/// <summary>
