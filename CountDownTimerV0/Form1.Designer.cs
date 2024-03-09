@@ -159,23 +159,27 @@ namespace CountDownTimerV0
 			// 
 			// countInverseBtn
 			// 
-			this.countInverseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-			this.countInverseBtn.FlatAppearance.BorderColor = System.Drawing.Color.Purple;
+			this.countInverseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.countInverseBtn.FlatAppearance.BorderColor = System.Drawing.Color.Teal;
 			this.countInverseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.countInverseBtn.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.countInverseBtn.ForeColor = System.Drawing.Color.White;
+			this.countInverseBtn.Image = ((System.Drawing.Image)(resources.GetObject("countInverseBtn.Image")));
+			this.countInverseBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.countInverseBtn.Location = new System.Drawing.Point(358, 290);
 			this.countInverseBtn.Name = "countInverseBtn";
+			this.countInverseBtn.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
 			this.countInverseBtn.Size = new System.Drawing.Size(174, 55);
 			this.countInverseBtn.TabIndex = 5;
 			this.countInverseBtn.Text = "COUNT DOWN";
+			this.countInverseBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.countInverseBtn.UseVisualStyleBackColor = false;
 			this.countInverseBtn.Click += new System.EventHandler(this.countInverseBtn_Click);
 			// 
 			// timerAddBtn
 			// 
-			this.timerAddBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.timerAddBtn.FlatAppearance.BorderColor = System.Drawing.Color.Teal;
+			this.timerAddBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+			this.timerAddBtn.FlatAppearance.BorderColor = System.Drawing.Color.Purple;
 			this.timerAddBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.timerAddBtn.Font = new System.Drawing.Font("Arial Narrow", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerAddBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -435,8 +439,8 @@ namespace CountDownTimerV0
 			// 
 			// chooseAudioBtn
 			// 
-			this.chooseAudioBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.chooseAudioBtn.FlatAppearance.BorderColor = System.Drawing.Color.Teal;
+			this.chooseAudioBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+			this.chooseAudioBtn.FlatAppearance.BorderColor = System.Drawing.Color.Purple;
 			this.chooseAudioBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.chooseAudioBtn.Font = new System.Drawing.Font("Arial Narrow", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.chooseAudioBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
