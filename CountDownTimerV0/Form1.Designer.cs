@@ -368,9 +368,10 @@ namespace CountDownTimerV0
 			// 
 			// timerDurationEntry
 			// 
-			this.timerDurationEntry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+			this.timerDurationEntry.BackColor = System.Drawing.Color.Yellow;
 			this.timerDurationEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerDurationEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDurationEntry.ForeColor = System.Drawing.Color.Black;
 			this.timerDurationEntry.Location = new System.Drawing.Point(434, 432);
 			this.timerDurationEntry.Margin = new System.Windows.Forms.Padding(0);
 			this.timerDurationEntry.MaxLength = 8;
@@ -423,9 +424,10 @@ namespace CountDownTimerV0
 			// 
 			// timerNameEntry
 			// 
-			this.timerNameEntry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+			this.timerNameEntry.BackColor = System.Drawing.Color.Yellow;
 			this.timerNameEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerNameEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerNameEntry.ForeColor = System.Drawing.Color.Black;
 			this.timerNameEntry.Location = new System.Drawing.Point(292, 432);
 			this.timerNameEntry.Margin = new System.Windows.Forms.Padding(0);
 			this.timerNameEntry.MaxLength = 24;
