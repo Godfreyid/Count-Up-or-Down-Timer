@@ -142,17 +142,11 @@ namespace CountDownTimerV0
 		private enum TimerState
 		{
 			Ticking,
-			Stopped,
-			Reset
+			TickFromBeginning,
+			TickFromPaused,
+			Stopped
 		}
 		private TimerState _timerState = TimerState.Stopped;
-
-		private enum Start
-		{
-			FromBeginning,
-			FromPaused
-		}
-		private Start _startButtonState;
 
 		#region COSMETIC (NON-FUNCTIONALITY) CONSTRUCTS
 
@@ -233,9 +227,6 @@ namespace CountDownTimerV0
 
 			/* LOAD SOUND FILE TO PLAY AS THE ALARM */
 			_soundPlayer = new SoundPlayer();
-
-			/* SET STARTING STATE */
-			_startButtonState = Start.FromBeginning;
 
 			timerNameEntry.Focus();
 
@@ -694,9 +685,6 @@ namespace CountDownTimerV0
 			//set selectedIndex of timerDurationsList to that of timerNamesList
 			timerDurationsList.SelectedIndex = selectedNameI;
 
-			//set selected of timerDurationsList to selected index above
-			//timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
-
 			//add the name and duration of selected to the 'ChosenTimer' struct
 			string selectedName = timerNamesList.Items[selectedNameI].ToString();
 			string selectedDuration = timerDurationsList.Items[selectedNameI].ToString();
@@ -706,6 +694,9 @@ namespace CountDownTimerV0
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			//set timer state according to the selected timer lapse 'state'
+			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
 
 			timerDisplay.Text = timerDuration;
 		}
@@ -723,9 +714,6 @@ namespace CountDownTimerV0
 			//set selectedIndex of timerNamesList to that of timerDurationsList
 			timerNamesList.SelectedIndex = selectedDurationI;
 
-			//set selected of timerNamesList to selected index above
-			//timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
-
 			//add the duration and of selected to the 'ChosenTimer' struct
 			string selectedDuration = timerDurationsList.Items[selectedDurationI].ToString();
 			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
@@ -735,6 +723,9 @@ namespace CountDownTimerV0
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
+
+			//set timer state according to the selected timer lapse 'state'
+			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
 
 			timerDisplay.Text = timerDuration;
 		}
@@ -795,14 +786,16 @@ namespace CountDownTimerV0
 		// user intends to clear all selectable timers from the 'Timers' list
 		private void clearTimersListBtn_Click(object sender, EventArgs e)
 		{
-			//when timer state is 'Ticking' return
+			//when timer state is 'TickFromBeginning' return
 			switch ( _timerState )
 			{
-				case TimerState.Ticking:
-				case TimerState.Reset:
+				case TimerState.TickFromBeginning:
+				case TimerState.TickFromPaused:
+
 					return;
 				case TimerState.Stopped:
 				default:
+
 					break;
 			}
 
@@ -905,16 +898,6 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
-			switch ( _timerState )
-			{
-				//if already in START state, do nothing 
-				case TimerState.Ticking:
-					return;
-				case TimerState.Stopped:
-				default:
-					break;
-			}
-
 			/* To allow resuming count when clicking to another timers and 
 			   back again, have an actively count down/up 'DurationAsBulkSeconds'
 			   that is only updated when clicking the 'startButton', not when
@@ -928,9 +911,12 @@ namespace CountDownTimerV0
 			   -the second enum state being 'FromPause', wherein _durationAsSeconds
 			   and _countUpDurationTarget are not recomputed before enabling and
 			   starting the countTimer. */
-			switch ( _startButtonState )
+			switch ( _timerState )
 			{
-				case Start.FromBeginning:
+				case TimerState.Ticking:
+
+					return;
+				case TimerState.TickFromBeginning:
 					//if no timers is selected from the list
 					bool defaultTimerDisplay = timerDisplay.Text.Equals(TIMER_DISPLAY_DEFAULT_STRING);
 					//if 'timerDisplay' text EQUALS the TIMER_DISPLAY_DEFAULT_STRING,
@@ -959,7 +945,7 @@ namespace CountDownTimerV0
 					countTimer.Start();
 
 					break;
-				case Start.FromPaused:
+				case TimerState.TickFromPaused:
 					//retrieve bulk seconds cached when timers was STOPPED (paused)
 					string selectedTimer = _chosenTimer.Name;
 					bool resumingTimer = _lapsesByNameDict.TryGetValue(selectedTimer, out int timerCount);
@@ -974,10 +960,11 @@ namespace CountDownTimerV0
 					//re-enable timers
 					countTimer.Enabled = true;
 					countTimer.Start();
-					_startButtonState = Start.FromBeginning;
 
 					break;
+				case TimerState.Stopped:
 				default:
+
 					break;
 			}
 
@@ -991,8 +978,6 @@ namespace CountDownTimerV0
 
 			//update the 'active timer' label text
 			activeTimerTextBox.Text = _chosenTimer.Name;
-
-			_timerState = TimerState.Ticking;
 		}
 
 		/// <summary>
@@ -1134,9 +1119,12 @@ namespace CountDownTimerV0
 			{
 				//if already in STOPPED state, do nothing
 				case TimerState.Stopped:
+
 					return;
-				case TimerState.Ticking:
+				case TimerState.TickFromBeginning:
+				case TimerState.TickFromPaused:
 				default:
+
 					break;
 			}
 
@@ -1156,9 +1144,6 @@ namespace CountDownTimerV0
 			int timerCount = _countDown ? _durationAsSeconds : _upCount;
 			_lapsesByNameDict[_chosenTimer.Name] = timerCount;
 
-			//set the state of the 'startButton' to 'FromPause'
-			_startButtonState = Start.FromPaused;
-
 			//re-enable value changing of timerNamesList list box
 			timerNamesList.SelectionMode = SelectionMode.One;
 			//re-enable value changing of timerDurationsList list box
@@ -1175,11 +1160,12 @@ namespace CountDownTimerV0
 			switch ( _timerState )
 			{
 				//if already reset OR ticking, do nothing
-				case TimerState.Reset:
 				case TimerState.Ticking:
 
 					return;
 				case TimerState.Stopped:
+				case TimerState.TickFromPaused:
+				case TimerState.TickFromBeginning:
 				default:
 
 					break;
@@ -1191,7 +1177,8 @@ namespace CountDownTimerV0
 			//set timerDisplay.Text to _chosenTimer.Duration
 			timerDisplay.Text = _chosenTimer.Duration;
 
-			_timerState = TimerState.Reset;
+			//reset timer state
+			_timerState = TimerState.TickFromBeginning;
 		}
 
 		// user intends choose the timers above current in the timers list 
@@ -1201,9 +1188,13 @@ namespace CountDownTimerV0
 			{
 				//if TICKING, do nothing
 				case TimerState.Ticking:
+
 					return;
+				case TimerState.TickFromBeginning:
+				case TimerState.TickFromPaused:
 				case TimerState.Stopped:
 				default:
+
 					break;
 			}
 
@@ -1212,6 +1203,8 @@ namespace CountDownTimerV0
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
+
+			string selectedName = string.Empty;
 
 			bool noSelectedName = timerNamesList.SelectedItem == null;
 			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
@@ -1222,6 +1215,7 @@ namespace CountDownTimerV0
 				//set the very last (list bottom) item as selected
 				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[lastTimerI] : timerNamesList.SelectedItem;
 				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[lastTimerI] : timerDurationsList.SelectedItem;
+				selectedName = timerNamesList.SelectedItem.ToString();
 
 				//set the selectedIndex accordingly
 				timerNamesList.SelectedIndex = noSelectedName ? lastTimerI : timerNamesList.SelectedIndex;
@@ -1245,11 +1239,16 @@ namespace CountDownTimerV0
 				//set selected item to Items' item at decremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
+				selectedName = timerNamesList.SelectedItem.ToString();
 
 				//set the selectedIndex accordingly
 				timerNamesList.SelectedIndex = selectedItemI;
 				timerDurationsList.SelectedIndex = selectedItemI;
 			}
+
+			//set timer state according to the selected timer lapse 'state'
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
 		}
 
 		// user intends choose the timers below current in the timers list 
@@ -1259,9 +1258,13 @@ namespace CountDownTimerV0
 			{
 				//if TICKING, do nothing
 				case TimerState.Ticking:
+
 					return;
+				case TimerState.TickFromBeginning:
+				case TimerState.TickFromPaused:
 				case TimerState.Stopped:
 				default:
+
 					break;
 			}
 
@@ -1269,6 +1272,8 @@ namespace CountDownTimerV0
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
 			if ( emptyTimersList ) return;
+
+			string selectedName = string.Empty;
 
 			bool noSelectedName = timerNamesList.SelectedItem == null;
 			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
@@ -1279,6 +1284,7 @@ namespace CountDownTimerV0
 				//set the very first (list top) item as selected
 				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[0] : timerNamesList.SelectedItem;
 				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[0] : timerDurationsList.SelectedItem;
+				selectedName = timerNamesList.SelectedItem.ToString();
 
 				//set the selectedIndex accordingly
 				timerNamesList.SelectedIndex = noSelectedName ? 0 : timerNamesList.SelectedIndex;
@@ -1302,11 +1308,16 @@ namespace CountDownTimerV0
 				//set selected item to Items' item at incremented index
 				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
 				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
+				selectedName = timerNamesList.SelectedItem.ToString();
 
 				//set the selectedIndex accordingly
 				timerNamesList.SelectedIndex = selectedItemI;
 				timerDurationsList.SelectedIndex = selectedItemI;
 			}
+
+			//set timer state according to the selected timer lapse 'state'
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
 		}
 
 		// user intends to close the timers form window
