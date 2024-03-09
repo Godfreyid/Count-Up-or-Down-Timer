@@ -88,14 +88,14 @@ namespace CountDownTimerV0
 			// timerDisplay
 			// 
 			this.timerDisplay.BackColor = System.Drawing.Color.Black;
-			this.timerDisplay.Font = new System.Drawing.Font("Bodoni MT Condensed", 108F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.timerDisplay.Font = new System.Drawing.Font("Bodoni MT Condensed", 123.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerDisplay.ForeColor = System.Drawing.Color.Lime;
 			this.timerDisplay.Location = new System.Drawing.Point(5, 31);
 			this.timerDisplay.Name = "timerDisplay";
 			this.timerDisplay.Size = new System.Drawing.Size(527, 179);
 			this.timerDisplay.TabIndex = 0;
 			this.timerDisplay.Text = "00:00:00";
-			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.timerDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// startButton
 			// 
