@@ -1110,7 +1110,8 @@ namespace CountDownTimerV0
 			if ( !audioFileSelected ) return;
 
 			//raise alarm 
-			_soundPlayer.PlayLooping();
+			bool mutedAlarmAudio = muteBtn.Checked;
+			if ( !mutedAlarmAudio ) _soundPlayer.PlayLooping();
 
 			//show alarm window
 			_alarmAlertWindow.Show(this);
@@ -1125,10 +1126,17 @@ namespace CountDownTimerV0
 			_alarmAlertWindow.Hide();
 			//stop _soundPlayer
 			_soundPlayer.Stop();
+			//mimic pressing of 'STOP' timer button
+			StopTimer();
 		}
 
 		// user intends to reset the chosen timers to its initial (input) duration
 		private void stopButton_Click(object sender, EventArgs e)
+		{
+			StopTimer();
+		}
+
+		private void StopTimer()
 		{
 			switch ( _timerState )
 			{
@@ -1136,6 +1144,7 @@ namespace CountDownTimerV0
 				case TimerState.Stopped:
 
 					return;
+				case TimerState.Ticking:
 				case TimerState.TickFromBeginning:
 				case TimerState.TickFromPaused:
 				default:
@@ -1143,13 +1152,6 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			 /* The continuously running routines started when pressing the 
-			    'startButton' are:
-					- the 'countTimer', and
-					- the '_soundPlayer' as a consequence of the timers
-			    So disable those two, then set the 'startButton' state to
-			    'Start.FromPaused'. */
-			
 			//change the text and image of the 'startButton' to read 'pause'
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
