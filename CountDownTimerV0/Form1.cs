@@ -691,8 +691,11 @@ namespace CountDownTimerV0
 			bool unSelected = selectedNameI < 0;
 			if ( unSelected ) return;
 
+			//set selectedIndex of timerDurationsList to that of timerNamesList
+			timerDurationsList.SelectedIndex = selectedNameI;
+
 			//set selected of timerDurationsList to selected index above
-			timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
+			//timerDurationsList.SelectedItem = timerDurationsList.Items[selectedNameI];
 
 			//add the name and duration of selected to the 'ChosenTimer' struct
 			string selectedName = timerNamesList.Items[selectedNameI].ToString();
@@ -717,8 +720,11 @@ namespace CountDownTimerV0
 			bool unSelected = selectedDurationI < 0;
 			if ( unSelected ) return;
 
+			//set selectedIndex of timerNamesList to that of timerDurationsList
+			timerNamesList.SelectedIndex = selectedDurationI;
+
 			//set selected of timerNamesList to selected index above
-			timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
+			//timerNamesList.SelectedItem = timerNamesList.Items[selectedDurationI];
 
 			//add the duration and of selected to the 'ChosenTimer' struct
 			string selectedDuration = timerDurationsList.Items[selectedDurationI].ToString();
