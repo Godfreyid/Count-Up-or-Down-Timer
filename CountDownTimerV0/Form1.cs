@@ -165,7 +165,10 @@ namespace CountDownTimerV0
 			ClearTimersButton,
 			ChooseAudioButton,
 			TimerNamesList,
-			TimerDurationsList
+			TimerDurationsList,
+			SaveProfile,
+			LoadProfile,
+			RememberTimerLapses
 		}
 
 		#endregion
@@ -1014,9 +1017,14 @@ namespace CountDownTimerV0
 					timerNameEntry.Cursor = cursorValue;
 					timerDurationEntry.Cursor = cursorValue;
 					timerAddBtn.Cursor = cursorValue;
+					chooseAudioBtn.Cursor = cursorValue;
 					clearTimersListBtn.Cursor = cursorValue;
+					removeTimerBtn.Cursor = cursorValue;
 					timerNamesList.Cursor = cursorValue;
 					timerDurationsList.Cursor = cursorValue;
+					saveProfileBtn.Cursor = cursorValue;
+					loadProfileBtn.Cursor = cursorValue;
+					saveLapsesCheckBox.Cursor = cursorValue;
 
 					break;
 				case ControlEngaged.StopButton:
@@ -1030,9 +1038,14 @@ namespace CountDownTimerV0
 					timerNameEntry.Cursor = cursorValue;
 					timerDurationEntry.Cursor = cursorValue;
 					timerAddBtn.Cursor = cursorValue;
+					chooseAudioBtn.Cursor = cursorValue;
 					clearTimersListBtn.Cursor = cursorValue;
+					removeTimerBtn.Cursor = cursorValue;
 					timerNamesList.Cursor = cursorValue;
 					timerDurationsList.Cursor = cursorValue;
+					saveProfileBtn.Cursor = cursorValue;
+					loadProfileBtn.Cursor = cursorValue;
+					saveLapsesCheckBox.Cursor = cursorValue;
 
 					break;
 			}
@@ -1381,6 +1394,19 @@ namespace CountDownTimerV0
 		// user intends to save the current list of timers and chosen audio
 		private void saveProfileBtn_Click(object sender, EventArgs e)
 		{
+			switch ( _timerState )
+			{
+				case TimerState.Ticking:
+
+					return;
+				case TimerState.Stopped:
+				case TimerState.TickFromPaused:
+				case TimerState.TickFromBeginning:
+				default:
+
+					break;
+			}
+
 			//open 'saveProfileDialog' save file dialog so user sets PROFILES_DIR_PATH
 			bool specifiedSaveFile = saveProfileDialog.ShowDialog() == DialogResult.OK;
 			//if user did NOT press the 'ok' button of said dialog, return
@@ -1477,6 +1503,19 @@ namespace CountDownTimerV0
 		// user intends to load a previously saved list of timers and chosen audio
 		private void loadProfileBtn_Click(object sender, EventArgs e)
 		{
+			switch (_timerState)
+			{
+				case TimerState.Ticking:
+
+					return;
+				case TimerState.Stopped:
+				case TimerState.TickFromPaused:
+				case TimerState.TickFromBeginning:
+				default:
+
+					break;
+			}
+
 			//open 'loadProfileDialog' load file dialog so user sets PROFILE_LOAD_PATH 
 			bool specifiedLoadFile = loadProfileDiaglog.ShowDialog() == DialogResult.OK;
 			if ( !specifiedLoadFile ) return;
@@ -1488,6 +1527,9 @@ namespace CountDownTimerV0
 			LoaderTimerLapses(profilePath);
 
 			LoadTimerAudio(profilePath);
+
+			/*//indicate restricted (disallowed) controls while timers ticks
+			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);*/
 		}
 
 		private void LoadTimersList(string profilePath)
