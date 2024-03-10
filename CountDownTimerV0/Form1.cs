@@ -761,6 +761,37 @@ namespace CountDownTimerV0
 
 		private void chooseAudioBtn_Click(object sender, EventArgs e)
 		{
+			bool sessionTimerProfile = !string.IsNullOrEmpty(_currentProfilePath);
+			//if current profile was loaded/save, _currentProfilePath != null, so
+			if (sessionTimerProfile)
+			{
+				//use profile name to build path to audio file path
+				string profileFileName = Path.GetFileName(_currentProfilePath);
+				string currentProfileAudioPath = SuffixFileAtPath(
+					profileFileName,
+					DEFAULT_PROFILE_FILE_EXT,
+					PROFILES_AUDIO_DIR_PATH,
+					AUDIO_SAVE_FILE_SUFFIX);
+
+				string currentAudioPath = string.Empty;
+
+				bool availableAudioFile = File.Exists(currentProfileAudioPath);
+				if ( availableAudioFile )
+				{
+					using ( StreamReader profAudioReader = new StreamReader(currentProfileAudioPath) )
+					{
+						string line;
+						while ( (line = profAudioReader.ReadLine()) != null )
+						{
+							currentAudioPath = line;
+						}
+					}
+				}
+
+				//set audioFileSelector.FileName to said audio file path
+				audioFileSelector.FileName = currentAudioPath;
+			}
+
 			//cache the current 'FileName' of 'audioFileSelector'
 			string cachedChosenAudioFilePath = audioFileSelector.FileName;
 			//open the 'audioFileSelector' control dialog
@@ -1485,8 +1516,8 @@ namespace CountDownTimerV0
 		/// Adds a suffix to the provide file name, then creates a file path with
 		/// the provided directory path.
 		/// </summary>
-		/// <param name="fileName">The file name to which will be 
-		/// added the <paramref name="suffixToAdd"/>.</param>
+		/// <param name="fileName">The file name to which 
+		/// <paramref name="suffixToAdd"/> will be added. [Is not a path]</param>
 		/// <param name="fileExtension">The file extension shared by
 		/// both the existing <paramref name="fileName"/>, and which should
 		/// be a part of the <paramref name="suffixToAdd"/> by default.</param>
@@ -1595,19 +1626,17 @@ namespace CountDownTimerV0
 				LAPSES_SAVE_FILE_SUFFIX);
 
 			bool availableLapses = File.Exists(lapsesFilePath);
-			if ( availableLapses )
-			{
+			if ( !availableLapses ) return;
 
-				using ( StreamReader lapseReader = new StreamReader(lapsesFilePath) )
+			using ( StreamReader lapseReader = new StreamReader(lapsesFilePath) )
+			{
+				string line;
+				while ( (line = lapseReader.ReadLine()) != null )
 				{
-					string line;
-					while ( (line = lapseReader.ReadLine()) != null )
-					{
-						string[] lapsesConjugate = line.Split(DELIMITER_TIMER_LAPSES);
-						string timerName = lapsesConjugate[0];
-						string bulkSeconds = lapsesConjugate[1];
-						_lapsesByNameDict[timerName] = int.Parse(bulkSeconds);
-					}
+					string[] lapsesConjugate = line.Split(DELIMITER_TIMER_LAPSES);
+					string timerName = lapsesConjugate[0];
+					string bulkSeconds = lapsesConjugate[1];
+					_lapsesByNameDict[timerName] = int.Parse(bulkSeconds);
 				}
 			}
 		}
