@@ -368,7 +368,7 @@ namespace CountDownTimerV0
 			// 
 			// timerDurationEntry
 			// 
-			this.timerDurationEntry.BackColor = System.Drawing.Color.Yellow;
+			this.timerDurationEntry.BackColor = System.Drawing.Color.Gold;
 			this.timerDurationEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerDurationEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerDurationEntry.ForeColor = System.Drawing.Color.Black;
@@ -424,7 +424,7 @@ namespace CountDownTimerV0
 			// 
 			// timerNameEntry
 			// 
-			this.timerNameEntry.BackColor = System.Drawing.Color.Yellow;
+			this.timerNameEntry.BackColor = System.Drawing.Color.Gold;
 			this.timerNameEntry.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.timerNameEntry.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.timerNameEntry.ForeColor = System.Drawing.Color.Black;
