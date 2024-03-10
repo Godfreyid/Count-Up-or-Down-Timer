@@ -265,7 +265,6 @@ namespace CountDownTimerV0
 			   in 'Standard Alarm Tunes/', which is in 'Installation Folder/'.
 			   So get parent dir, then go to 'Standard Alarm Tunes/' */
 			var exeParentDir = Directory.GetParent(Environment.CurrentDirectory);
-			var binParentCountDownTimerV0Dir = Directory.GetParent(exeParentDir.FullName);
 			//then combine that parent 'CountDownTimerV0/' with 'Standard Alarm Tunes/'
 			string alarmTunesDir = Path.Combine(
 				exeParentDir.FullName, @"Standard Alarm Tunes\");
@@ -765,7 +764,14 @@ namespace CountDownTimerV0
 			//if current profile was loaded/save, _currentProfilePath != null, so
 			if (sessionTimerProfile)
 			{
-				//use profile name to build path to audio file path
+				var exeParentDir = Directory.GetParent(Environment.CurrentDirectory);
+				//then combine that parent 'CountDownTimerV0/' with 'Standard Alarm Tunes/'
+				string alarmTunesDir = Path.Combine(
+					exeParentDir.FullName, @"Standard Alarm Tunes\");
+				//set audioFolderBrowser.InitialDirectory to the combined path
+				audioFileSelector.InitialDirectory = alarmTunesDir;
+
+				/*//use profile name to build path to audio file path
 				string profileFileName = Path.GetFileName(_currentProfilePath);
 				string currentProfileAudioPath = SuffixFileAtPath(
 					profileFileName,
@@ -789,11 +795,12 @@ namespace CountDownTimerV0
 				}
 
 				//set audioFileSelector.FileName to said audio file path
-				audioFileSelector.FileName = currentAudioPath;
+				audioFileSelector.InitialDirectory = currentAudioPath;*/
 			}
 
 			//cache the current 'FileName' of 'audioFileSelector'
 			string cachedChosenAudioFilePath = audioFileSelector.FileName;
+
 			//open the 'audioFileSelector' control dialog
 			bool selectionFailed = audioFileSelector.ShowDialog() != DialogResult.OK;
 			if ( selectionFailed ) return;
@@ -811,12 +818,12 @@ namespace CountDownTimerV0
 			if ( choseSameAudioAsPrev ) return;
 			//return;
 
-			CacheAudioFileName(newAudioPath, out string audioFileName);
+			CacheAudioFile(newAudioPath, out string audioFileName);
 			//set 'selectedAudioName' text to selected file simple name
 			selectedAudioName.Text = audioFileName;
 		}
 
-		private void CacheAudioFileName(string filePath, out string fileName)
+		private void CacheAudioFile(string filePath, out string fileName)
 		{
 			/* Once the user selected a new audio file via the 'chooseAudioBtn' 
 			   file select dialog control, that file path will have been set
