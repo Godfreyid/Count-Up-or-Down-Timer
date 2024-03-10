@@ -244,7 +244,7 @@ namespace CountDownTimerV0
 			loadProfileDiaglog.DefaultExt = DEFAULT_PROFILE_FILE_EXT;
 
 			/* SET INITIAL DIRECTORY FOR AUDIO SELECT DIALOG CONTROLLER */
-			#region DEBUG VERSION (NOT RELEASE VERSION)
+			#region DEBUG VERSION (NOT RELEASE VERSION) [DOES NOT WORK]
 
 			/* exe is in 'Release/', which is in 'bin/', which is in 'CountDownTimerV0/'
 			   soundClips are in 'Standard Alarm Tunes/', which is in 'CountDownTimerV0/'
@@ -259,7 +259,7 @@ namespace CountDownTimerV0
 			audioFileSelector.InitialDirectory = alarmTunesDir;*/
 
 			#endregion
-			#region RELEASE VERSION (NOT DEBUG VERSION)
+			#region RELEASE VERSION (NOT DEBUG VERSION) [DOES NOT WORK]
 
 			/* exe is in 'Installation Folder/' (ex. CountDownTimer), and soundClips are 
 			   in 'Standard Alarm Tunes/', which is in 'Installation Folder/'.
@@ -764,12 +764,19 @@ namespace CountDownTimerV0
 			//if current profile was loaded/save, _currentProfilePath != null, so
 			if (sessionTimerProfile)
 			{
+				#region DOES NOT WORK
+
 				var exeParentDir = Directory.GetParent(Environment.CurrentDirectory);
 				//then combine that parent 'CountDownTimerV0/' with 'Standard Alarm Tunes/'
 				string alarmTunesDir = Path.Combine(
 					exeParentDir.FullName, @"Standard Alarm Tunes\");
 				//set audioFolderBrowser.InitialDirectory to the combined path
 				audioFileSelector.InitialDirectory = alarmTunesDir;
+
+				#endregion
+
+
+				#region DOES NOT WORK
 
 				/*//use profile name to build path to audio file path
 				string profileFileName = Path.GetFileName(_currentProfilePath);
@@ -796,6 +803,8 @@ namespace CountDownTimerV0
 
 				//set audioFileSelector.FileName to said audio file path
 				audioFileSelector.InitialDirectory = currentAudioPath;*/
+
+				#endregion
 			}
 
 			//cache the current 'FileName' of 'audioFileSelector'
