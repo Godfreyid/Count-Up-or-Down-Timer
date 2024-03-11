@@ -191,10 +191,10 @@ namespace CountDownTimerV0
 			this.timerAddBtn.Padding = new System.Windows.Forms.Padding(16, 0, 6, 0);
 			this.timerAddBtn.Size = new System.Drawing.Size(194, 115);
 			this.timerAddBtn.TabIndex = 6;
-			this.timerAddBtn.Text = "Add To \'Timers\'";
 			this.timerAddBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.timerAddBtn.UseVisualStyleBackColor = false;
 			this.timerAddBtn.Click += new System.EventHandler(this.listAddBtn_Click);
+			this.timerAddBtn.MouseHover += new System.EventHandler(this.timerAddBtn_MouseHover);
 			// 
 			// muteBtn
 			// 
@@ -383,6 +383,7 @@ namespace CountDownTimerV0
 			this.timerDurationEntry.Enter += new System.EventHandler(this.timerDurationEntry_Enter);
 			this.timerDurationEntry.KeyDown += new System.Windows.Forms.KeyEventHandler(this.timerDurationEntry_KeyDown);
 			this.timerDurationEntry.Leave += new System.EventHandler(this.timerDurationEntry_Leave);
+			this.timerDurationEntry.MouseHover += new System.EventHandler(this.timerDurationEntry_MouseHover);
 			// 
 			// pictureBox2
 			// 
@@ -438,6 +439,7 @@ namespace CountDownTimerV0
 			this.timerNameEntry.Enter += new System.EventHandler(this.timerNameEntry_Enter);
 			this.timerNameEntry.KeyDown += new System.Windows.Forms.KeyEventHandler(this.timerNameEntry_KeyDown);
 			this.timerNameEntry.Leave += new System.EventHandler(this.timerNameEntry_Leave);
+			this.timerNameEntry.MouseHover += new System.EventHandler(this.timerNameEntry_MouseHover);
 			// 
 			// chooseAudioBtn
 			// 

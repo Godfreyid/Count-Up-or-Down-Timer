@@ -61,6 +61,12 @@ namespace CountDownTimerV0
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
 
+		private const string TOOLTIP_TIMER_NAME_ENTRY = "Enter a NAME for the new timer";
+		private const int TOOLTIP_TIMER_NAME_ENTRY_DUR = 3000;
+		private const string TOOLTIP_TIMER_DURATION_ENTRY = "Enter a DURATION for the new timer";
+		private const int TOOLTIP_TIMER_DURATION_ENTRY_DUR = 3000;
+		private const string TOOLTIP_ADD_TIMER_BTN = "Add timer to 'Timers' list";
+		private const int TOOLTIP_ADD_TIMER_BTN_DUR = 3000;
 		private const string TOOLTIP_CHOOSE_AUDIO_BTN = "Choose timer ALARM	audio";
 		private const int TOOLTIP_CHOOSE_AUDIO_BTN_DUR = 3000;
 		private const string TOOLTIP_INCORRECT_FORMAT = "Wrong format, use empty default as template";
@@ -322,6 +328,15 @@ namespace CountDownTimerV0
 			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 		}
 
+		private void timerNameEntry_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_TIMER_NAME_ENTRY and timerNameEntry text box 
+			toolTips.Show(
+				TOOLTIP_TIMER_NAME_ENTRY,
+				timerNameEntry,
+				TOOLTIP_TIMER_NAME_ENTRY_DUR);
+		}
+
 		/// <summary>
 		/// Clears the default (user guiding) prompt string of 
 		/// the <paramref name="textBoxEntered"/> so that the user
@@ -350,6 +365,15 @@ namespace CountDownTimerV0
 		private void timerDurationEntry_Enter(object sender, EventArgs e)
 		{
 			ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
+		}
+
+		private void timerDurationEntry_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_TIMER_DURATION_ENTRY and timerDurattionEntry text box 
+			toolTips.Show(
+				TOOLTIP_TIMER_DURATION_ENTRY,
+				timerDurationEntry,
+				TOOLTIP_TIMER_DURATION_ENTRY_DUR);
 		}
 
 		// user clicked away from text field taking focus to another control
@@ -692,6 +716,15 @@ namespace CountDownTimerV0
 			listBox.EndUpdate();*/
 		}
 
+		private void timerAddBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_ADD_TIMER_BTN text and listAddBtn control
+			toolTips.Show(
+				TOOLTIP_ADD_TIMER_BTN,
+				timerAddBtn,
+				TOOLTIP_ADD_TIMER_BTN_DUR);
+		}
+
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
 		private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
 		{
@@ -851,6 +884,15 @@ namespace CountDownTimerV0
 			fileName = justTheName;
 		}
 
+		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
+			toolTips.Show(
+				TOOLTIP_CHOOSE_AUDIO_BTN,
+				chooseAudioBtn,
+				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
+		}
+
 		// user intends to clear all selectable timers from the 'Timers' list
 		private void clearTimersListBtn_Click(object sender, EventArgs e)
 		{
@@ -892,6 +934,15 @@ namespace CountDownTimerV0
 			//resume drawing of the timer name and duration list boxes
 			timerNamesList.EndUpdate();
 			timerDurationsList.EndUpdate();
+		}
+
+		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_CLEAR_TIMERS_LIST,
+				clearTimersListBtn,
+				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
 		}
 
 		// user intends to remove the currently selected timer from 'Timers' list
@@ -936,15 +987,6 @@ namespace CountDownTimerV0
 			timerDurationsList.EndUpdate();
 		}
 
-		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
-			toolTips.Show(
-				TOOLTIP_CHOOSE_AUDIO_BTN,
-				chooseAudioBtn,
-				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
-		}
-
 		private void removeTimerBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
@@ -952,15 +994,6 @@ namespace CountDownTimerV0
 				TOOLTIP_REMOVE_BTN,
 				removeTimerBtn,
 				TOOLTIP_REMOVE_BTN_DUR);
-		}
-
-		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.Show(
-				TOOLTIP_CLEAR_TIMERS_LIST,
-				clearTimersListBtn,
-				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
 		}
 
 		// user intends to begin count down/up
@@ -1685,5 +1718,7 @@ namespace CountDownTimerV0
 				selectedAudioName.Text = justAudioFileName;
 			}
 		}
+
+		
 	}
 }
