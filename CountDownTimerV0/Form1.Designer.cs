@@ -46,7 +46,7 @@ namespace CountDownTimerV0
 			this.saveProfileBtn = new System.Windows.Forms.Button();
 			this.saveProfile = new System.Windows.Forms.SaveFileDialog();
 			this.loadProfile = new System.Windows.Forms.OpenFileDialog();
-			this.counterSelectorPanel = new System.Windows.Forms.Panel();
+			this.timerSelectorPanel = new System.Windows.Forms.Panel();
 			this.navigateDwnBtn = new System.Windows.Forms.Button();
 			this.timersLabel = new System.Windows.Forms.Label();
 			this.timerNameLabel = new System.Windows.Forms.Label();
@@ -77,7 +77,7 @@ namespace CountDownTimerV0
 			this.saveProfileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
 			this.removeTimerBtn = new System.Windows.Forms.Button();
-			this.counterSelectorPanel.SuspendLayout();
+			this.timerSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -117,6 +117,7 @@ namespace CountDownTimerV0
 			this.startButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.startButton.UseVisualStyleBackColor = false;
 			this.startButton.Click += new System.EventHandler(this.startButton_Click);
+			this.startButton.MouseHover += new System.EventHandler(this.startButton_MouseHover);
 			// 
 			// stopButton
 			// 
@@ -137,6 +138,7 @@ namespace CountDownTimerV0
 			this.stopButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.stopButton.UseVisualStyleBackColor = false;
 			this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+			this.stopButton.MouseHover += new System.EventHandler(this.stopButton_MouseHover);
 			// 
 			// resetButton
 			// 
@@ -156,6 +158,7 @@ namespace CountDownTimerV0
 			this.resetButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.resetButton.UseVisualStyleBackColor = false;
 			this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+			this.resetButton.MouseHover += new System.EventHandler(this.resetButton_MouseHover);
 			// 
 			// countInverseBtn
 			// 
@@ -175,6 +178,7 @@ namespace CountDownTimerV0
 			this.countInverseBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.countInverseBtn.UseVisualStyleBackColor = false;
 			this.countInverseBtn.Click += new System.EventHandler(this.countInverseBtn_Click);
+			this.countInverseBtn.MouseHover += new System.EventHandler(this.countInverseBtn_MouseHover);
 			// 
 			// timerAddBtn
 			// 
@@ -193,7 +197,7 @@ namespace CountDownTimerV0
 			this.timerAddBtn.TabIndex = 6;
 			this.timerAddBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.timerAddBtn.UseVisualStyleBackColor = false;
-			this.timerAddBtn.Click += new System.EventHandler(this.listAddBtn_Click);
+			this.timerAddBtn.Click += new System.EventHandler(this.timerAddBtn_Click);
 			this.timerAddBtn.MouseHover += new System.EventHandler(this.timerAddBtn_MouseHover);
 			// 
 			// muteBtn
@@ -269,6 +273,7 @@ namespace CountDownTimerV0
 			this.navigateUpBtn.TabIndex = 14;
 			this.navigateUpBtn.UseVisualStyleBackColor = false;
 			this.navigateUpBtn.Click += new System.EventHandler(this.navigateUpBtn_Click);
+			this.navigateUpBtn.MouseHover += new System.EventHandler(this.navigateUpBtn_MouseHover);
 			// 
 			// loadProfileBtn
 			// 
@@ -286,6 +291,7 @@ namespace CountDownTimerV0
 			this.loadProfileBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.loadProfileBtn.UseVisualStyleBackColor = false;
 			this.loadProfileBtn.Click += new System.EventHandler(this.loadProfileBtn_Click);
+			this.loadProfileBtn.MouseHover += new System.EventHandler(this.loadProfileBtn_MouseHover);
 			// 
 			// saveProfileBtn
 			// 
@@ -303,21 +309,22 @@ namespace CountDownTimerV0
 			this.saveProfileBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveProfileBtn.UseVisualStyleBackColor = false;
 			this.saveProfileBtn.Click += new System.EventHandler(this.saveProfileBtn_Click);
+			this.saveProfileBtn.MouseHover += new System.EventHandler(this.saveProfileBtn_MouseHover);
 			// 
 			// loadProfile
 			// 
 			this.loadProfile.FileName = "openFileDialog1";
 			// 
-			// counterSelectorPanel
+			// timerSelectorPanel
 			// 
-			this.counterSelectorPanel.Controls.Add(this.navigateDwnBtn);
-			this.counterSelectorPanel.Controls.Add(this.navigateUpBtn);
-			this.counterSelectorPanel.Controls.Add(this.selectTimerLabel2);
-			this.counterSelectorPanel.Controls.Add(this.selectTimerLabel1);
-			this.counterSelectorPanel.Location = new System.Drawing.Point(5, 290);
-			this.counterSelectorPanel.Name = "counterSelectorPanel";
-			this.counterSelectorPanel.Size = new System.Drawing.Size(145, 104);
-			this.counterSelectorPanel.TabIndex = 22;
+			this.timerSelectorPanel.Controls.Add(this.navigateDwnBtn);
+			this.timerSelectorPanel.Controls.Add(this.navigateUpBtn);
+			this.timerSelectorPanel.Controls.Add(this.selectTimerLabel2);
+			this.timerSelectorPanel.Controls.Add(this.selectTimerLabel1);
+			this.timerSelectorPanel.Location = new System.Drawing.Point(5, 290);
+			this.timerSelectorPanel.Name = "timerSelectorPanel";
+			this.timerSelectorPanel.Size = new System.Drawing.Size(145, 104);
+			this.timerSelectorPanel.TabIndex = 22;
 			// 
 			// navigateDwnBtn
 			// 
@@ -332,6 +339,7 @@ namespace CountDownTimerV0
 			this.navigateDwnBtn.TabIndex = 36;
 			this.navigateDwnBtn.UseVisualStyleBackColor = false;
 			this.navigateDwnBtn.Click += new System.EventHandler(this.navigateDwnBtn_Click);
+			this.navigateDwnBtn.MouseHover += new System.EventHandler(this.navigateDwnBtn_MouseHover);
 			// 
 			// timersLabel
 			// 
@@ -351,9 +359,9 @@ namespace CountDownTimerV0
 			this.timerNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.timerNameLabel.Location = new System.Drawing.Point(289, 412);
 			this.timerNameLabel.Name = "timerNameLabel";
-			this.timerNameLabel.Size = new System.Drawing.Size(94, 20);
+			this.timerNameLabel.Size = new System.Drawing.Size(51, 20);
 			this.timerNameLabel.TabIndex = 24;
-			this.timerNameLabel.Text = "Timer Name";
+			this.timerNameLabel.Text = "Name";
 			// 
 			// timerDurationLabel
 			// 
@@ -551,11 +559,11 @@ namespace CountDownTimerV0
 			this.activeTimerLabel.AutoSize = true;
 			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerLabel.Location = new System.Drawing.Point(177, 360);
+			this.activeTimerLabel.Location = new System.Drawing.Point(178, 362);
 			this.activeTimerLabel.Name = "activeTimerLabel";
-			this.activeTimerLabel.Size = new System.Drawing.Size(170, 20);
+			this.activeTimerLabel.Size = new System.Drawing.Size(184, 20);
 			this.activeTimerLabel.TabIndex = 44;
-			this.activeTimerLabel.Text = "Currently Active Timer :";
+			this.activeTimerLabel.Text = "-Currently-Active-Timer---";
 			this.activeTimerLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// activeTimerTextBox
@@ -622,6 +630,7 @@ namespace CountDownTimerV0
 			this.saveLapsesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.saveLapsesCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveLapsesCheckBox.UseVisualStyleBackColor = false;
+			this.saveLapsesCheckBox.MouseHover += new System.EventHandler(this.saveLapsesCheckBox_MouseHover);
 			// 
 			// panel1
 			// 
@@ -682,7 +691,7 @@ namespace CountDownTimerV0
 			this.Controls.Add(this.timerDurationLabel);
 			this.Controls.Add(this.timerNameLabel);
 			this.Controls.Add(this.timersLabel);
-			this.Controls.Add(this.counterSelectorPanel);
+			this.Controls.Add(this.timerSelectorPanel);
 			this.Controls.Add(this.clearTimersListBtn);
 			this.Controls.Add(this.muteBtn);
 			this.Controls.Add(this.timerAddBtn);
@@ -695,7 +704,7 @@ namespace CountDownTimerV0
 			this.Name = "DigitalCountTimer";
 			this.Text = "Digital Count Up/Down Timer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DigitalCountTimer_FormClosing);
-			this.counterSelectorPanel.ResumeLayout(false);
+			this.timerSelectorPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
@@ -723,7 +732,7 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Button saveProfileBtn;
 		private System.Windows.Forms.SaveFileDialog saveProfile;
 		private System.Windows.Forms.OpenFileDialog loadProfile;
-		private System.Windows.Forms.Panel counterSelectorPanel;
+		private System.Windows.Forms.Panel timerSelectorPanel;
 		private System.Windows.Forms.Label timersLabel;
 		private System.Windows.Forms.Label timerNameLabel;
 		private System.Windows.Forms.Label timerDurationLabel;

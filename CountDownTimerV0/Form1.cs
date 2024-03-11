@@ -61,21 +61,39 @@ namespace CountDownTimerV0
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
 
-		private const string TOOLTIP_TIMER_NAME_ENTRY = "Enter a NAME for the new timer";
+		private const string TOOLTIP_SAVE_TIMERS_PROFILE_BTN = "  SAVE timers profile (timers, audio, etc.)";
+		private const int TOOLTIP_SAVE_TIMERS_PROFILE_BTN_DUR = 3000;
+		private const string TOOLTIP_LOAD_TIMERS_PROFILE_BTN = "  LOAD timers profile (timers, audio, etc.)";
+		private const int TOOLTIP_LOAD_TIMERS_PROFILE_BTN_DUR = 3000;
+		private const string TOOLTIP_SAVE_LAPSES_TOGGLE = "  SAVE timer LAPSES before closing app";
+		private const int TOOLTIP_SAVE_LAPSES_TOGGLE_DUR = 3000;
+		private const string TOOLTIP_START_TIMER_BTN = "  START timer count down/up";
+		private const int TOOLTIP_START_TIMER_BTN_DUR = 3000;
+		private const string TOOLTIP_STOP_TIMER_BTN = "  STOP timer (essentially pauses timer)";
+		private const int TOOLTIP_STOP_TIMER_BTN_DUR = 3000;
+		private const string TOOLTIP_RESET_TIMER_BTN = "  RESET timer to its input duration";
+		private const int TOOLTIP_RESET_TIMER_BTN_DUR = 3000;
+		private const string TOOLTIP_COUNT_INVERSE_BTN = "  INVERT the timer count direction";
+		private const int TOOLTIP_COUNT_INVERSE_BTN_DUR = 3000;
+		private const string TOOLTIP_NAV_UP_TIMER_SELECT_BTN = "  Select timer ABOVE in 'Timers' list";
+		private const int TOOLTIP_NAV_UP_TIMER_SELECT_BTN_DUR = 3000;
+		private const string TOOLTIP_NAV_DWN_TIMER_SELECT_BTN = "  Select timer BELOW in 'Timers' list";
+		private const int TOOLTIP_NAV_DWN_TIMER_SELECT_BTN_DUR = 3000;
+		private const string TOOLTIP_TIMER_NAME_ENTRY = "  Enter a NAME for the new timer";
 		private const int TOOLTIP_TIMER_NAME_ENTRY_DUR = 3000;
-		private const string TOOLTIP_TIMER_DURATION_ENTRY = "Enter a DURATION for the new timer";
+		private const string TOOLTIP_TIMER_DURATION_ENTRY = "  Enter a DURATION for the new timer";
 		private const int TOOLTIP_TIMER_DURATION_ENTRY_DUR = 3000;
-		private const string TOOLTIP_ADD_TIMER_BTN = "Add timer to 'Timers' list";
+		private const string TOOLTIP_ADD_TIMER_BTN = "  Add timer to 'Timers' list";
 		private const int TOOLTIP_ADD_TIMER_BTN_DUR = 3000;
-		private const string TOOLTIP_CHOOSE_AUDIO_BTN = "Choose timer ALARM	audio";
+		private const string TOOLTIP_CHOOSE_AUDIO_BTN = "  Choose timer ALARM	audio";
 		private const int TOOLTIP_CHOOSE_AUDIO_BTN_DUR = 3000;
-		private const string TOOLTIP_INCORRECT_FORMAT = "Wrong format, use empty default as template";
+		private const string TOOLTIP_INCORRECT_FORMAT = "  Wrong format, use empty default as template";
 		private const int TOOLTIP_INCORRECT_FORMAT_DUR = 3000;
-		private const string TOOLTIP_REMOVE_BTN = "Remote SELECTED timer from list";
+		private const string TOOLTIP_REMOVE_BTN = "  Remote SELECTED timer from list";
 		private const int TOOLTIP_REMOVE_BTN_DUR = 3000;
-		private const string TOOLTIP_CLEAR_TIMERS_LIST = "Clear (ENTIRE) timers list";
+		private const string TOOLTIP_CLEAR_TIMERS_LIST = "  Clear (ENTIRE) timers list";
 		private const int TOOLTIP_CLEAR_TIMERS_LIST_DUR = 3000;
-		private const string TOOLTIP_SELECT_TIMER_TO_REMOVE = "First SELECT a timer to remove";
+		private const string TOOLTIP_SELECT_TIMER_TO_REMOVE = "  First SELECT a timer to remove";
 		private const int TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR = 3000;
 
 		Form _alarmAlertWindow;
@@ -285,7 +303,7 @@ namespace CountDownTimerV0
 			startButton.TabIndex = 1;
 			stopButton.TabIndex = 2;
 			resetButton.TabIndex = 3;
-			counterSelectorPanel.TabIndex = 4;
+			timerSelectorPanel.TabIndex = 4;
 			navigateUpBtn.TabIndex = 5;
 			navigateDwnBtn.TabIndex = 6;
 			countInverseBtn.TabIndex = 8;
@@ -322,12 +340,6 @@ namespace CountDownTimerV0
 				Directory.CreateDirectory(LAPSES_DIR_PATH);
 		}
 
-		// user clicked in text field to begin entering timers name
-		private void timerNameEntry_Enter(object sender, EventArgs e)
-		{
-			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
-		}
-
 		private void timerNameEntry_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_TIMER_NAME_ENTRY and timerNameEntry text box 
@@ -335,6 +347,12 @@ namespace CountDownTimerV0
 				TOOLTIP_TIMER_NAME_ENTRY,
 				timerNameEntry,
 				TOOLTIP_TIMER_NAME_ENTRY_DUR);
+		}
+
+		// user clicked in text field to begin entering timers name
+		private void timerNameEntry_Enter(object sender, EventArgs e)
+		{
+			ReadyTextBoxInput(timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 		}
 
 		/// <summary>
@@ -361,12 +379,6 @@ namespace CountDownTimerV0
 			return;
 		}
 
-		// user clicked in text field to begin entering timers duration
-		private void timerDurationEntry_Enter(object sender, EventArgs e)
-		{
-			ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
-		}
-
 		private void timerDurationEntry_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_TIMER_DURATION_ENTRY and timerDurattionEntry text box 
@@ -374,6 +386,12 @@ namespace CountDownTimerV0
 				TOOLTIP_TIMER_DURATION_ENTRY,
 				timerDurationEntry,
 				TOOLTIP_TIMER_DURATION_ENTRY_DUR);
+		}
+
+		// user clicked in text field to begin entering timers duration
+		private void timerDurationEntry_Enter(object sender, EventArgs e)
+		{
+			ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 		}
 
 		// user clicked away from text field taking focus to another control
@@ -603,13 +621,23 @@ namespace CountDownTimerV0
 			return rebuiltDurationString;
 		}
 
-		// user clicks to submit timers (name+duration) to 'Timers' list
-		private void listAddBtn_Click(object sender, EventArgs e)
+		private void timerAddBtn_MouseHover(object sender, EventArgs e)
 		{
+			//show tooltip with TOOLTIP_ADD_TIMER_BTN text and listAddBtn control
+			toolTips.Show(
+				TOOLTIP_ADD_TIMER_BTN,
+				timerAddBtn,
+				TOOLTIP_ADD_TIMER_BTN_DUR);
+		}
+
+		// user clicks to submit timers (name+duration) to 'Timers' list
+		private void timerAddBtn_Click(object sender, EventArgs e)
+		{
+			// user clicks to submit timers (name+duration) to 'Timers' list
 			/* Ensure valid data submission */
-			bool invalidName = 
+			bool invalidName =
 				RefocusInvalidTextEntry(timerNameEntry, NAME_ENTRY_PROMPT_STRING, _timerNameMsgBoxInfo);
-			bool invalidDuration = 
+			bool invalidDuration =
 				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, _timerDurationMsgBoxInfo, invalidName);
 
 			if ( invalidName || invalidDuration ) return;
@@ -716,15 +744,6 @@ namespace CountDownTimerV0
 			listBox.EndUpdate();*/
 		}
 
-		private void timerAddBtn_MouseHover(object sender, EventArgs e)
-		{
-			//show tooltip with TOOLTIP_ADD_TIMER_BTN text and listAddBtn control
-			toolTips.Show(
-				TOOLTIP_ADD_TIMER_BTN,
-				timerAddBtn,
-				TOOLTIP_ADD_TIMER_BTN_DUR);
-		}
-
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
 		private void timerNamesList_SelectedValueChanged(object sender, EventArgs e)
 		{
@@ -789,6 +808,15 @@ namespace CountDownTimerV0
 			_countDown = !_countDown;
 			//change button text to match flag
 			countInverseBtn.Text = _countDown ? COUNT_DOWN_BUTTON_TEXT : COUNT_UP_BUTTON_TEXT;
+		}
+
+		private void countInverseBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_COUNT_INVERSE_BTN and countInverseBtn button
+			toolTips.Show(
+				TOOLTIP_COUNT_INVERSE_BTN,
+				countInverseBtn,
+				TOOLTIP_COUNT_INVERSE_BTN_DUR);
 		}
 
 		private void chooseAudioBtn_Click(object sender, EventArgs e)
@@ -994,6 +1022,15 @@ namespace CountDownTimerV0
 				TOOLTIP_REMOVE_BTN,
 				removeTimerBtn,
 				TOOLTIP_REMOVE_BTN_DUR);
+		}
+
+		private void startButton_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_START_TIMER_BTN and startButton
+			toolTips.Show(
+				TOOLTIP_START_TIMER_BTN,
+				startButton,
+				TOOLTIP_START_TIMER_BTN_DUR);
 		}
 
 		// user intends to begin count down/up
@@ -1270,6 +1307,15 @@ namespace CountDownTimerV0
 			ToggleCursorOfMainControls(ControlEngaged.StopButton, Cursors.Default, Cursors.No);
 		}
 
+		private void stopButton_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_STOP_TIMER_BTN and stopButton 
+			toolTips.Show(
+				TOOLTIP_STOP_TIMER_BTN,
+				stopButton,
+				TOOLTIP_STOP_TIMER_BTN_DUR);
+		}
+
 		private void resetButton_Click(object sender, EventArgs e)
 		{
 			switch ( _timerState )
@@ -1294,6 +1340,15 @@ namespace CountDownTimerV0
 
 			//reset timer state
 			_timerState = TimerState.TickFromBeginning;
+		}
+
+		private void resetButton_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_RESET_TIMER_BTN and resetButton 
+			toolTips.Show(
+				TOOLTIP_RESET_TIMER_BTN,
+				resetButton,
+				TOOLTIP_RESET_TIMER_BTN_DUR);
 		}
 
 		// user intends choose the timers above current in the timers list 
@@ -1366,6 +1421,15 @@ namespace CountDownTimerV0
 			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
 		}
 
+		private void navigateUpBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_NAV_UP_TIMER_SELECT_BTN and navigateUpBtn 
+			toolTips.Show(
+				TOOLTIP_NAV_UP_TIMER_SELECT_BTN,
+				navigateUpBtn,
+				TOOLTIP_NAV_UP_TIMER_SELECT_BTN_DUR);
+		}
+
 		// user intends choose the timers below current in the timers list 
 		private void navigateDwnBtn_Click(object sender, EventArgs e)
 		{
@@ -1433,6 +1497,24 @@ namespace CountDownTimerV0
 			//set timer state according to the selected timer lapse 'state'
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
+		}
+
+		private void navigateDwnBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_NAV_DWN_TIMER_SELECT_BTN and navigateDwnBtn 
+			toolTips.Show(
+				TOOLTIP_NAV_DWN_TIMER_SELECT_BTN,
+				navigateDwnBtn,
+				TOOLTIP_NAV_DWN_TIMER_SELECT_BTN_DUR);
+		}
+
+		private void saveLapsesCheckBox_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_SAVE_LAPSES_TOGGLE and saveLapsesCheckBox 
+			toolTips.Show(
+				TOOLTIP_SAVE_LAPSES_TOGGLE,
+				saveLapsesCheckBox,
+				TOOLTIP_SAVE_LAPSES_TOGGLE_DUR);
 		}
 
 		// user intends to close the timers form window
@@ -1602,6 +1684,15 @@ namespace CountDownTimerV0
 			return suffixedFileName;*/
 		}
 
+		private void loadProfileBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_LOAD_TIMERS_PROFILE_BTN and loadProfileBtn 
+			toolTips.Show(
+				TOOLTIP_LOAD_TIMERS_PROFILE_BTN,
+				loadProfileBtn,
+				TOOLTIP_LOAD_TIMERS_PROFILE_BTN_DUR);
+		}
+
 		// user intends to load a previously saved list of timers and chosen audio
 		private void loadProfileBtn_Click(object sender, EventArgs e)
 		{
@@ -1719,6 +1810,13 @@ namespace CountDownTimerV0
 			}
 		}
 
-		
+		private void saveProfileBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_SAVE_TIMERS_PROFILE_BTN and saveProfileBtn 
+			toolTips.Show(
+				TOOLTIP_SAVE_TIMERS_PROFILE_BTN,
+				saveProfileBtn,
+				TOOLTIP_SAVE_TIMERS_PROFILE_BTN_DUR);
+		}
 	}
 }
