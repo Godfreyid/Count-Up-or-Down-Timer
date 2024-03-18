@@ -1241,20 +1241,12 @@ namespace CountDownTimerV0
 
 			//try to assign audio file to play as alarm siren
 			_soundPlayer.SoundLocation = _selectedAudio.FullPath;
-			bool audioFileSelected = !_soundPlayer.SoundLocation.Equals("");
-			if ( !audioFileSelected ) return;
-
-			//raise alarm 
+			bool audioFileSelected = !string.IsNullOrEmpty(_soundPlayer.SoundLocation);
 			bool mutedAlarmAudio = muteBtn.Checked;
-			if ( !mutedAlarmAudio ) _soundPlayer.PlayLooping();
+			bool haveAlarmAudio = audioFileSelected && !mutedAlarmAudio;
+			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
 
-			//show alarm window
-			_alarmAlertWindow.Show(this);
-			//AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
-			DialogResult alarmMsgBoxResult = MessageBox.Show(
-				_alarmMsgBoxInfo.Message, _alarmMsgBoxInfo.Caption, _alarmMsgBoxInfo.Buttons);
-			//if clicked 'ok' in message box,
-			bool stopAlarm = DialogResult.OK == alarmMsgBoxResult;
+			bool stopAlarm = ShowAlarmCloseWindow();
 			if ( !stopAlarm ) return;
 
 			//hide alarmAlertWindow
@@ -1264,6 +1256,20 @@ namespace CountDownTimerV0
 			//mimic pressing of 'STOP' timer button
 			StopTimer();
 		}
+
+		private bool ShowAlarmCloseWindow() 
+		{
+			//show alarm window
+			_alarmAlertWindow.Show(this);
+			//AlarmNotifyingWindow alarmWin = new AlarmNotifyingWindow(this);
+			DialogResult alarmMsgBoxResult = MessageBox.Show(
+				_alarmMsgBoxInfo.Message, _alarmMsgBoxInfo.Caption, _alarmMsgBoxInfo.Buttons);
+			//if clicked 'ok' in message box,
+			bool stopAlarm = DialogResult.OK == alarmMsgBoxResult;
+
+			return stopAlarm;
+		}
+
 
 		// user intends to reset the chosen timers to its initial (input) duration
 		private void stopButton_Click(object sender, EventArgs e)
