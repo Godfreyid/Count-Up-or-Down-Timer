@@ -26,13 +26,6 @@ namespace CountDownTimerV0
 		private const string SAVED_LAPSES_DIR = @"\Count Down Up Timer\Remembered Lapses\";
 		private readonly string LAPSES_DIR_PATH;
 
-		/*private const string LAPSES_MEM_FILE_NAME = "Remembered Lapses.txt";
-		private string LAPSES_MEM_FILE_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + LAPSES_MEM_FILE_NAME;*/
-		/*private const string LAPSES_MEM_FILE_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Remembered Lapses.txt";*/
-		/*private const string SAVE_LAPSES_FLAG_FILE_NAME = "Save Lapses OnExit Flag.txt";
-		private string SAVE_LAPSES_ON_EXIT_PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + SAVE_LAPSES_FLAG_FILE_NAME;*/
-		/*private const string SAVE_LAPSES_ON_EXIT_PATH = @"C:\Users\GDK\Documents\Count Down Up Timer\Save Lapses OnExit Flag.txt";*/
-
 		private const string DEFAULT_PROFILE_FILE_EXT = ".txt";
 		private const string AUDIO_SAVE_FILE_SUFFIX = "_chosenAudio.txt";
 		private const string LAPSES_SAVE_FILE_SUFFIX = "_cachedLapses.txt";
@@ -45,6 +38,9 @@ namespace CountDownTimerV0
 		private const string TIMER_DISPLAY_DEFAULT_STRING = "00:00:00";
 		private const string NAME_ENTRY_PROMPT_STRING = "[Enter Name]";
 		private const string DURATION_ENTRY_PROMPT_STRING = "00:00:00";
+
+		private const string CURRENT_PROFILE_DEFAULT_STRING = "[Current Profile]";
+		private const string ACTIVE_TIMER_DEFAULT_STRING = "[Active Timer]";
 
 		private const string ASSIGN_TO_PROFILE_CAPTION = "Needs Assigning to a Profile";
 		private const string ASSIGN_TO_PROFILE_MESSAGE = "You need to choose a profile to assign the remembered lapses to.";
@@ -921,6 +917,15 @@ namespace CountDownTimerV0
 				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
 		}
 
+		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
+			toolTips.Show(
+				TOOLTIP_CLEAR_TIMERS_LIST,
+				clearTimersListBtn,
+				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
+		}
+
 		// user intends to clear all selectable timers from the 'Timers' list
 		private void clearTimersListBtn_Click(object sender, EventArgs e)
 		{
@@ -962,15 +967,16 @@ namespace CountDownTimerV0
 			//resume drawing of the timer name and duration list boxes
 			timerNamesList.EndUpdate();
 			timerDurationsList.EndUpdate();
+
+			//update the 'active timer' label text
+			UpdateActiveTimerLabel(ACTIVE_TIMER_DEFAULT_STRING);
 		}
 
-		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
+		private void UpdateActiveTimerLabel(string activeTimerName)
 		{
-			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.Show(
-				TOOLTIP_CLEAR_TIMERS_LIST,
-				clearTimersListBtn,
-				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
+			activeTimerTextBox.ReadOnly = false;
+			activeTimerTextBox.Text = activeTimerName;
+			activeTimerTextBox.ReadOnly = true;
 		}
 
 		// user intends to remove the currently selected timer from 'Timers' list
@@ -1115,7 +1121,7 @@ namespace CountDownTimerV0
 			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);
 
 			//update the 'active timer' label text
-			activeTimerTextBox.Text = _chosenTimer.Name;
+			UpdateActiveTimerLabel(_chosenTimer.Name);
 
 			_timerState = TimerState.Ticking;
 		}
@@ -1187,6 +1193,8 @@ namespace CountDownTimerV0
 					break;
 			}
 		}
+
+		
 
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
@@ -1727,8 +1735,15 @@ namespace CountDownTimerV0
 
 			LoadTimerAudio(profilePath);
 
-			/*//indicate restricted (disallowed) controls while timers ticks
-			ToggleCursorOfMainControls(ControlEngaged.StartButton, Cursors.No, Cursors.Default);*/
+			//update current profile label text box
+			currentProfileTextBox.ReadOnly = false;
+
+			string extLessProfName = Path.GetFileName(profilePath);
+			int extLessProfNameLen = extLessProfName.Length - DEFAULT_PROFILE_FILE_EXT.Length;
+			extLessProfName = extLessProfName.Substring(0, extLessProfNameLen);
+			currentProfileTextBox.Text = extLessProfName;
+
+			currentProfileTextBox.ReadOnly = true;
 		}
 
 		private void LoadTimersList(string profilePath)

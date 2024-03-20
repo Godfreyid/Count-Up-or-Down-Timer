@@ -77,6 +77,8 @@ namespace CountDownTimerV0
 			this.saveProfileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
 			this.removeTimerBtn = new System.Windows.Forms.Button();
+			this.currentProfileTextBox = new System.Windows.Forms.TextBox();
+			this.currentProfileLabel = new System.Windows.Forms.Label();
 			this.timerSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -557,24 +559,25 @@ namespace CountDownTimerV0
 			// activeTimerLabel
 			// 
 			this.activeTimerLabel.AutoSize = true;
-			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerLabel.Location = new System.Drawing.Point(178, 362);
+			this.activeTimerLabel.Location = new System.Drawing.Point(178, 370);
 			this.activeTimerLabel.Name = "activeTimerLabel";
-			this.activeTimerLabel.Size = new System.Drawing.Size(184, 20);
+			this.activeTimerLabel.Size = new System.Drawing.Size(179, 18);
 			this.activeTimerLabel.TabIndex = 44;
-			this.activeTimerLabel.Text = "-Currently-Active-Timer---";
+			this.activeTimerLabel.Text = "-Currently-Active-Timer----";
 			this.activeTimerLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// activeTimerTextBox
 			// 
 			this.activeTimerTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.activeTimerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.activeTimerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.activeTimerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerTextBox.Location = new System.Drawing.Point(358, 360);
+			this.activeTimerTextBox.Location = new System.Drawing.Point(358, 370);
 			this.activeTimerTextBox.Name = "activeTimerTextBox";
-			this.activeTimerTextBox.Size = new System.Drawing.Size(174, 24);
+			this.activeTimerTextBox.ReadOnly = true;
+			this.activeTimerTextBox.Size = new System.Drawing.Size(174, 22);
 			this.activeTimerTextBox.TabIndex = 45;
 			this.activeTimerTextBox.Text = "[Active Timer]";
 			// 
@@ -662,12 +665,39 @@ namespace CountDownTimerV0
 			this.removeTimerBtn.Click += new System.EventHandler(this.removeTimerBtn_Click);
 			this.removeTimerBtn.MouseHover += new System.EventHandler(this.removeTimerBtn_MouseHover);
 			// 
+			// currentProfileTextBox
+			// 
+			this.currentProfileTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+			this.currentProfileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.currentProfileTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.currentProfileTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.currentProfileTextBox.Location = new System.Drawing.Point(358, 348);
+			this.currentProfileTextBox.Name = "currentProfileTextBox";
+			this.currentProfileTextBox.ReadOnly = true;
+			this.currentProfileTextBox.Size = new System.Drawing.Size(174, 22);
+			this.currentProfileTextBox.TabIndex = 52;
+			this.currentProfileTextBox.Text = "[Current Profile]";
+			// 
+			// currentProfileLabel
+			// 
+			this.currentProfileLabel.AutoSize = true;
+			this.currentProfileLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.currentProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.currentProfileLabel.Location = new System.Drawing.Point(179, 348);
+			this.currentProfileLabel.Name = "currentProfileLabel";
+			this.currentProfileLabel.Size = new System.Drawing.Size(178, 18);
+			this.currentProfileLabel.TabIndex = 54;
+			this.currentProfileLabel.Text = "-Currently-Active-Profile---";
+			this.currentProfileLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
 			// DigitalCountTimer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.ClientSize = new System.Drawing.Size(537, 676);
+			this.Controls.Add(this.currentProfileLabel);
+			this.Controls.Add(this.currentProfileTextBox);
 			this.Controls.Add(this.removeTimerBtn);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.secondsLabel);
@@ -763,6 +793,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.SaveFileDialog saveProfileDialog;
 		private System.Windows.Forms.ToolTip toolTips;
 		private System.Windows.Forms.Button removeTimerBtn;
+		private System.Windows.Forms.TextBox currentProfileTextBox;
+		private System.Windows.Forms.Label currentProfileLabel;
 	}
 }
 
