@@ -79,6 +79,8 @@ namespace CountDownTimerV0
 			this.removeTimerBtn = new System.Windows.Forms.Button();
 			this.currentProfileTextBox = new System.Windows.Forms.TextBox();
 			this.currentProfileLabel = new System.Windows.Forms.Label();
+			this.continuousModeBtn = new System.Windows.Forms.CheckBox();
+			this.timeBeforeNextTimer = new System.Windows.Forms.Timer(this.components);
 			this.timerSelectorPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -208,12 +210,11 @@ namespace CountDownTimerV0
 			this.muteBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
 			this.muteBtn.Image = ((System.Drawing.Image)(resources.GetObject("muteBtn.Image")));
 			this.muteBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.muteBtn.Location = new System.Drawing.Point(181, 302);
+			this.muteBtn.Location = new System.Drawing.Point(252, 302);
 			this.muteBtn.Name = "muteBtn";
-			this.muteBtn.Padding = new System.Windows.Forms.Padding(0, 0, 7, 0);
-			this.muteBtn.Size = new System.Drawing.Size(140, 43);
+			this.muteBtn.Size = new System.Drawing.Size(88, 43);
 			this.muteBtn.TabIndex = 7;
-			this.muteBtn.Text = "     Mute Audio";
+			this.muteBtn.Text = "     Mute";
 			this.muteBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.muteBtn.UseVisualStyleBackColor = true;
 			// 
@@ -561,11 +562,11 @@ namespace CountDownTimerV0
 			this.activeTimerLabel.AutoSize = true;
 			this.activeTimerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.activeTimerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.activeTimerLabel.Location = new System.Drawing.Point(178, 370);
+			this.activeTimerLabel.Location = new System.Drawing.Point(182, 370);
 			this.activeTimerLabel.Name = "activeTimerLabel";
-			this.activeTimerLabel.Size = new System.Drawing.Size(179, 18);
+			this.activeTimerLabel.Size = new System.Drawing.Size(178, 18);
 			this.activeTimerLabel.TabIndex = 44;
-			this.activeTimerLabel.Text = "-Currently-Active-Timer----";
+			this.activeTimerLabel.Text = "-Currently-Active-Timer-->";
 			this.activeTimerLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
 			// 
 			// activeTimerTextBox
@@ -624,12 +625,12 @@ namespace CountDownTimerV0
 			this.saveLapsesCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.saveLapsesCheckBox.Image = ((System.Drawing.Image)(resources.GetObject("saveLapsesCheckBox.Image")));
 			this.saveLapsesCheckBox.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.saveLapsesCheckBox.Location = new System.Drawing.Point(346, 5);
+			this.saveLapsesCheckBox.Location = new System.Drawing.Point(399, 5);
 			this.saveLapsesCheckBox.Margin = new System.Windows.Forms.Padding(0);
 			this.saveLapsesCheckBox.Name = "saveLapsesCheckBox";
-			this.saveLapsesCheckBox.Size = new System.Drawing.Size(181, 30);
+			this.saveLapsesCheckBox.Size = new System.Drawing.Size(128, 30);
 			this.saveLapsesCheckBox.TabIndex = 49;
-			this.saveLapsesCheckBox.Text = "Remember Lapses";
+			this.saveLapsesCheckBox.Text = "Remember";
 			this.saveLapsesCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.saveLapsesCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.saveLapsesCheckBox.UseVisualStyleBackColor = false;
@@ -683,12 +684,29 @@ namespace CountDownTimerV0
 			this.currentProfileLabel.AutoSize = true;
 			this.currentProfileLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.currentProfileLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.currentProfileLabel.Location = new System.Drawing.Point(179, 348);
+			this.currentProfileLabel.Location = new System.Drawing.Point(183, 349);
 			this.currentProfileLabel.Name = "currentProfileLabel";
-			this.currentProfileLabel.Size = new System.Drawing.Size(178, 18);
+			this.currentProfileLabel.Size = new System.Drawing.Size(177, 18);
 			this.currentProfileLabel.TabIndex = 54;
-			this.currentProfileLabel.Text = "-Currently-Active-Profile---";
+			this.currentProfileLabel.Text = "-Currently-Active-Profile->";
 			this.currentProfileLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// continuousModeBtn
+			// 
+			this.continuousModeBtn.AutoSize = true;
+			this.continuousModeBtn.Image = ((System.Drawing.Image)(resources.GetObject("continuousModeBtn.Image")));
+			this.continuousModeBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.continuousModeBtn.Location = new System.Drawing.Point(185, 308);
+			this.continuousModeBtn.Name = "continuousModeBtn";
+			this.continuousModeBtn.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+			this.continuousModeBtn.Size = new System.Drawing.Size(51, 32);
+			this.continuousModeBtn.TabIndex = 55;
+			this.continuousModeBtn.UseVisualStyleBackColor = true;
+			// 
+			// timeBeforeNextTimer
+			// 
+			this.timeBeforeNextTimer.Interval = 1000;
+			this.timeBeforeNextTimer.Tick += new System.EventHandler(this.timeBeforeNextTimer_Tick);
 			// 
 			// DigitalCountTimer
 			// 
@@ -696,6 +714,7 @@ namespace CountDownTimerV0
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.ClientSize = new System.Drawing.Size(537, 676);
+			this.Controls.Add(this.continuousModeBtn);
 			this.Controls.Add(this.currentProfileLabel);
 			this.Controls.Add(this.currentProfileTextBox);
 			this.Controls.Add(this.removeTimerBtn);
@@ -795,6 +814,8 @@ namespace CountDownTimerV0
 		private System.Windows.Forms.Button removeTimerBtn;
 		private System.Windows.Forms.TextBox currentProfileTextBox;
 		private System.Windows.Forms.Label currentProfileLabel;
+		private System.Windows.Forms.CheckBox continuousModeBtn;
+		private System.Windows.Forms.Timer timeBeforeNextTimer;
 	}
 }
 

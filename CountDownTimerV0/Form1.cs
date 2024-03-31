@@ -120,6 +120,9 @@ namespace CountDownTimerV0
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
 
+		private const int COUNTDOWN_TO_NEXT_TIMER_DUR = 10000;
+		private int _durationBeforeNextTimer;
+
 		private struct FormattedTimeColumns
 		{
 			public int Hours { get; set; }
@@ -292,6 +295,8 @@ namespace CountDownTimerV0
 			audioFileSelector.InitialDirectory = alarmTunesDir;
 
 			#endregion
+
+			_durationBeforeNextTimer = COUNTDOWN_TO_NEXT_TIMER_DUR;
 		}
 
 		private void SetTabIndices()
@@ -1042,6 +1047,11 @@ namespace CountDownTimerV0
 		// user intends to begin count down/up
 		private void startButton_Click(object sender, EventArgs e)
 		{
+			StartChosenTimer();
+		}
+
+		private void StartChosenTimer()
+		{
 			/* To allow resuming count when clicking to another timers and 
 			   back again, have an actively count down/up 'DurationAsBulkSeconds'
 			   that is only updated when clicking the 'startButton', not when
@@ -1194,8 +1204,6 @@ namespace CountDownTimerV0
 			}
 		}
 
-		
-
 		// handles event raised whenever the ticker control's set interval elapses
 		private void countTimer_Tick(object sender, EventArgs e)
 		{
@@ -1247,6 +1255,14 @@ namespace CountDownTimerV0
 			//pause ticker control to stop ticking during alarm period
 			countTimer.Stop();
 
+			//if 'continuousMode'
+			if ( continuousModeBtn.Checked )
+			{
+				//start countdown to starting next timer 
+				timeBeforeNextTimer.Enabled = true;
+				timeBeforeNextTimer.Start();
+			}
+
 			//try to assign audio file to play as alarm siren
 			_soundPlayer.SoundLocation = _selectedAudio.FullPath;
 			bool audioFileSelected = !string.IsNullOrEmpty(_soundPlayer.SoundLocation);
@@ -1254,12 +1270,20 @@ namespace CountDownTimerV0
 			bool haveAlarmAudio = audioFileSelected && !mutedAlarmAudio;
 			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
 
-			bool stopAlarm = ShowAlarmCloseWindow();
-			//alarmSirenElapsed = false;
+			bool okCloseAlarmWin = ShowAlarmCloseWindow();
+			bool startNextTimer = false;
 			//if toggled continuousMode,
-				//alarmSirenElapsed = _soundPlayer.PlayLooping() has played the set siren duration (miliseconds)
-			//stopAlarm if (ShowAlarmCloseWindow && alarmSirenElapsed)
-			if ( !stopAlarm ) return;
+			if ( continuousModeBtn.Checked )
+			{
+				bool alarmSirenElapsed = _durationBeforeNextTimer <= 0;
+				startNextTimer = okCloseAlarmWin || alarmSirenElapsed;
+			}
+
+			bool stopAlarm = okCloseAlarmWin || startNextTimer;
+			if ( !stopAlarm )
+			{
+				return;
+			}
 
 			//hide alarmAlertWindow
 			_alarmAlertWindow.Hide();
@@ -1269,7 +1293,17 @@ namespace CountDownTimerV0
 			StopTimer();
 
 			//if not toggled continuousMode, return
-			//select next timer in 
+			if ( !continuousModeBtn.Checked ) return;
+
+			//select next timer in timers list
+			NavigateDwnTimersList();
+			//start said timer
+			StartChosenTimer();
+		}
+
+		private void timeBeforeNextTimer_Tick(object sender, EventArgs e)
+		{
+			_durationBeforeNextTimer -= 1000;
 		}
 
 		private bool ShowAlarmCloseWindow() 
