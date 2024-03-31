@@ -1255,6 +1255,10 @@ namespace CountDownTimerV0
 			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
 
 			bool stopAlarm = ShowAlarmCloseWindow();
+			//alarmSirenElapsed = false;
+			//if toggled continuousMode,
+				//alarmSirenElapsed = _soundPlayer.PlayLooping() has played the set siren duration (miliseconds)
+			//stopAlarm if (ShowAlarmCloseWindow && alarmSirenElapsed)
 			if ( !stopAlarm ) return;
 
 			//hide alarmAlertWindow
@@ -1263,6 +1267,9 @@ namespace CountDownTimerV0
 			_soundPlayer.Stop();
 			//mimic pressing of 'STOP' timer button
 			StopTimer();
+
+			//if not toggled continuousMode, return
+			//select next timer in 
 		}
 
 		private bool ShowAlarmCloseWindow() 
@@ -1461,6 +1468,18 @@ namespace CountDownTimerV0
 					break;
 			}
 
+			NavigateDwnTimersList();
+		}
+
+		/// <summary>
+		/// Selects the next timer in the timers list (timerNamesList & 
+		/// timerDurationsList). [Was extracted to a dedicated method
+		/// to call on this functionality by methods other than the
+		/// 'navigateDwnBtn_Click()' callback, like when timer mode
+		/// is set to 'continuousMOde']
+		/// </summary>
+		private void NavigateDwnTimersList()
+		{
 			int timerNamesCount = timerNamesList.Items.Count;
 			bool emptyTimersList = timerNamesCount < 1;
 			//if 'timerNamesList' is empty, return
