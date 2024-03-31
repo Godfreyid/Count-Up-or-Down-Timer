@@ -1261,6 +1261,10 @@ namespace CountDownTimerV0
 				//start countdown to starting next timer 
 				timeBeforeNextTimer.Enabled = true;
 				timeBeforeNextTimer.Start();
+				/* 'continuousMode' should not require clicking an 'Okay, Close Alarm Window'
+				   so only show the alarm window without the message box */
+				_alarmAlertWindow.Show(this);
+				return;
 			}
 
 			//try to assign audio file to play as alarm siren
@@ -1270,16 +1274,7 @@ namespace CountDownTimerV0
 			bool haveAlarmAudio = audioFileSelected && !mutedAlarmAudio;
 			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
 
-			bool okCloseAlarmWin = ShowAlarmCloseWindow();
-			bool startNextTimer = false;
-			//if toggled continuousMode,
-			if ( continuousModeBtn.Checked )
-			{
-				bool alarmSirenElapsed = _durationBeforeNextTimer <= 0;
-				startNextTimer = okCloseAlarmWin || alarmSirenElapsed;
-			}
-
-			bool stopAlarm = okCloseAlarmWin || startNextTimer;
+			bool stopAlarm = ShowAlarmCloseWindow();
 			if ( !stopAlarm )
 			{
 				return;
@@ -1291,19 +1286,26 @@ namespace CountDownTimerV0
 			_soundPlayer.Stop();
 			//mimic pressing of 'STOP' timer button
 			StopTimer();
+		}
 
-			//if not toggled continuousMode, return
-			if ( !continuousModeBtn.Checked ) return;
+		private void timeBeforeNextTimer_Tick(object sender, EventArgs e)
+		{
+			bool alarmSirenElapsed = _durationBeforeNextTimer <= 0;
+			if ( !alarmSirenElapsed )
+			{
+				_durationBeforeNextTimer -= 1000;
+				return;
+			}
+
+			timeBeforeNextTimer.Stop();
+
+			//show alarm window with message box
+			_alarmAlertWindow.Hide();
 
 			//select next timer in timers list
 			NavigateDwnTimersList();
 			//start said timer
 			StartChosenTimer();
-		}
-
-		private void timeBeforeNextTimer_Tick(object sender, EventArgs e)
-		{
-			_durationBeforeNextTimer -= 1000;
 		}
 
 		private bool ShowAlarmCloseWindow() 
@@ -1342,10 +1344,14 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			//change the text and image of the 'startButton' to read 'pause'
+			//stop countTimer from ticking
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
+			//stop 'timeBeforeNextTimer' and reset count variable
+			timeBeforeNextTimer.Enabled = false;
+			_durationBeforeNextTimer = COUNTDOWN_TO_NEXT_TIMER_DUR;
 
+			//change the text and image of the 'startButton' to read 'pause'
 			/* Map name:duration to persist count beyond pressing 'STOP' (until pressing
 			   'RESET') and continue despite switching timers */
 			int timerCount = _countDown ? _durationAsSeconds : _upCount;
