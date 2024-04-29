@@ -702,6 +702,7 @@ namespace CountDownTimerV0
 			this.continuousModeBtn.Size = new System.Drawing.Size(51, 32);
 			this.continuousModeBtn.TabIndex = 55;
 			this.continuousModeBtn.UseVisualStyleBackColor = true;
+			this.continuousModeBtn.MouseHover += new System.EventHandler(this.continuousModeBtn_MouseHover);
 			// 
 			// timeBeforeNextTimer
 			// 
