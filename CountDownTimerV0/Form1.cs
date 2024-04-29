@@ -1264,6 +1264,13 @@ namespace CountDownTimerV0
 			//mimic pressing of 'STOP' timer button to stop ticking during alarm
 			StopTimer();
 
+			//try to assign audio file to play as alarm siren
+			_soundPlayer.SoundLocation = _selectedAudio.FullPath;
+			bool audioFileSelected = !string.IsNullOrEmpty(_soundPlayer.SoundLocation);
+			bool mutedAlarmAudio = muteBtn.Checked;
+			bool haveAlarmAudio = audioFileSelected && !mutedAlarmAudio;
+			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
+
 			//if 'continuousMode'
 			if ( continuousModeBtn.Checked )
 			{
@@ -1275,13 +1282,6 @@ namespace CountDownTimerV0
 				_alarmAlertWindow.Show(this);
 				return;
 			}
-
-			//try to assign audio file to play as alarm siren
-			_soundPlayer.SoundLocation = _selectedAudio.FullPath;
-			bool audioFileSelected = !string.IsNullOrEmpty(_soundPlayer.SoundLocation);
-			bool mutedAlarmAudio = muteBtn.Checked;
-			bool haveAlarmAudio = audioFileSelected && !mutedAlarmAudio;
-			if ( haveAlarmAudio ) _soundPlayer.PlayLooping();
 
 			bool stopAlarm = ShowAlarmCloseWindow();
 			if ( !stopAlarm )
@@ -1324,6 +1324,7 @@ namespace CountDownTimerV0
 			timeBeforeNextTimer.Enabled = false;
 			_durationBeforeNextTimer = COUNTDOWN_TO_NEXT_TIMER_DUR;
 
+			_soundPlayer.Stop();
 			_alarmAlertWindow.Hide();
 
 			//set 'ChosenTimer' to next timer in timers list
