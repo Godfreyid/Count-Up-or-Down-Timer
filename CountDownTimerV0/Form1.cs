@@ -123,7 +123,7 @@ namespace CountDownTimerV0
 		private SoundPlayer _soundPlayer;
 		private SelectedAudio _selectedAudio;
 
-		private const int COUNTDOWN_TO_NEXT_TIMER_DUR = 10000;
+		private const int COUNTDOWN_TO_NEXT_TIMER_DUR = 10;
 		private int _durationBeforeNextTimer;
 
 		private struct FormattedTimeColumns
@@ -1309,7 +1309,7 @@ namespace CountDownTimerV0
 			bool alarmSirenElapsed = _durationBeforeNextTimer <= 0;
 			if ( !alarmSirenElapsed )
 			{
-				_durationBeforeNextTimer -= 1000;
+				_durationBeforeNextTimer -= 1;
 
 				#region DEBUGGING - DELETE!
 				timerDisplay.Text = _durationBeforeNextTimer.ToString();
