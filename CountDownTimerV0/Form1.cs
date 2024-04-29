@@ -91,6 +91,8 @@ namespace CountDownTimerV0
 		private const int TOOLTIP_CLEAR_TIMERS_LIST_DUR = 3000;
 		private const string TOOLTIP_SELECT_TIMER_TO_REMOVE = "  First SELECT a timer to remove";
 		private const int TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR = 3000;
+		private const string TOOLTIP_CONTINUOUS_MODE_BTN = "Continuous Mode (start next timer on elapse)";
+		private const int TOOLTIP_CONTINUOUS_MODE_DUR = 3000;
 
 		Form _alarmAlertWindow;
 		
@@ -106,6 +108,7 @@ namespace CountDownTimerV0
 		private MessageBoxInfo _alarmMsgBoxInfo;
 
 		private ChosenTimer _chosenTimer;
+		private int _continuousModeTimerIndex;
 
 		private string[] _durationTimeColumns;
 		private int _durationAsSeconds;
@@ -764,6 +767,9 @@ namespace CountDownTimerV0
 			_chosenTimer.Name = selectedName;
 			_chosenTimer.Duration = selectedDuration;
 
+			//update the 'Continuous Timer Mode' data according to 'ChosenTimer'
+			_continuousModeTimerIndex = selectedNameI;
+
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			string timerDuration = stoppedWithoutReset ? FormatTimeFromBulkSeconds(durationAsSeconds, ref _formattedColumns, true) : selectedDuration;
@@ -792,6 +798,9 @@ namespace CountDownTimerV0
 			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
 			_chosenTimer.Duration = selectedDuration;
 			_chosenTimer.Name = selectedName;
+
+			//update the 'Continuous Timer Mode' data according to 'ChosenTimer'
+			_continuousModeTimerIndex = selectedDurationI;
 
 			//set 'timerDisplay' control text to the 'Duration' property of 'ChosenTimer' struct
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
@@ -1252,8 +1261,8 @@ namespace CountDownTimerV0
 			bool durationElapsed = _countDown ? countedDownDuration : countedUpDuration;
 			if ( !durationElapsed ) return;
 
-			//pause ticker control to stop ticking during alarm period
-			countTimer.Stop();
+			//mimic pressing of 'STOP' timer button to stop ticking during alarm
+			StopTimer();
 
 			//if 'continuousMode'
 			if ( continuousModeBtn.Checked )
@@ -1284,8 +1293,15 @@ namespace CountDownTimerV0
 			_alarmAlertWindow.Hide();
 			//stop _soundPlayer
 			_soundPlayer.Stop();
-			//mimic pressing of 'STOP' timer button
-			StopTimer();
+		}
+
+		private void continuousModeBtn_MouseHover(object sender, EventArgs e)
+		{
+			//show tooltip with TOOLTIP_CONTINUOUS_MODE_BTN text and continuousModeBtn control
+			toolTips.Show(
+				TOOLTIP_CONTINUOUS_MODE_BTN,
+				continuousModeBtn,
+				TOOLTIP_CONTINUOUS_MODE_DUR);
 		}
 
 		private void timeBeforeNextTimer_Tick(object sender, EventArgs e)
@@ -1294,16 +1310,32 @@ namespace CountDownTimerV0
 			if ( !alarmSirenElapsed )
 			{
 				_durationBeforeNextTimer -= 1000;
+
+				#region DEBUGGING - DELETE!
+				timerDisplay.Text = _durationBeforeNextTimer.ToString();
+				#endregion
+
 				return;
 			}
 
+			//mimic pressing 'STOP' timer button before starting next timer
 			timeBeforeNextTimer.Stop();
+			//stop 'timeBeforeNextTimer' and reset count variable
+			timeBeforeNextTimer.Enabled = false;
+			_durationBeforeNextTimer = COUNTDOWN_TO_NEXT_TIMER_DUR;
 
-			//show alarm window with message box
 			_alarmAlertWindow.Hide();
 
-			//select next timer in timers list
-			NavigateDwnTimersList();
+			//set 'ChosenTimer' to next timer in timers list
+			int incrementedTimerI = _continuousModeTimerIndex + 1;
+			bool loopToTop = incrementedTimerI >= timerNamesList.Items.Count;
+			_continuousModeTimerIndex = loopToTop ? 0 : incrementedTimerI;
+			string nextTimerName = timerNamesList.Items[_continuousModeTimerIndex].ToString();
+			string nextTimerDuration = timerDurationsList.Items[_continuousModeTimerIndex].ToString();
+			_chosenTimer.Name = nextTimerName;
+			_chosenTimer.Duration = nextTimerDuration;
+			_timerState = TimerState.TickFromBeginning;
+			
 			//start said timer
 			StartChosenTimer();
 		}
@@ -1320,7 +1352,6 @@ namespace CountDownTimerV0
 
 			return stopAlarm;
 		}
-
 
 		// user intends to reset the chosen timers to its initial (input) duration
 		private void stopButton_Click(object sender, EventArgs e)
@@ -1345,11 +1376,9 @@ namespace CountDownTimerV0
 			}
 
 			//stop countTimer from ticking
+			countTimer.Stop();
 			countTimer.Enabled = false;
 			_soundPlayer.Stop();
-			//stop 'timeBeforeNextTimer' and reset count variable
-			timeBeforeNextTimer.Enabled = false;
-			_durationBeforeNextTimer = COUNTDOWN_TO_NEXT_TIMER_DUR;
 
 			//change the text and image of the 'startButton' to read 'pause'
 			/* Map name:duration to persist count beyond pressing 'STOP' (until pressing
@@ -1357,10 +1386,10 @@ namespace CountDownTimerV0
 			int timerCount = _countDown ? _durationAsSeconds : _upCount;
 			_lapsesByNameDict[_chosenTimer.Name] = timerCount;
 
-			//re-enable value changing of timerNamesList list box
+			/*//re-enable value changing of timerNamesList list box
 			timerNamesList.SelectionMode = SelectionMode.One;
 			//re-enable value changing of timerDurationsList list box
-			timerDurationsList.SelectionMode = SelectionMode.One;
+			timerDurationsList.SelectionMode = SelectionMode.One;*/
 
 			_timerState = TimerState.Stopped;
 
@@ -1480,6 +1509,9 @@ namespace CountDownTimerV0
 			//set timer state according to the selected timer lapse 'state'
 			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
 			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
+
+			//update the 'Continuous Timer Mode' data according to selected timer
+			_continuousModeTimerIndex = timerNamesList.SelectedIndex;
 		}
 
 		private void navigateUpBtn_MouseHover(object sender, EventArgs e)
@@ -1508,7 +1540,61 @@ namespace CountDownTimerV0
 					break;
 			}
 
-			NavigateDwnTimersList();
+			int timerNamesCount = timerNamesList.Items.Count;
+			bool emptyTimersList = timerNamesCount < 1;
+			//if 'timerNamesList' is empty, return
+			if ( emptyTimersList ) return;
+
+			string selectedName = string.Empty;
+
+			bool noSelectedName = timerNamesList.SelectedItem == null;
+			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
+			bool noSelectedTimer = noSelectedName || noSelectedDuration;
+			//if there is no selected item in 'timerNamesList'
+			if ( noSelectedTimer )
+			{
+				//set the very first (list top) item as selected
+				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[0] : timerNamesList.SelectedItem;
+				timerDurationsList.SelectedItem = noSelectedDuration ? timerDurationsList.Items[0] : timerDurationsList.SelectedItem;
+				selectedName = timerNamesList.SelectedItem.ToString();
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = noSelectedName ? 0 : timerNamesList.SelectedIndex;
+				timerDurationsList.SelectedIndex = noSelectedDuration ? 0 : timerDurationsList.SelectedIndex;
+			}
+			//else,
+			else
+			{
+				bool selectedAName = timerNamesList.SelectedItem != null;
+				int selectedNameI = timerNamesList.SelectedIndex;
+				int selectedDurationI = timerDurationsList.SelectedIndex;
+				//get index of selected item
+				int selectedItemI = selectedAName ? selectedNameI : selectedDurationI;
+				//increment said index
+				selectedItemI++;
+				bool indexOutOfBounds = selectedItemI >= timerNamesCount;
+				//clamp below lastI & assist loop to top,
+				//loop back to top if reached bottom
+				selectedItemI = indexOutOfBounds ? 0 : selectedItemI;
+
+				//set selected item to Items' item at incremented index
+				timerNamesList.SelectedItem = timerNamesList.Items[selectedItemI];
+				timerDurationsList.SelectedItem = timerDurationsList.Items[selectedItemI];
+				selectedName = timerNamesList.SelectedItem.ToString();
+
+				//set the selectedIndex accordingly
+				timerNamesList.SelectedIndex = selectedItemI;
+				timerDurationsList.SelectedIndex = selectedItemI;
+			}
+
+			//set timer state according to the selected timer lapse 'state'
+			bool stoppedWithoutReset = _lapsesByNameDict.TryGetValue(selectedName, out int durationAsSeconds);
+			_timerState = stoppedWithoutReset ? TimerState.TickFromPaused : TimerState.TickFromBeginning;
+
+			//update the 'Continuous Timer Mode' data according to selected timer
+			_continuousModeTimerIndex = timerNamesList.SelectedIndex;
+
+			//NavigateDwnTimersList();
 		}
 
 		/// <summary>
@@ -1527,11 +1613,35 @@ namespace CountDownTimerV0
 
 			string selectedName = string.Empty;
 
+			bool disabledTimerNamesSelection = timerNamesList.SelectionMode == SelectionMode.None;
+			bool disabledTimerDurationsSelection = timerDurationsList.SelectionMode == SelectionMode.None;
+			bool continuousModeNav = disabledTimerNamesSelection || disabledTimerDurationsSelection;
+
 			bool noSelectedName = timerNamesList.SelectedItem == null;
 			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
 			bool noSelectedTimer = noSelectedName || noSelectedDuration;
-			//if there is no selected item in 'timerNamesList'
-			if ( noSelectedTimer )
+			if ( continuousModeNav )
+			{
+				//temporarily enable selection mode to allow navigation despite 'ticking' state
+				timerNamesList.SelectionMode = SelectionMode.One;
+				timerDurationsList.SelectionMode = SelectionMode.One;
+
+				//get index of item in timerNamesList whose Text == _chosenTimer.Name
+				int indexOfPrevSelectedTimer = timerNamesList.Items.IndexOf(_chosenTimer.Name);
+				//increment said index to reflect timer next (down) in lists
+				int timersLastI = timerNamesList.Items.Count - 1;
+				int incrementedIndex = indexOfPrevSelectedTimer + 1;
+				bool indexOutOfBounds = incrementedIndex > timersLastI;
+				int nextDownTimerI = indexOutOfBounds ? timersLastI : incrementedIndex;
+				//set timer Names & Durations List SelectedIndex to said incremented index
+				timerNamesList.SelectedIndex = nextDownTimerI;
+				timerDurationsList.SelectedIndex = nextDownTimerI;
+
+				//disable selection mode now that navigation was made
+				timerNamesList.SelectionMode = SelectionMode.None;
+				timerDurationsList.SelectionMode = SelectionMode.None;
+			}
+			else if ( noSelectedTimer )
 			{
 				//set the very first (list top) item as selected
 				timerNamesList.SelectedItem = noSelectedName ? timerNamesList.Items[0] : timerNamesList.SelectedItem;
