@@ -1394,6 +1394,11 @@ namespace CountDownTimerV0
 
 			_timerState = TimerState.Stopped;
 
+			//unsuspend value changing of timerNamesList list box
+			timerNamesList.SelectionMode = SelectionMode.One;
+			//unsuspend value changing of timerDurationsList list box
+			timerDurationsList.SelectionMode = SelectionMode.One;
+
 			//indicate restored responsivenes of respective controls
 			ToggleCursorOfMainControls(ControlEngaged.StopButton, Cursors.Default, Cursors.No);
 		}
