@@ -1031,6 +1031,9 @@ namespace CountDownTimerV0
 			_chosenTimer.Name = string.Empty;
 			_chosenTimer.Duration = string.Empty;
 
+			//clear 'timerDisplay' text box Text field
+			timerDisplay.Text = TIMER_DISPLAY_DEFAULT_STRING;
+
 			//unpause drawing of the timer names and durations list boxes
 			timerNamesList.EndUpdate();
 			timerDurationsList.EndUpdate();
