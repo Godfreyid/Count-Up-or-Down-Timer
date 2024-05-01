@@ -946,10 +946,11 @@ namespace CountDownTimerV0
 			//when timer state is 'TickFromBeginning' return
 			switch ( _timerState )
 			{
-				case TimerState.TickFromBeginning:
-				case TimerState.TickFromPaused:
+				case TimerState.Ticking:
 
 					return;
+				case TimerState.TickFromBeginning:
+				case TimerState.TickFromPaused:
 				case TimerState.Stopped:
 				default:
 
