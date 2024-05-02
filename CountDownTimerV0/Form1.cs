@@ -480,7 +480,7 @@ namespace CountDownTimerV0
 		/// for submission should not be equal if it is to be accepted as a submission.</param>
 		/// <param name="focusShiftedTo">The Control to shift focus to upon a successfull 
 		/// text string submission.</param>
-		private bool ShiftFocusOnTextSubmit(KeyEventArgs e, Keys submitKey, TextBox textToSubmit, string defaultTextBoxString, Control focusShiftedTo)
+		private bool ShiftFocusOnTextSubmit(KeyEventArgs e, Keys submitKey, TextBox textToSubmit, string defaultTextBoxString, Control focusShiftedTo, string regexPattern = null)
 		{
 			//if the key pressed != 'ENTER', return
 			bool pressedEnterKey = e.KeyCode == submitKey;
@@ -488,7 +488,15 @@ namespace CountDownTimerV0
 			bool defaultPrompt = textToSubmit.Text.Equals(defaultTextBoxString);
 			bool containsDefaultPrompt = textToSubmit.Text.Contains(defaultTextBoxString);
 			bool enteredText = !defaultPrompt && !containsDefaultPrompt;
-			bool shiftFocus = pressedEnterKey && enteredText;
+			bool valid = pressedEnterKey && enteredText;
+
+			bool includeRegexCheck = regexPattern != null;
+			string submittedText = textToSubmit.Text;
+			bool matchesRegex = Regex.IsMatch(submittedText, regexPattern);
+			bool validWithRegex = pressedEnterKey && matchesRegex;
+
+			bool shiftFocus = includeRegexCheck ? validWithRegex : valid;
+
 			//return
 			if ( !shiftFocus ) return false;
 
@@ -503,8 +511,13 @@ namespace CountDownTimerV0
 			bool pressedEnter = e.KeyCode == Keys.Enter;
 			if ( !pressedEnter ) return;
 
+			string hhMmSsPattern = @"\d{0,2}:\d{0,2}:\d{0,2}"; /* zero or two digits, 
+			separated by a colon, then zero or two digits, separated by a colon, then
+			zero or two digits. */
 			bool positiveRefocus = ShiftFocusOnTextSubmit(
-				e, Keys.Enter, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, timerAddBtn);
+				e, Keys.Enter,
+				timerDurationEntry, DURATION_ENTRY_PROMPT_STRING,
+				timerAddBtn, hhMmSsPattern);
 			if ( !positiveRefocus )
 			{
 				ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
@@ -711,6 +724,11 @@ namespace CountDownTimerV0
 		{
 			#region .NET BUG WORKAROUND
 
+			/* Workaround that copies the items of 'listBox' into a temporary array
+			   that is one item longer in length, then clears 'listBox', then adds
+			   'textBox's Text as the last item into the temporary array, then
+			   copies the items of the temporary array back into 'listBox' */
+
 			//transfer contents of 'listBox' to an array that is 1 index longer
 			object[] tempHolding = new object[listBox.Items.Count + 1];
 			listBox.Items.CopyTo(tempHolding, 0);
@@ -735,17 +753,6 @@ namespace CountDownTimerV0
 			listBox.EndUpdate();
 
 			#endregion
-
-			/*//pause painting list box while adding text
-			listBox.BeginUpdate();
-			//get the text value from the Text property of the textBox control
-			//add text value to list box
-			string textBoxText = textBox.Text;
-			listBox.Items.Add(textBoxText);
-			//reset the Text property of textBox control to the defaultBoxText
-			textBox.Text = defaultTextBoxString;
-			//un-pause painting list box
-			listBox.EndUpdate();*/
 		}
 
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
