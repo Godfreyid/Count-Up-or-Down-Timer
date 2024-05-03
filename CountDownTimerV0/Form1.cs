@@ -155,10 +155,12 @@ namespace CountDownTimerV0
 			{
 				Name = name;
 				Duration = duration;
+				Index = 0; //appropriate default can be 0
 			}
 
 			public string Name { get; set; }
 			public string Duration { get; set; }
+			public int Index { get; set; }
 		}
 
 		private struct SelectedAudio
@@ -795,6 +797,7 @@ namespace CountDownTimerV0
 			string selectedDuration = timerDurationsList.Items[selectedNameI].ToString();
 			_chosenTimer.Name = selectedName;
 			_chosenTimer.Duration = selectedDuration;
+			_chosenTimer.Index = selectedNameI;
 
 			//update the 'Continuous Timer Mode' data according to 'ChosenTimer'
 			_continuousModeTimerIndex = selectedNameI;
@@ -827,6 +830,7 @@ namespace CountDownTimerV0
 			string selectedName = timerNamesList.Items[selectedDurationI].ToString();
 			_chosenTimer.Duration = selectedDuration;
 			_chosenTimer.Name = selectedName;
+			_chosenTimer.Index = selectedDurationI;
 
 			//update the 'Continuous Timer Mode' data according to 'ChosenTimer'
 			_continuousModeTimerIndex = selectedDurationI;
@@ -1511,7 +1515,8 @@ namespace CountDownTimerV0
 
 			bool noSelectedName = timerNamesList.SelectedItem == null;
 			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
-			bool noSelectedTimer = noSelectedName || noSelectedDuration;
+			bool noIndexAsIsInitStart = _chosenTimer.Index == 0;
+			bool noSelectedTimer = (noSelectedName || noSelectedDuration) && noIndexAsIsInitStart;
 			//if there is no selected item in 'timerNamesList'
 			if ( noSelectedTimer )
 			{
@@ -1527,11 +1532,8 @@ namespace CountDownTimerV0
 			//else,
 			else
 			{
-				bool selectedAName = timerNamesList.SelectedItem != null;
-				int selectedNameI = timerNamesList.SelectedIndex;
-				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = selectedAName ? selectedNameI : selectedDurationI;
+				int selectedItemI = _chosenTimer.Index;
 				//decrement said index
 				selectedItemI--;
 				bool neg = selectedItemI < 0;
@@ -1593,7 +1595,8 @@ namespace CountDownTimerV0
 
 			bool noSelectedName = timerNamesList.SelectedItem == null;
 			bool noSelectedDuration = timerDurationsList.SelectedItem == null;
-			bool noSelectedTimer = noSelectedName || noSelectedDuration;
+			bool noIndexAsIsInitStart = _chosenTimer.Index == 0;
+			bool noSelectedTimer = (noSelectedName || noSelectedDuration) && noIndexAsIsInitStart;
 			//if there is no selected item in 'timerNamesList'
 			if ( noSelectedTimer )
 			{
@@ -1609,11 +1612,8 @@ namespace CountDownTimerV0
 			//else,
 			else
 			{
-				bool selectedAName = timerNamesList.SelectedItem != null;
-				int selectedNameI = timerNamesList.SelectedIndex;
-				int selectedDurationI = timerDurationsList.SelectedIndex;
 				//get index of selected item
-				int selectedItemI = selectedAName ? selectedNameI : selectedDurationI;
+				int selectedItemI = _chosenTimer.Index;
 				//increment said index
 				selectedItemI++;
 				bool indexOutOfBounds = selectedItemI >= timerNamesCount;
