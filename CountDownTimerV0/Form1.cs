@@ -1165,6 +1165,8 @@ namespace CountDownTimerV0
 
 					break;
 				case TimerState.Stopped:
+
+					break;
 				default:
 
 					break;
@@ -1426,11 +1428,6 @@ namespace CountDownTimerV0
 			   'RESET') and continue despite switching timers */
 			int timerCount = _countDown ? _durationAsSeconds : _upCount;
 			_lapsesByNameDict[_chosenTimer.Name] = timerCount;
-
-			/*//re-enable value changing of timerNamesList list box
-			timerNamesList.SelectionMode = SelectionMode.One;
-			//re-enable value changing of timerDurationsList list box
-			timerDurationsList.SelectionMode = SelectionMode.One;*/
 
 			_timerState = TimerState.Stopped;
 
