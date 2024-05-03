@@ -1148,6 +1148,7 @@ namespace CountDownTimerV0
 
 					break;
 				case TimerState.TickFromPaused:
+				case TimerState.Stopped:
 					//retrieve bulk seconds cached when timers was STOPPED (paused)
 					string selectedTimer = _chosenTimer.Name;
 					bool resumingTimer = _lapsesByNameDict.TryGetValue(selectedTimer, out int timerCount);
@@ -1162,9 +1163,6 @@ namespace CountDownTimerV0
 					//re-enable timers
 					countTimer.Enabled = true;
 					countTimer.Start();
-
-					break;
-				case TimerState.Stopped:
 
 					break;
 				default:
