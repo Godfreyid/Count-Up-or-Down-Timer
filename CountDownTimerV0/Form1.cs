@@ -529,9 +529,13 @@ namespace CountDownTimerV0
 			bool valid = pressedEnterKey && enteredText;
 
 			bool includeRegexCheck = regexPattern != null;
-			string submittedText = textToSubmit.Text;
-			bool matchesRegex = Regex.IsMatch(submittedText, regexPattern);
-			bool validWithRegex = pressedEnterKey && matchesRegex;
+			bool validWithRegex = false;
+			if ( includeRegexCheck )
+			{
+				string submittedText = textToSubmit.Text;
+				bool matchesRegex = Regex.IsMatch(submittedText, regexPattern);
+				validWithRegex = pressedEnterKey && matchesRegex;
+			}
 
 			bool shiftFocus = includeRegexCheck ? validWithRegex : valid;
 
