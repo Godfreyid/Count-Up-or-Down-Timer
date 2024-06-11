@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Media;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace CountDownTimerV0
 {
@@ -97,7 +98,7 @@ namespace CountDownTimerV0
 		private const int TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT_DUR = 3000;
 
 		Form _alarmAlertWindow;
-		
+
 		private const int MINUTES_PER_HOUR = 60;
 		private const int SECONDS_PER_MINUTE = 60;
 
@@ -127,6 +128,11 @@ namespace CountDownTimerV0
 
 		private const int COUNTDOWN_TO_NEXT_TIMER_DUR = 10;
 		private int _durationBeforeNextTimer;
+
+		private Color _timerNameEntryBoxDefaultColor = Color.Gold;
+		private Color _timerNameEntryBoxEditing = Color.Cyan;
+		private Color _timerDurEntryBoxDefaultColor = Color.Gold;
+		private Color _timerDurEntryBoxEditing = Color.Cyan;
 
 		private struct FormattedTimeColumns
 		{
@@ -177,6 +183,20 @@ namespace CountDownTimerV0
 			Stopped
 		}
 		private TimerState _timerState = TimerState.Stopped;
+
+		private enum TimerEntryState 
+		{
+			EnteringNew,
+			EditingExisting
+		}
+		private TimerEntryState _timerEntryState;
+
+		private enum DurationEntryState
+		{
+			NewDuration,
+			EditExistingDuration
+		}
+		private DurationEntryState _durationEntryState;
 
 		#region COSMETIC (NON-FUNCTIONALITY) CONSTRUCTS
 
@@ -683,11 +703,31 @@ namespace CountDownTimerV0
 
 			if ( invalidName || invalidDuration ) return;
 
-			/* Add 'timerNameEntry' text to 'timerNamesList' listbox */
-			AddTextBoxTextToListBox(timerNamesList, timerNameEntry, NAME_ENTRY_PROMPT_STRING);
+			switch (_timerEntryState)
+			{
+				case TimerEntryState.EnteringNew:
+					/* Add new 'timerNameEntry' text to 'timerNamesList' listbox */
+					AddTextBoxTextToListBox(timerNamesList, timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 
-			/* Add 'timerDurationEntry' text to 'timerDurationsList' listbox */
-			AddTextBoxTextToListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
+					/* Add new 'timerDurationEntry' text to 'timerDurationsList' listbox */
+					AddTextBoxTextToListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
+
+					break;
+				case TimerEntryState.EditingExisting:
+					/* Edit 'timerNameEntry' text at 'timerNamesList' listbox SelectedIndex */
+					//get the Text property of the 'timerNameEntry' control
+					EditTextBoxTextInListBox(timerNamesList, timerNameEntry.Text);
+					/* Edit 'timerDurationEntry' text at 'timerDurationsList' listbox SelectedIndex */
+					EditTextBoxTextInListBox(timerDurationsList, timerDurationEntry.Text);
+
+					//reset entry state to 'EnteringNew'
+					_timerEntryState = TimerEntryState.EnteringNew;
+
+					break;
+				default:
+					break;
+			}
+
 
 			//focus on 'timerNameEntry' control to ready for next timers entry
 			timerNameEntry.Focus();
@@ -777,6 +817,76 @@ namespace CountDownTimerV0
 			listBox.EndUpdate();
 
 			#endregion
+		}
+
+		private void EditTextBoxTextInListBox(ListBox listBox, string editedTimerText)
+		{
+			//assuming either/both the current Text property value of the 'timerNameEntry' and 'timerDurationEntry' control has the edited timer name/duration,
+
+			//set the TextBox Text property at the SelectedIndex of the list box equal to said 'timerNameEntry' Text property
+			int editedNameI = listBox.SelectedIndex;
+			listBox.Items[editedNameI] = editedTimerText;
+		}
+
+		// user intends to bring focus to selected timer name for editing
+		private void timerNamesList_DoubleClick(object sender, EventArgs e)
+		{
+			int selectedIndex = CopyTimerTextToEntryField(timerNamesList, timerNameEntry, true);
+			CopyTimerTextToEntryField(timerDurationsList, timerDurationEntry, false, selectedIndex);
+		}
+
+		private int CopyTimerTextToEntryField(ListBox listCopiedFrom, TextBox copiedTo, bool focusOnCopiedTo = false, int index = -1)
+		{
+			int indexCopiedTo = -1;
+
+			bool invalidIndex = index == -1;
+			bool useSelectedIndex = listCopiedFrom.SelectedIndex != -1;
+			bool editWithSelectedI = invalidIndex && useSelectedIndex;
+			bool inRangeI = index < listCopiedFrom.Items.Count;
+			bool editWithProvidedI = !invalidIndex && inRangeI;
+			//if index arg is the default, use SelectedIndex of 'listCopiedFrom'
+			if ( editWithSelectedI )
+			{
+				//get the timer name at the current selectedIndex
+				int existingEntryIndex = listCopiedFrom.SelectedIndex;
+				string existingEntry = listCopiedFrom.Items[existingEntryIndex].ToString();
+				//put the timer name/duration in the 'timerDataEntryField' TextBox
+				copiedTo.Text = existingEntry;
+				//set timerEntryState to 'EditExisting'
+				_timerEntryState = TimerEntryState.EditingExisting;
+
+				indexCopiedTo = existingEntryIndex;
+				//once the user presses enter, AND _nameEntryState == EditExisting,
+				//submit the new name and the duration at the SelectedIndex
+
+			}
+			//else use the index arg
+			else if ( editWithProvidedI )
+			{
+				string existingEntry = listCopiedFrom.Items[index].ToString();
+				//put the timer name/duration in the 'timerDataEntryField' TextBox
+				copiedTo.Text = existingEntry;
+				//set timerEntryState to 'EditExisting'
+				_timerEntryState = TimerEntryState.EditingExisting;
+
+				//once the user presses enter, AND _nameEntryState == EditExisting,
+				//submit the new name and the duration at the SelectedIndex
+			}
+
+			//if 'focusOnCopiedTo', take focus to the 'copiedTo' control
+			if (focusOnCopiedTo)
+			{
+				copiedTo.Focus();
+			}
+
+			return indexCopiedTo;
+		}
+
+		// user intends to bring focus to selected timer duration for editing
+		private void timerDurationsList_DoubleClick(object sender, EventArgs e)
+		{
+			int selectedIndex = CopyTimerTextToEntryField(timerDurationsList, timerDurationEntry, true);
+			CopyTimerTextToEntryField(timerNamesList, timerNameEntry, false, selectedIndex);
 		}
 
 		// so user can select timers by either clicking on its name or duration, then press 'Start'
@@ -1961,5 +2071,7 @@ namespace CountDownTimerV0
 				saveProfileBtn,
 				TOOLTIP_SAVE_TIMERS_PROFILE_BTN_DUR);
 		}
+
+		
 	}
 }

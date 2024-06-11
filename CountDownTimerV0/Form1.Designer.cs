@@ -419,6 +419,7 @@ namespace CountDownTimerV0
 			this.timerNamesList.Size = new System.Drawing.Size(178, 164);
 			this.timerNamesList.TabIndex = 31;
 			this.timerNamesList.SelectedValueChanged += new System.EventHandler(this.timerNamesList_SelectedValueChanged);
+			this.timerNamesList.DoubleClick += new System.EventHandler(this.timerNamesList_DoubleClick);
 			// 
 			// timerDurationsList
 			// 
@@ -433,6 +434,7 @@ namespace CountDownTimerV0
 			this.timerDurationsList.Size = new System.Drawing.Size(107, 164);
 			this.timerDurationsList.TabIndex = 32;
 			this.timerDurationsList.SelectedValueChanged += new System.EventHandler(this.timerDurationsList_SelectedValueChanged);
+			this.timerDurationsList.DoubleClick += new System.EventHandler(this.timerDurationsList_DoubleClick);
 			// 
 			// timerNameEntry
 			// 
