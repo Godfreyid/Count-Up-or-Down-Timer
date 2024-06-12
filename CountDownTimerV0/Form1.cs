@@ -96,6 +96,10 @@ namespace CountDownTimerV0
 		private const int TOOLTIP_CONTINUOUS_MODE_DUR = 3000;
 		private const string TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT = "Duration digits should be colon-separated";
 		private const int TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT_DUR = 3000;
+		private const string TOOLTIP_INVALID_TIMER_DATA = "Invalid Timer Name or Duration";
+		private const int TOOLTIP_INVALID_TIMER_DATA_DUR = 3000;
+		private const string TOOLTIP_DUPLICATE_TIMER_EXISTS = "Timer Already Exists in List";
+		private const int TOOLTIP_DUPLICATE_TIMER_EXISTS_DUR = 3000;
 
 		Form _alarmAlertWindow;
 
@@ -371,10 +375,7 @@ namespace CountDownTimerV0
 		private void timerNameEntry_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_TIMER_NAME_ENTRY and timerNameEntry text box 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_TIMER_NAME_ENTRY,
-				timerNameEntry,
+			ShowToolTip(toolTips, TOOLTIP_TIMER_NAME_ENTRY, timerNameEntry,
 				TOOLTIP_TIMER_NAME_ENTRY_DUR);
 		}
 
@@ -422,10 +423,7 @@ namespace CountDownTimerV0
 		private void timerDurationEntry_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_TIMER_DURATION_ENTRY and timerDurattionEntry text box 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_TIMER_DURATION_ENTRY,
-				timerDurationEntry,
+			ShowToolTip(toolTips, TOOLTIP_TIMER_DURATION_ENTRY, timerDurationEntry,
 				TOOLTIP_TIMER_DURATION_ENTRY_DUR);
 		}
 
@@ -477,9 +475,7 @@ namespace CountDownTimerV0
 			if ( timerHhMmSsFormat ) return;
 
 			//show popup prompting user to re-input with correct hh:mm:ss format
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_INCORRECT_FORMAT, textBoxLeft, TOOLTIP_INCORRECT_FORMAT_DUR);
+			ShowToolTip(toolTips, TOOLTIP_INCORRECT_FORMAT, textBoxLeft, TOOLTIP_INCORRECT_FORMAT_DUR);
 		}
 
 		private void timerDurationEntry_Leave(object sender, EventArgs e)
@@ -563,10 +559,7 @@ namespace CountDownTimerV0
 			if ( !positiveRefocus )
 			{
 				ReadyTextBoxInput(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, hhMmSsPattern);
-				toolTips.RemoveAll();
-				toolTips.Show(
-				TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT,
-				timerDurationEntry,
+				ShowToolTip(toolTips, TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT, timerDurationEntry,
 				TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT_DUR);
 				return;
 			}
@@ -688,10 +681,7 @@ namespace CountDownTimerV0
 		private void timerAddBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_ADD_TIMER_BTN text and listAddBtn control
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_ADD_TIMER_BTN,
-				timerAddBtn,
+			ShowToolTip(toolTips, TOOLTIP_ADD_TIMER_BTN, timerAddBtn,
 				TOOLTIP_ADD_TIMER_BTN_DUR);
 		}
 
@@ -705,15 +695,24 @@ namespace CountDownTimerV0
 			bool invalidDuration =
 				RefocusInvalidTextEntry(timerDurationEntry, DURATION_ENTRY_PROMPT_STRING, _timerDurationMsgBoxInfo, invalidName);
 
-			if ( invalidName || invalidDuration ) return;
+			if ( invalidName || invalidDuration )
+			{
+				//show popup alerting of invalid data
+				ShowToolTip(toolTips, TOOLTIP_INVALID_TIMER_DATA, timerAddBtn,
+					TOOLTIP_INVALID_TIMER_DATA_DUR);
+				return;
+			}
 
 			// Ensure timer does not already exist in timer Names and Durations lists
-			bool timerNameExists = timerNamesList.Items.Contains(timerNameEntry.ToString());
-			bool timerDurationExists = timerDurationsList.Items.Contains(timerDurationEntry.ToString());
+			bool timerNameExists = timerNamesList.Items.Contains(timerNameEntry.Text);
+			bool timerDurationExists = timerDurationsList.Items.Contains(timerDurationEntry.Text);
 			bool timerAlreadyAdded = timerNameExists && timerDurationExists;
 
-			if ( timerAlreadyAdded )
+			if ( timerAlreadyAdded ) 
 			{
+				//show popup alerting of invalid data
+				ShowToolTip(toolTips, TOOLTIP_DUPLICATE_TIMER_EXISTS, timerAddBtn,
+					TOOLTIP_DUPLICATE_TIMER_EXISTS_DUR);
 				return;
 			}
 
@@ -741,7 +740,6 @@ namespace CountDownTimerV0
 				default:
 					break;
 			}
-
 
 			//focus on 'timerNameEntry' control to ready for next timers entry
 			timerNameEntry.Focus();
@@ -796,6 +794,13 @@ namespace CountDownTimerV0
 			refocusedOn.Focus();
 			//return true for refocused
 			return true;
+		}
+
+		private void ShowToolTip(ToolTip tip, string msg, Control target, int duration)
+		{
+			//clear text from likely previous use of 'tip'
+			tip.RemoveAll();
+			tip.Show(msg, target, duration);
 		}
 
 		private void AddTextBoxTextToListBox(ListBox listBox, TextBox textBox, string defaultTextBoxString)
@@ -989,10 +994,7 @@ namespace CountDownTimerV0
 		private void countInverseBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_COUNT_INVERSE_BTN and countInverseBtn button
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_COUNT_INVERSE_BTN,
-				countInverseBtn,
+			ShowToolTip(toolTips, TOOLTIP_COUNT_INVERSE_BTN, countInverseBtn,
 				TOOLTIP_COUNT_INVERSE_BTN_DUR);
 		}
 
@@ -1092,20 +1094,14 @@ namespace CountDownTimerV0
 		private void chooseAudioBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_CHOOSE_AUDIO_BTN text and chooseAudioBtn window
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_CHOOSE_AUDIO_BTN,
-				chooseAudioBtn,
+			ShowToolTip(toolTips, TOOLTIP_CHOOSE_AUDIO_BTN, chooseAudioBtn,
 				TOOLTIP_CHOOSE_AUDIO_BTN_DUR);
 		}
 
 		private void clearTimersListBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_CLEAR_TIMERS_LIST,
-				clearTimersListBtn,
+			ShowToolTip(toolTips, TOOLTIP_CLEAR_TIMERS_LIST, clearTimersListBtn,
 				TOOLTIP_CLEAR_TIMERS_LIST_DUR);
 		}
 
@@ -1171,10 +1167,7 @@ namespace CountDownTimerV0
 			if ( !timerSelected )
 			{
 				//show tooltip telling user to first select a timer
-				toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-				toolTips.Show(
-					TOOLTIP_SELECT_TIMER_TO_REMOVE,
-					removeTimerBtn, 
+				ShowToolTip(toolTips, TOOLTIP_SELECT_TIMER_TO_REMOVE, removeTimerBtn,
 					TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR);
 				//return
 				return;
@@ -1212,20 +1205,14 @@ namespace CountDownTimerV0
 		private void removeTimerBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_REMOVE_BTN text and removeTimerBtn window
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_REMOVE_BTN,
-				removeTimerBtn,
+			ShowToolTip(toolTips, TOOLTIP_REMOVE_BTN, removeTimerBtn,
 				TOOLTIP_REMOVE_BTN_DUR);
 		}
 
 		private void startButton_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_START_TIMER_BTN and startButton
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_START_TIMER_BTN,
-				startButton,
+			ShowToolTip(toolTips, TOOLTIP_START_TIMER_BTN, startButton,
 				TOOLTIP_START_TIMER_BTN_DUR);
 		}
 
@@ -1474,10 +1461,7 @@ namespace CountDownTimerV0
 		private void continuousModeBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_CONTINUOUS_MODE_BTN text and continuousModeBtn control
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_CONTINUOUS_MODE_BTN,
-				continuousModeBtn,
+			ShowToolTip(toolTips, TOOLTIP_CONTINUOUS_MODE_BTN, continuousModeBtn,
 				TOOLTIP_CONTINUOUS_MODE_DUR);
 		}
 
@@ -1578,10 +1562,7 @@ namespace CountDownTimerV0
 		private void stopButton_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_STOP_TIMER_BTN and stopButton 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_STOP_TIMER_BTN,
-				stopButton,
+			ShowToolTip(toolTips, TOOLTIP_STOP_TIMER_BTN, stopButton,
 				TOOLTIP_STOP_TIMER_BTN_DUR);
 		}
 
@@ -1614,10 +1595,7 @@ namespace CountDownTimerV0
 		private void resetButton_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_RESET_TIMER_BTN and resetButton 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_RESET_TIMER_BTN,
-				resetButton,
+			ShowToolTip(toolTips, TOOLTIP_RESET_TIMER_BTN, resetButton,
 				TOOLTIP_RESET_TIMER_BTN_DUR);
 		}
 
@@ -1695,10 +1673,7 @@ namespace CountDownTimerV0
 		private void navigateUpBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_NAV_UP_TIMER_SELECT_BTN and navigateUpBtn 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_NAV_UP_TIMER_SELECT_BTN,
-				navigateUpBtn,
+			ShowToolTip(toolTips, TOOLTIP_NAV_UP_TIMER_SELECT_BTN, navigateUpBtn,
 				TOOLTIP_NAV_UP_TIMER_SELECT_BTN_DUR);
 		}
 
@@ -1775,20 +1750,14 @@ namespace CountDownTimerV0
 		private void navigateDwnBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_NAV_DWN_TIMER_SELECT_BTN and navigateDwnBtn 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_NAV_DWN_TIMER_SELECT_BTN,
-				navigateDwnBtn,
+			ShowToolTip(toolTips, TOOLTIP_NAV_DWN_TIMER_SELECT_BTN, navigateDwnBtn,
 				TOOLTIP_NAV_DWN_TIMER_SELECT_BTN_DUR);
 		}
 
 		private void saveLapsesCheckBox_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_SAVE_LAPSES_TOGGLE and saveLapsesCheckBox 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_SAVE_LAPSES_TOGGLE,
-				saveLapsesCheckBox,
+			ShowToolTip(toolTips, TOOLTIP_SAVE_LAPSES_TOGGLE, saveLapsesCheckBox,
 				TOOLTIP_SAVE_LAPSES_TOGGLE_DUR);
 		}
 
@@ -1954,10 +1923,7 @@ namespace CountDownTimerV0
 		private void loadProfileBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_LOAD_TIMERS_PROFILE_BTN and loadProfileBtn 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_LOAD_TIMERS_PROFILE_BTN,
-				loadProfileBtn,
+			ShowToolTip(toolTips, TOOLTIP_LOAD_TIMERS_PROFILE_BTN, loadProfileBtn,
 				TOOLTIP_LOAD_TIMERS_PROFILE_BTN_DUR);
 		}
 
@@ -2088,13 +2054,8 @@ namespace CountDownTimerV0
 		private void saveProfileBtn_MouseHover(object sender, EventArgs e)
 		{
 			//show tooltip with TOOLTIP_SAVE_TIMERS_PROFILE_BTN and saveProfileBtn 
-			toolTips.RemoveAll(); //clears text from likely previous use of 'toolTips'
-			toolTips.Show(
-				TOOLTIP_SAVE_TIMERS_PROFILE_BTN,
-				saveProfileBtn,
+			ShowToolTip(toolTips, TOOLTIP_SAVE_TIMERS_PROFILE_BTN, saveProfileBtn,
 				TOOLTIP_SAVE_TIMERS_PROFILE_BTN_DUR);
 		}
-
-		
 	}
 }
