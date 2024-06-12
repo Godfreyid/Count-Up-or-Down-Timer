@@ -707,6 +707,16 @@ namespace CountDownTimerV0
 
 			if ( invalidName || invalidDuration ) return;
 
+			// Ensure timer does not already exist in timer Names and Durations lists
+			bool timerNameExists = timerNamesList.Items.Contains(timerNameEntry.ToString());
+			bool timerDurationExists = timerDurationsList.Items.Contains(timerDurationEntry.ToString());
+			bool timerAlreadyAdded = timerNameExists && timerDurationExists;
+
+			if ( timerAlreadyAdded )
+			{
+				return;
+			}
+
 			switch (_timerEntryState)
 			{
 				case TimerEntryState.EnteringNew:
@@ -720,9 +730,9 @@ namespace CountDownTimerV0
 				case TimerEntryState.EditingExisting:
 					/* Edit 'timerNameEntry' text at 'timerNamesList' listbox SelectedIndex */
 					//get the Text property of the 'timerNameEntry' control
-					EditTextBoxTextInListBox(timerNamesList, timerNameEntry.Text);
+					EditTextBoxTextInListBox(timerNamesList, timerNameEntry, NAME_ENTRY_PROMPT_STRING);
 					/* Edit 'timerDurationEntry' text at 'timerDurationsList' listbox SelectedIndex */
-					EditTextBoxTextInListBox(timerDurationsList, timerDurationEntry.Text);
+					EditTextBoxTextInListBox(timerDurationsList, timerDurationEntry, DURATION_ENTRY_PROMPT_STRING);
 
 					//reset entry state to 'EnteringNew'
 					_timerEntryState = TimerEntryState.EnteringNew;
@@ -823,13 +833,22 @@ namespace CountDownTimerV0
 			#endregion
 		}
 
-		private void EditTextBoxTextInListBox(ListBox listBox, string editedTimerText)
+		private void EditTextBoxTextInListBox(ListBox listBox, TextBox textBox, string defaultTextBoxString)
 		{
-			//assuming either/both the current Text property value of the 'timerNameEntry' and 'timerDurationEntry' control has the edited timer name/duration,
+			//assuming either/both the current Text property value of the 'timerNameEntry' and 'timerDurationEntry' control has the edited timer name/duration...
+
+			//pause painting list box while transferring
+			listBox.BeginUpdate();
 
 			//set the TextBox Text property at the SelectedIndex of the list box equal to said 'timerNameEntry' Text property
 			int editedNameI = listBox.SelectedIndex;
-			listBox.Items[editedNameI] = editedTimerText;
+			listBox.Items[editedNameI] = textBox.Text;
+
+			//reset the Text property of textBox control to the defaultBoxText
+			textBox.Text = defaultTextBoxString;
+
+			//upause painting list box
+			listBox.EndUpdate();
 		}
 
 		// user intends to bring focus to selected timer name for editing
