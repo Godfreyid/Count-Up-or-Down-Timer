@@ -586,9 +586,9 @@ namespace CountDownTimerV0
 			// 
 			// hoursLabel
 			// 
-			this.hoursLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.hoursLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.hoursLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.hoursLabel.ForeColor = System.Drawing.Color.Yellow;
+			this.hoursLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.hoursLabel.Location = new System.Drawing.Point(43, 42);
 			this.hoursLabel.Name = "hoursLabel";
 			this.hoursLabel.Size = new System.Drawing.Size(120, 16);
@@ -598,9 +598,9 @@ namespace CountDownTimerV0
 			// 
 			// minutesLabel
 			// 
-			this.minutesLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.minutesLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.minutesLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.minutesLabel.ForeColor = System.Drawing.Color.Yellow;
+			this.minutesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.minutesLabel.Location = new System.Drawing.Point(201, 42);
 			this.minutesLabel.Name = "minutesLabel";
 			this.minutesLabel.Size = new System.Drawing.Size(120, 16);
@@ -610,9 +610,9 @@ namespace CountDownTimerV0
 			// 
 			// secondsLabel
 			// 
-			this.secondsLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.secondsLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.secondsLabel.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.secondsLabel.ForeColor = System.Drawing.Color.Yellow;
+			this.secondsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.secondsLabel.Location = new System.Drawing.Point(360, 42);
 			this.secondsLabel.Name = "secondsLabel";
 			this.secondsLabel.Size = new System.Drawing.Size(120, 16);
