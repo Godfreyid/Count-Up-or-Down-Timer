@@ -736,6 +736,9 @@ namespace CountDownTimerV0
 					//reset entry state to 'EnteringNew'
 					_timerEntryState = TimerEntryState.EnteringNew;
 
+					//reset timer duration in case it was counting down/up prior to edit
+					ResetTimer();
+
 					break;
 				default:
 					break;
@@ -859,7 +862,10 @@ namespace CountDownTimerV0
 		// user intends to bring focus to selected timer name for editing
 		private void timerNamesList_DoubleClick(object sender, EventArgs e)
 		{
+			//intuitively, the user should double click on the timer name listbox to edit,
+			//so start by getting the index of the timer name double-clicked on
 			int selectedIndex = CopyTimerTextToEntryField(timerNamesList, timerNameEntry, true);
+			//then user that index to know which timer duration to edit
 			CopyTimerTextToEntryField(timerDurationsList, timerDurationEntry, false, selectedIndex);
 		}
 
@@ -884,6 +890,7 @@ namespace CountDownTimerV0
 				_timerEntryState = TimerEntryState.EditingExisting;
 
 				indexCopiedTo = existingEntryIndex;
+
 				//once the user presses enter, AND _nameEntryState == EditExisting,
 				//submit the new name and the duration at the SelectedIndex
 
@@ -1567,6 +1574,11 @@ namespace CountDownTimerV0
 		}
 
 		private void resetButton_Click(object sender, EventArgs e)
+		{
+			ResetTimer();
+		}
+
+		private void ResetTimer()
 		{
 			switch ( _timerState )
 			{
