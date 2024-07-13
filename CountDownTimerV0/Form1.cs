@@ -43,6 +43,8 @@ namespace CountDownTimerV0
 		private const string CURRENT_PROFILE_DEFAULT_STRING = "[Current Profile]";
 		private const string ACTIVE_TIMER_DEFAULT_STRING = "[Active Timer]";
 
+		#region MESSAGE BOX STRINGS
+
 		private const string ASSIGN_TO_PROFILE_CAPTION = "Needs Assigning to a Profile";
 		private const string ASSIGN_TO_PROFILE_MESSAGE = "You need to choose a profile to assign the remembered lapses to.";
 
@@ -58,48 +60,74 @@ namespace CountDownTimerV0
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
 
+		#endregion
+
+		#region TOOLTIP STRINGS AND DURATIONS
+
 		private const string TOOLTIP_SAVE_TIMERS_PROFILE_BTN = "  SAVE timers profile (timers, audio, etc.)";
 		private const int TOOLTIP_SAVE_TIMERS_PROFILE_BTN_DUR = 3000;
+
 		private const string TOOLTIP_LOAD_TIMERS_PROFILE_BTN = "  LOAD timers profile (timers, audio, etc.)";
 		private const int TOOLTIP_LOAD_TIMERS_PROFILE_BTN_DUR = 3000;
+
 		private const string TOOLTIP_SAVE_LAPSES_TOGGLE = "  SAVE timer LAPSES before closing app";
 		private const int TOOLTIP_SAVE_LAPSES_TOGGLE_DUR = 3000;
+
 		private const string TOOLTIP_START_TIMER_BTN = "  START timer count down/up";
 		private const int TOOLTIP_START_TIMER_BTN_DUR = 3000;
+
 		private const string TOOLTIP_STOP_TIMER_BTN = "  STOP timer (essentially pauses timer)";
 		private const int TOOLTIP_STOP_TIMER_BTN_DUR = 3000;
+
 		private const string TOOLTIP_RESET_TIMER_BTN = "  RESET timer to its input duration";
 		private const int TOOLTIP_RESET_TIMER_BTN_DUR = 3000;
+
 		private const string TOOLTIP_COUNT_INVERSE_BTN = "  INVERT the timer count direction";
 		private const int TOOLTIP_COUNT_INVERSE_BTN_DUR = 3000;
+
 		private const string TOOLTIP_NAV_UP_TIMER_SELECT_BTN = "  Select timer ABOVE in 'Timers' list";
 		private const int TOOLTIP_NAV_UP_TIMER_SELECT_BTN_DUR = 3000;
+
 		private const string TOOLTIP_NAV_DWN_TIMER_SELECT_BTN = "  Select timer BELOW in 'Timers' list";
 		private const int TOOLTIP_NAV_DWN_TIMER_SELECT_BTN_DUR = 3000;
+
 		private const string TOOLTIP_TIMER_NAME_ENTRY = "  Enter a NAME for the new timer";
 		private const int TOOLTIP_TIMER_NAME_ENTRY_DUR = 3000;
+
 		private const string TOOLTIP_TIMER_DURATION_ENTRY = "  Enter a DURATION for the new timer";
 		private const int TOOLTIP_TIMER_DURATION_ENTRY_DUR = 3000;
+
 		private const string TOOLTIP_ADD_TIMER_BTN = "  Add timer to 'Timers' list";
 		private const int TOOLTIP_ADD_TIMER_BTN_DUR = 3000;
+
 		private const string TOOLTIP_CHOOSE_AUDIO_BTN = "  Choose timer ALARM	audio";
 		private const int TOOLTIP_CHOOSE_AUDIO_BTN_DUR = 3000;
+
 		private const string TOOLTIP_INCORRECT_FORMAT = "  Wrong format, use empty default as template";
 		private const int TOOLTIP_INCORRECT_FORMAT_DUR = 3000;
+
 		private const string TOOLTIP_REMOVE_BTN = "  Remote SELECTED timer from list";
 		private const int TOOLTIP_REMOVE_BTN_DUR = 3000;
+
 		private const string TOOLTIP_CLEAR_TIMERS_LIST = "  Clear (ENTIRE) timers list";
 		private const int TOOLTIP_CLEAR_TIMERS_LIST_DUR = 3000;
+
 		private const string TOOLTIP_SELECT_TIMER_TO_REMOVE = "  First SELECT a timer to remove";
 		private const int TOOLTIP_SELECT_TIMER_TO_REMOVE_DUR = 3000;
+
 		private const string TOOLTIP_CONTINUOUS_MODE_BTN = "Continuous Mode (start next timer on elapse)";
 		private const int TOOLTIP_CONTINUOUS_MODE_DUR = 3000;
+
 		private const string TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT = "Duration digits should be colon-separated";
 		private const int TOOLTIP_TIMER_DURATION_ENTRY_SUBMIT_DUR = 3000;
+
 		private const string TOOLTIP_INVALID_TIMER_DATA = "Invalid Timer Name or Duration";
 		private const int TOOLTIP_INVALID_TIMER_DATA_DUR = 3000;
+
 		private const string TOOLTIP_DUPLICATE_TIMER_EXISTS = "Timer Already Exists in List";
 		private const int TOOLTIP_DUPLICATE_TIMER_EXISTS_DUR = 3000;
+
+		#endregion
 
 		Form _alarmAlertWindow;
 
