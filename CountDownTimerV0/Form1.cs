@@ -243,6 +243,8 @@ namespace CountDownTimerV0
 
 		private void SetupForm()
 		{
+			StartPosition = FormStartPosition.CenterScreen;
+
 			SetTabIndices();
 
 			MoveControlsToBack();
@@ -268,8 +270,6 @@ namespace CountDownTimerV0
 			_selectedAudio = new SelectedAudio();
 
 			_lapsesByNameDict = new Dictionary<string, int>();
-
-			StartPosition = FormStartPosition.CenterScreen;
 
 			//setup alarm alert window shown when the alarm is raised
 			_alarmAlertWindow = new Form();
