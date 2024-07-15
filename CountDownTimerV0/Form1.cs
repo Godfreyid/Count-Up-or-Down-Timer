@@ -55,7 +55,7 @@ namespace CountDownTimerV0
 		private const string MISSING_DURATION_MESSAGE = "You did not enter a timers duration. Retry.";
 
 		private const string SELECT_A_TIMER_CAPTION = "Select a Timer";
-		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timers to start.";
+		private const string SELECT_A_TIMER_MESSAGE = "You need to select a timer to start.";
 
 		private const string ALARM_CAPTION = "Timer Elapsed";
 		private const string ALARM_MESSAGE = "End Alarm.";
